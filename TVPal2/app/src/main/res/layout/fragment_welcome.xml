@@ -1,0 +1,31 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.tvpal.kobi.tvpal.Fragments.WelcomeFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:weightSum="2">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Create an account"
+            android:id="@+id/fragment_signup_btn"
+            android:layout_weight="1"/>
+
+        <Button
+            android:layout_width="129dp"
+            android:layout_height="wrap_content"
+            android:text="LogIn"
+            android:id="@+id/fragment_signin_btn"
+            android:layout_weight="1"/>
+    </LinearLayout>
+</FrameLayout>
