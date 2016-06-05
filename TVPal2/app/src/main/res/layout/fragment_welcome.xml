@@ -8,24 +8,26 @@
 
 
     <LinearLayout
-        android:orientation="vertical"
+        android:layout_marginTop="240dp"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:weightSum="2">
 
         <Button
+            android:layout_marginLeft="70dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Create an account"
             android:id="@+id/fragment_signup_btn"
-            android:layout_weight="1"/>
+            />
 
         <Button
-            android:layout_width="129dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="LogIn"
+            android:text="Log In"
             android:id="@+id/fragment_signin_btn"
-            android:layout_weight="1"/>
+            />
     </LinearLayout>
 </FrameLayout>

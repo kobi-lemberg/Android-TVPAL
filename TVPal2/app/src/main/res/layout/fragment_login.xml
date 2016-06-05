@@ -14,7 +14,17 @@
             android:layout_width="fill_parent"
             android:layout_weight="3"
             android:layout_height="wrap_content"
-            android:src="@drawable/iconwithlogo" />
+            android:src="@drawable/iconwithlogo"
+            android:id="@+id/icon_with_logo_imageView"/>
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/login_progressBar"
+            android:layout_alignTop="@+id/icon_with_logo_imageView"
+            android:layout_centerHorizontal="true"
+            android:visibility="invisible"
+            android:layout_gravity="center_horizontal" />
         <LinearLayout
             android:layout_weight="1"
             android:layout_width="fill_parent"
@@ -30,12 +40,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="Username: "/>
+                    android:text="Email: "/>
 
                 <EditText
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/fragment_login_editText_userName"
+                    android:id="@+id/fragment_login_editText_userEmail"
                     android:textAppearance="?android:attr/textAppearanceLarge"/>
 
             </LinearLayout>
