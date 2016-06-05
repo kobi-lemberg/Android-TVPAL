@@ -1,11 +1,16 @@
 package com.tvpal.kobi.tvpal.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tvpal.kobi.tvpal.MyApplication;
-
 /**
  * Created by Kobi on 11/05/2016.
  */
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
+
     String email;
     String firstName;
     String lastName;
@@ -24,15 +29,9 @@ public class User {
         this.lastUpdateDate = lastUpdated;
     }
 
-    public User() {
-        this.email = "test@test.co.il";
-        this.firstName = "First Name";
-        this.lastName = "Last Name";
-        this.password = "Password";
-        this.birthDate = "Birth date";
-        this.profilePic="";
-        lastUpdateDate = MyApplication.getCurrentDate();
-    }
+    public User() {}
+
+
 
     public User(User other) {
         this.email = other.email;
@@ -93,16 +92,19 @@ public class User {
         this.password = password;
     }
 
+    @JsonIgnore
     @Override
     public boolean equals(Object o) {
         return this.toString().equals(o.toString());
     }
 
+    @JsonIgnore
     @Override
     public int hashCode() {
         return this.toString().hashCode();
     }
 
+    @JsonIgnore
     @Override
     public String toString() {
 
@@ -117,16 +119,15 @@ public class User {
                 '}';
     }
 
+    @JsonIgnore
     public String getProfilePic() {
         return profilePic;
     }
 
+    @JsonIgnore
     public void setProfilePic(String profilePic) {
         this.profilePic = profilePic;
     }
-
-    public String getDisplayName()
-    {
-        return this.firstName+" "+this.lastName;
-    }
+    @JsonIgnore
+    public String displayName() {return this.firstName+" "+this.lastName;}
 }

@@ -24,7 +24,7 @@ import java.util.List;
  * Created by Kobi on 11/05/2016.
  */
 public class Model {
-
+    String currentUid;
     interface UserCreator{
         public void onResult(User u);
         public void onError(String err);
@@ -90,7 +90,7 @@ public class Model {
                     User current = modelSql.authenticate(userName,password);
                     if(current!=null) {
                         Log.d("TAG:","Current USER: "+current.toString());
-                        setCurrentUser(current);
+                        setCurrentUser(current,modelFireBase.myFirebaseRef.getAuth().getUid());
                         authenticateListener.onAuthenticateResult(current);
                     }
                 }
@@ -107,7 +107,7 @@ public class Model {
             if(current!=null)
             {
                 Log.d("TAG:"," User current: "+current.toString());
-                setCurrentUser(current);
+                setCurrentUser(current, modelFireBase.myFirebaseRef.getAuth().getUid());
                 return true;
             }
             else return false;
@@ -119,16 +119,25 @@ public class Model {
     public User getUserByEmail(String email){return modelSql.getUserByEmail(email);}
     public List<User> getAllUsers(){return modelSql.getAllUsers();}
     public void deleteUser(User u){modelSql.delete(u);}
-    public void updateUserByEmail(String email,User updated){modelSql.updateUserByID(email,updated);}
+    public void updateUserByEmail(String email, User updated){modelSql.updateUserByID(email,updated);}
     public User getCurrentUser(){
         if(modelFireBase.isAuthenticated())
             return this.currentUser;
         return null;
     }
 
-    private void setCurrentUser(User usr){this.currentUser=usr;}
+    private void setCurrentUser(User usr,String id){
+        this.currentUser=usr;
+        this.currentUid = id;
+    }
+    public String getCurrentUid(){
+        return currentUid;
+    }
 
-
+    public String getUpdateDate()
+    {
+        return modelFireBase.getUpdateDate();
+    }
 
     private void saveImageToFile(Bitmap imageBitmap, String imageFileName){
         FileOutputStream fos;

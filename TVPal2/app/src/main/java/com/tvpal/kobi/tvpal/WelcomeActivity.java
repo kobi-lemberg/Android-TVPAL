@@ -56,11 +56,10 @@ public class WelcomeActivity extends Activity implements WelcomeFragment.Welcome
         }
         else
         {
-            Log.d("CURRENTUSER isnot null","SHOULD move to news feed");
+            Log.d("CURRENT USER is not null","SHOULD move to news feed");
             Intent intent = new Intent(getApplicationContext(),NewsFeedActivity.class);
             startActivity(intent);
         }
-
     }
 
     @Override
@@ -93,10 +92,13 @@ public class WelcomeActivity extends Activity implements WelcomeFragment.Welcome
             Model.instance().authenticate(userName.trim().toLowerCase(),password,new Model.AuthenticateListener() {
                 @Override
                 public void onAuthenticateResult(User u) {
-                    Log.d("welcomeActivity","DialogFragment    StringDialogFragment");
+                    Log.d("welcomeActivity", "DialogFragment    StringDialogFragment");
                     DialogFragment df = new StringDialogFragment();
                     ((StringDialogFragment)df).setStrToShow("Welcome "+userName+", Move to News Feed");
-                    df.show(getFragmentManager(),"Success login");
+                    df.show(getFragmentManager(), "Success login");
+                    Intent newsFeedActivityIntent = new Intent(getApplicationContext(), NewsFeedActivity.class);
+                    startActivity(newsFeedActivityIntent);
+
                 }
 
                 @Override
@@ -170,7 +172,8 @@ public class WelcomeActivity extends Activity implements WelcomeFragment.Welcome
                 if(u!=null)
                 {
                     Log.d("TAG:","USER was added successfully");
-                    Toast toast = Toast.makeText(getApplicationContext(),"Congratulations "+u.getDisplayName(),Toast.LENGTH_SHORT);
+                    Toast toast = Toast.makeText(getApplicationContext(),"Congratulations "+u.getFirstName()+" " +u.getLastName(),Toast.LENGTH_SHORT);
+                    //Toast toast = Toast.makeText(getApplicationContext(),"Congratulations "+u.displayName(),Toast.LENGTH_SHORT);
                     toast.setText("Moving to Login.");
                     toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
@@ -217,7 +220,6 @@ public class WelcomeActivity extends Activity implements WelcomeFragment.Welcome
             public void onClick(DialogInterface dialog, int item) {
                 if (items[item].equals("Take Photo")) {
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(intent, REQUEST_CAMERA);
                 } else if (items[item].equals("Choose from Library")) {
                     Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     intent.setType("image/*");

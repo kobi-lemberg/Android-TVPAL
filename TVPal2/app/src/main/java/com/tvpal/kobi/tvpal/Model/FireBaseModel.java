@@ -4,8 +4,11 @@ import android.content.Context;
 import android.util.Log;
 
 import com.firebase.client.AuthData;
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.Query;
+import com.firebase.client.ValueEventListener;
 
 import java.util.Map;
 
@@ -18,7 +21,7 @@ public class FireBaseModel {
 
     FireBaseModel(Context context){
         Firebase.setAndroidContext(context);
-        myFirebaseRef = new Firebase("https://fiery-torch-7421.firebaseio.com/");
+        myFirebaseRef = new Firebase("https://sizzling-torch-54.firebaseio.com/");
     }
 
     public void createUser(final User u,final Model.UserCreator next) {
@@ -47,10 +50,52 @@ public class FireBaseModel {
         }
         return str;
     }
+    public String getUpdateDate()
+    {
+        //child = users.
+        //key = email.
+
+
+        Firebase  stRef = myFirebaseRef.child("users").child(Model.instance().getCurrentUid());
+        stRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.d("TAG", "DataSnapShot: " + dataSnapshot);
+                User user = dataSnapshot.getValue(User.class);
+                Log.d("TAG", "User have been changed : " + user.toString());
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Log.d("TAG", "The read failed: " + firebaseError.getMessage());
+            }
+        });
+
+
+            /*Log.d("TAG","in If!");
+            Query queryLastDate = myFirebaseRef.child(child).child("email").equalTo(key);
+            queryLastDate.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot)
+                {
+                    Log.d("TAG","DataSnapShot: "+ dataSnapshot);
+                    User user = dataSnapshot.getValue(User.class);
+                    Log.d("TAG","User have been changed : "+ user.toString());
+                }
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+                    Log.d("TAG","The read failed: " + firebaseError.getMessage());
+                }
+            });*/
+            //Firebase stRef = myFirebaseRef.child(child).child("email");
+        return "false";
+    }
 
     public void authenticate(String email, String pwd,Firebase.AuthResultHandler auth) {
             myFirebaseRef.authWithPassword(email, pwd, auth);
     }
+
+
 
     public boolean isAuthenticated() {
         return myFirebaseRef.getAuth()!=null;

@@ -20,7 +20,9 @@
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:required="true" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:required="true"/>
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:required="true" />
 
     <application
         android:name=".MyApplication"
@@ -30,7 +32,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <!--         android:theme="@style/AppTheme" -->
+        <!-- android:theme="@style/AppTheme" -->
         <activity android:name=".WelcomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -38,7 +40,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".NewsFeedActivity"></activity>
+        <activity android:name=".NewsFeedActivity" />
+        <activity android:name=".ProfileActivity"></activity>
     </application>
 
 </manifest>
