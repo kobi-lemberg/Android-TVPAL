@@ -7,23 +7,29 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.tvpal.kobi.tvpal.ProfileActivity">
-
+    tools:context="com.tvpal.kobi.tvpal.EditProfileActivity">
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
+        <TextView
+            android:layout_width="154dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Change Profile Picture "/>
+
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:weightSum="1">
-        <ImageView
-            android:layout_width="76dp"
-            android:layout_height="264dp"
-            android:id="@+id/activity_profile_imageView"
-            android:src="@drawable/default_profile_pic"
-            android:layout_weight="1.30" />
+
+            <ImageView
+                android:layout_width="133dp"
+                android:layout_height="171dp"
+                android:id="@+id/activity_Edit_profile_imageView"
+                android:src="@drawable/default_profile_pic" />
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -32,62 +38,66 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="Name: "/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text=" A"
-                    android:id="@+id/activity_profile_name"/>
-                    <Button
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/edit_profile_button"
-                        android:text="Edit Profile"/>
+                        android:layout_marginTop="8dp"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="First Name: "/>
+                    <EditText
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text=" "
+                        android:id="@+id/activity_EditProfile_First_name"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="Last Name: "/>
+                    <EditText
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text=" "
+                        android:id="@+id/activity_EditProfile_Last_name"/>
+                </LinearLayout>
+
             </LinearLayout>
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="Email: "/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text=" A"
-                        android:id="@+id/activity_profile_Email"/>
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="Birth Date: "/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text=" A"
-                        android:id="@+id/activity_profile_Birh_Date"/>
-                </LinearLayout>
+
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2">
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Save"
+                android:id="@+id/button_Save_edit_profile"
+                />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cancel"
+                android:id="@+id/button_Cancel_edit_profile"
+                />
+
+        </LinearLayout>
+
+
     </LinearLayout>
-    </LinearLayout>
+
+
 </RelativeLayout>

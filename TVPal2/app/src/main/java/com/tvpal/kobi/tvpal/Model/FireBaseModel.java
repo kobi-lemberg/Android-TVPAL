@@ -54,8 +54,6 @@ public class FireBaseModel {
     {
         //child = users.
         //key = email.
-
-
         Firebase  stRef = myFirebaseRef.child("users").child(Model.instance().getCurrentUid());
         stRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -63,8 +61,13 @@ public class FireBaseModel {
                 Log.d("TAG", "DataSnapShot: " + dataSnapshot);
                 User user = dataSnapshot.getValue(User.class);
                 Log.d("TAG", "User have been changed : " + user.toString());
-            }
+                //checking if date have been changed.
 
+                if(!user.getLastUpdateDate().equals(Model.instance().getUpdateDate()))
+                {
+                    Model.instance().updateUserByEmail(user.getEmail(),user);
+                }
+            }
             @Override
             public void onCancelled(FirebaseError firebaseError) {
                 Log.d("TAG", "The read failed: " + firebaseError.getMessage());

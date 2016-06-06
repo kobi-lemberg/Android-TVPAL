@@ -41,7 +41,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".NewsFeedActivity" />
-        <activity android:name=".ProfileActivity"></activity>
+        <activity android:name=".ProfileActivity" />
+        <activity android:name=".EditProfileActivity"></activity>
     </application>
 
 </manifest>
