@@ -42,7 +42,8 @@
         </activity>
         <activity android:name=".NewsFeedActivity" />
         <activity android:name=".ProfileActivity" />
-        <activity android:name=".EditProfileActivity"></activity>
+        <activity android:name=".EditProfileActivity" />
+        <activity android:name=".AddShowActivity"></activity>
     </application>
 
 </manifest>

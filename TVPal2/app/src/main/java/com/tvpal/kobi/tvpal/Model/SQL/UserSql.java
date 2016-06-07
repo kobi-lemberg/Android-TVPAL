@@ -62,7 +62,9 @@ public class UserSql {
                 String password = cursor.getString(passwdIndex);
                 String imageName = cursor.getString(imageNameIndex);
                 String lastUpdated = cursor.getString(lastUpdatedIndex);
-                list.add(new User(email,fname,lname,password,bDate,imageName,lastUpdated));
+                //    public User(String email, String firstName,String lastName, String birthDate, String password , String profilePic,String lastUpdated) {
+
+                list.add(new User(email,fname,lname,bDate,password,imageName,lastUpdated));
             }
             while (cursor.moveToNext());
 
@@ -86,7 +88,7 @@ public class UserSql {
             String password = cursor.getString(passwdIndex);
             String imageName = cursor.getString(imageNameIndex);
             String lastUpdated = cursor.getString(lastUpdatedIndex);
-            return new User(email,fname,lname,password,bDate,imageName,lastUpdated);
+            return (new User(email,fname,lname,bDate,password,imageName,lastUpdated));
         }
         return null;
     }
@@ -134,7 +136,8 @@ public class UserSql {
                 String bDate = cursor.getString(bDateIndex);
                 String imageName = cursor.getString(imageNameIndex);
                 String lastUpdated = cursor.getString(lastUpdatedIndex);
-                return new User(email,fname,lname,bDate,password,imageName,lastUpdated);
+                return (new User(email,fname,lname,bDate,password,imageName,lastUpdated));
+
             }
         }
         return null;

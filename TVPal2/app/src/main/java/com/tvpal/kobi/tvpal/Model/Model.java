@@ -119,7 +119,14 @@ public class Model {
     public User getUserByEmail(String email){return modelSql.getUserByEmail(email);}
     public List<User> getAllUsers(){return modelSql.getAllUsers();}
     public void deleteUser(User u){modelSql.delete(u);}
-    public void updateUserByEmail(String email, User updated){modelSql.updateUserByID(email,updated);}
+    public void updateUserByEmail(final String email,final User updated)
+    {
+        modelFireBase.updateUser(getCurrentUid(), updated, new Firebase.CompletionListener() {
+            @Override public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                modelSql.updateUserByID(email,updated);
+                setCurrentUser(updated,getCurrentUid());
+            }});}
+
     public User getCurrentUser(){
         if(modelFireBase.isAuthenticated())
             return this.currentUser;

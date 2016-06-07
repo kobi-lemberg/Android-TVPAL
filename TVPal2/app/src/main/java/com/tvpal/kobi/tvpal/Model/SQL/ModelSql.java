@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class ModelSql {
 
-    private final static int VERSION =6;
+    private final static int VERSION =7;
     MyDBHelper dbHelper;
 
     public ModelSql() {

@@ -41,6 +41,12 @@ public class FireBaseModel {
         });
     }
 
+    public void updateUser(String uid, User user,Firebase.CompletionListener completionlistener)
+    {
+        Firebase  stRef = myFirebaseRef.child("users").child(Model.instance().getCurrentUid());
+        stRef.updateChildren(user.getUserMap(),completionlistener);
+    }
+
     private String getObjectKey(String invalidKey)
     {
         String[] components = invalidKey.split(".");
@@ -63,7 +69,7 @@ public class FireBaseModel {
                 Log.d("TAG", "User have been changed : " + user.toString());
                 //checking if date have been changed.
 
-                if(!user.getLastUpdateDate().equals(Model.instance().getUpdateDate()))
+                if(!user.getLastUpdateDate().equals(Model.instance().getCurrentUser().getLastUpdateDate()))
                 {
                     Model.instance().updateUserByEmail(user.getEmail(),user);
                 }

@@ -166,7 +166,7 @@ public class WelcomeActivity extends Activity implements WelcomeFragment.Welcome
         Log.d("birthDate:",birthDate);
         Log.d("profilePicPath:",profilePicPath);
 
-        Model.instance().addUser(new User(email.trim().toLowerCase(), password, firstName.trim(), lastName.trim(), birthDate, profilePicPath, MyApplication.getCurrentDate()), profilePic, new Model.UserCreatorListener() {
+        Model.instance().addUser(new User(email.trim().toLowerCase(), firstName.trim(), lastName.trim(), birthDate,password ,profilePicPath, MyApplication.getCurrentDate()), profilePic, new Model.UserCreatorListener() {
             @Override
             public void onResult(User u) {
                 if(u!=null)

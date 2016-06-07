@@ -27,9 +27,13 @@ public class ProfileActivity  extends Activity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
+        //06-07 10:48:12.518 11759-11759/com.tvpal.kobi.tvpal D/TAG: User have been changed : User{email='m@n.com', firstName='q', lastName='p', birthDate='5/6/2016', password='m', profilePic='null', lastUpdateDate='06/05/2016 21:41:54'}
+
         setContentView(R.layout.activity_profile);
         User user = Model.instance().getCurrentUser();
         Log.d("TAG", "In Profile activity.");
+        Log.d("TAG","USER: "+user.toString());
         Model.instance().getUpdateDate();
         Log.d("TAG", "Finished.");
         displayName = (TextView) findViewById(R.id.activity_profile_name);

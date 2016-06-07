@@ -8,6 +8,9 @@ import com.tvpal.kobi.tvpal.MyApplication;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
 
@@ -19,7 +22,9 @@ public class User {
     String profilePic;
     String lastUpdateDate;
 
-    public User(String email, String password,String firstName, String lastName,  String birthDate, String profilePic,String lastUpdated) {
+
+
+    public User(String email, String firstName,String lastName, String birthDate, String password , String profilePic,String lastUpdated) {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -117,6 +122,20 @@ public class User {
                 ", profilePic='" + profilePic + '\'' +
                 ", lastUpdateDate='" + lastUpdateDate + '\'' +
                 '}';
+    }
+
+
+    @JsonIgnore
+    public Map<String,Object> getUserMap(){
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("email",this.email);
+        map.put("firstName",this.firstName);
+        map.put("lastName",this.lastName);
+        map.put("birthDate",this.birthDate);
+        map.put("password",this.password);
+        map.put("profilePic",this.profilePic);
+        map.put("lastUpdateDate",this.lastUpdateDate);
+        return map;
     }
 
     @JsonIgnore
