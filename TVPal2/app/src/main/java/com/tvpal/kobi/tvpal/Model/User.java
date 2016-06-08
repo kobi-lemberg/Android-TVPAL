@@ -97,6 +97,16 @@ public class User {
         this.password = password;
     }
 
+
+    public String getProfilePic() {
+        return profilePic;
+    }
+
+
+    public void setProfilePic(String profilePic) {
+        this.profilePic = profilePic;
+    }
+
     @JsonIgnore
     @Override
     public boolean equals(Object o) {
@@ -138,15 +148,6 @@ public class User {
         return map;
     }
 
-    @JsonIgnore
-    public String getProfilePic() {
-        return profilePic;
-    }
-
-    @JsonIgnore
-    public void setProfilePic(String profilePic) {
-        this.profilePic = profilePic;
-    }
     @JsonIgnore
     public String displayName() {return this.firstName+" "+this.lastName;}
 }

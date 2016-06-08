@@ -8,6 +8,12 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.tvpal.kobi.tvpal.ProfileActivity">
+<!--    <ProgressBar
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/upperProgressBar"
+        style="@android:style/Widget.Holo.ProgressBar.Horizontal"
+        android:indeterminate="true" />-->
 
     <LinearLayout
         android:orientation="vertical"
@@ -18,12 +24,22 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:weightSum="1">
-        <ImageView
-            android:layout_width="76dp"
-            android:layout_height="264dp"
-            android:id="@+id/activity_profile_imageView"
-            android:src="@drawable/default_profile_pic"
-            android:layout_weight="1.30" />
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:layout_width="76dp"
+                    android:layout_height="264dp"
+                    android:id="@+id/activity_profile_imageView"
+                    android:src="@drawable/default_profile_pic"
+                    android:layout_weight="1.30" />
+                <ProgressBar
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/UserImageProgressBar"
+                    android:indeterminate="true"
+                    android:visibility="gone" />
+            </FrameLayout>
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -45,12 +61,7 @@
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text=" A"
                     android:id="@+id/activity_profile_name"/>
-                    <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/edit_profile_button"
-                        android:text="Edit Profile"/>
-            </LinearLayout>
+                </LinearLayout>
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -88,6 +99,12 @@
                         android:id="@+id/activity_profile_Birh_Date"/>
                 </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/edit_profile_button"
+                android:text="Edit Profile"/>
+        </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

@@ -20,7 +20,7 @@ public class MyApplication extends Application{
         MyApplication.context = getApplicationContext();
     }
     public static String getCurrentDate() {
-        DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+        DateFormat df = new SimpleDateFormat("MM_dd_yyyy_HH_mm_ss");
         // Get the date today using Calendar object.
         Date today = Calendar.getInstance().getTime();
         // Using DateFormat format method we can create a string

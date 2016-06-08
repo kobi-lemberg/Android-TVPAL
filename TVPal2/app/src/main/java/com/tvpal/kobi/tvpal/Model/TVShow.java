@@ -1,57 +1,63 @@
 package com.tvpal.kobi.tvpal.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * Created by Kobi on 04/06/2016.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TVShow {
     String id;
     String name;
     String mainActor;
-    int nubOfEpisodes;
+    int episodes;
     String category;
     String summery;
     String lastUpdated;
 
     public TVShow() {}
 
-    public TVShow(String id, String name, String mainActor, int nubOfEpisodes, String category, String lastUpdated, String summery) {
+    public TVShow(String id, String name, String mainActor, int episodes, String category, String lastUpdated, String summery) {
         this.id = id;
         this.name = name;
         this.mainActor = mainActor;
-        this.nubOfEpisodes = nubOfEpisodes;
+        this.episodes = episodes;
         this.category = category;
         this.lastUpdated = lastUpdated;
         this.summery = summery;
     }
 
-    public TVShow(String name, String mainActor, int nubOfEpisodes, String category, String lastUpdated, String summery) {
+    public TVShow(String name, String mainActor, int episodes, String category, String lastUpdated, String summery) {
         this.id = "";
         this.name = name;
         this.mainActor = mainActor;
-        this.nubOfEpisodes = nubOfEpisodes;
+        this.episodes = episodes;
         this.category = category;
         this.lastUpdated = lastUpdated;
         this.summery = summery;
     }
-
+    @JsonIgnore
     @Override
     public String toString() {
         return "TVShow{" +
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", mainActor='" + mainActor + '\'' +
-                ", nubOfEpisodes=" + nubOfEpisodes +
+                ", episodes=" + episodes +
                 ", category='" + category + '\'' +
                 ", summery='" + summery + '\'' +
                 ", lastUpdated='" + lastUpdated + '\'' +
                 '}';
     }
 
+    @JsonIgnore
     @Override
     public boolean equals(Object o) {
         return this.toString().equals(o.toString());
     }
 
+    @JsonIgnore
     @Override
     public int hashCode() {
         return this.toString().hashCode();
@@ -81,12 +87,12 @@ public class TVShow {
         this.mainActor = mainActor;
     }
 
-    public int getNubOfEpisodes() {
-        return nubOfEpisodes;
+    public int getEpisodes() {
+        return episodes;
     }
 
-    public void setNubOfEpisodes(int nubOfEpisodes) {
-        this.nubOfEpisodes = nubOfEpisodes;
+    public void setEpisodes(int episodes) {
+        this.episodes = episodes;
     }
 
     public String getCategory() {

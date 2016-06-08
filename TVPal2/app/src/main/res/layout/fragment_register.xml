@@ -3,15 +3,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.tvpal.kobi.tvpal.Fragments.RegisterFragment">
-    <ProgressBar
+<!--    <ProgressBar
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/progressBar"
         android:layout_gravity="center_horizontal"
         android:visibility="invisible"
-        android:indeterminate="false" />
-
+        android:indeterminate="false" />-->
+<!--    <ProgressBar
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/fragment_register_progressBar"
+        android:indeterminate="true"
+        android:visibility="invisible" />-->
+    <ProgressBar
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/fragment_register_progressBar"
+        style="@android:style/Widget.Holo.ProgressBar.Horizontal"
+        android:indeterminate="true" />
     <LinearLayout
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"

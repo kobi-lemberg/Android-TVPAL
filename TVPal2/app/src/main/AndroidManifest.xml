@@ -23,6 +23,9 @@
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:required="true" />
+    <uses-permission
+        android:name="android.permission.CAMERA"
+        android:required="true" />
 
     <application
         android:name=".MyApplication"

@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -31,6 +32,7 @@ public class EditProfileActivity extends Activity
     TextView firstName;
     TextView lastName;
     ImageView profilePic;
+
     User user = Model.instance().getCurrentUser();
     Button saveButton;
     Button cancelButton;
@@ -43,6 +45,9 @@ public class EditProfileActivity extends Activity
         firstName= (TextView) findViewById(R.id.activity_EditProfile_First_name);
         lastName = (TextView) findViewById(R.id.activity_EditProfile_Last_name);
         profilePic = (ImageView) findViewById(R.id.activity_Edit_profile_imageView);
+
+
+        profilePic.setImageBitmap(Model.instance().loadImageFromFile(user.getProfilePic()));
         firstName.setText(user.getFirstName());
         lastName.setText(user.getLastName());
 
@@ -72,11 +77,15 @@ public class EditProfileActivity extends Activity
 
                 //    public User(String email, String firstName,String lastName, String birthDate, String password , String profilePic,String lastUpdated) {
 
-                User changedUser = new User(user.getEmail(),firstName.getText().toString(),
-                        lastName.getText().toString(), user.getBirthDate(),user.getPassword(),
-                        user.getProfilePic(),MyApplication.getCurrentDate());
-                Model.instance().updateUserByEmail(user.getEmail(),changedUser);
-
+                String profilePath="Profile_Pic_"+MyApplication.getCurrentDate()+ ".jpg";
+                User changedUser = new User(user.getEmail(),firstName.getText().toString(), lastName.getText().toString(), user.getBirthDate(),user.getPassword(),profilePath,MyApplication.getCurrentDate());
+                Model.instance().updateUserByEmailWithPic(user.getEmail(), changedUser, ((BitmapDrawable) profilePic.getDrawable()).getBitmap(), new Model.UserUpdater() {
+                    @Override
+                    public void onDone() {
+                        setResult(1);
+                        finish();
+                    }
+                });
             }
         });
 
@@ -106,6 +115,7 @@ public class EditProfileActivity extends Activity
             public void onClick(DialogInterface dialog, int item) {
                 if (items[item].equals("Take Photo")) {
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    startActivityForResult(intent, REQUEST_CAMERA);
                 } else if (items[item].equals("Choose from Library")) {
                     Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     intent.setType("image/*");
@@ -129,8 +139,6 @@ public class EditProfileActivity extends Activity
                 thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
                 String fileName="Profile_Pic_"+MyApplication.getCurrentDate()+ ".jpg";
                 profilePic.setImageBitmap(thumbnail);
-                user.setProfilePic(fileName);
-
             } else if (requestCode == SELECT_FILE) {
                 Uri selectedImageUri = data.getData();
                 String[] projection = {MediaStore.MediaColumns.DATA};
@@ -153,8 +161,16 @@ public class EditProfileActivity extends Activity
                 //ivImage.setImageBitmap(bm);
                 String fileName="Profile_Pic_"+MyApplication.getCurrentDate()+ ".jpg";
                 profilePic.setImageBitmap(bm);
-                user.setProfilePic(fileName);
             }
         }
+    }
+
+    @Override
+    protected void onResume() {
+
+/*        profilePic.setImageBitmap(Model.instance().loadImageFromFile(user.getProfilePic()));
+        firstName.setText(user.getFirstName());
+        lastName.setText(user.getLastName());*/
+        super.onResume();
     }
 }

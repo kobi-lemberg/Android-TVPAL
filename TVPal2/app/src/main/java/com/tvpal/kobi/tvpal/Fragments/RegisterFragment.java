@@ -58,8 +58,7 @@ public class RegisterFragment extends Fragment {
         profilePic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getPicture();
-                Log.d("TAG","ProfilePic was Chosen");
+                ((RegisterDelegate)getActivity()).handleCamera();
             }
         });
 
@@ -69,7 +68,8 @@ public class RegisterFragment extends Fragment {
          birthDate = (DateEditText) view.findViewById(R.id.fragment_register_DateEditText);
          password = (EditText) view.findViewById(R.id.fragment_register_editText_password);
          passwordConfirm = (EditText) view.findViewById(R.id.fragment_register_editText_password_confirm);
-         progressBar=(ProgressBar) view.findViewById(R.id.progressBar);
+         progressBar=(ProgressBar) view.findViewById(R.id.fragment_register_progressBar);
+        progressBar.setVisibility(View.INVISIBLE);
 
         Button done = (Button) view.findViewById(R.id.fragment_register_done_btn);
         if(profilePicFileName==null)
@@ -79,7 +79,6 @@ public class RegisterFragment extends Fragment {
             public void onClick(View v) {
                 if(password.getText().toString().equals(passwordConfirm.getText().toString())&&password.getText().toString().length()>0){
                     progressBar.setVisibility(View.VISIBLE);
-
                     ((RegisterDelegate)getActivity()).signUp(email.getText().toString(),password.getText().toString(),firstName.getText().toString(),lastName.getText()
                     .toString(),birthDate.getText().toString(),chosenPic,profilePicFileName);
                 }
@@ -92,17 +91,12 @@ public class RegisterFragment extends Fragment {
                 }
             }
         });
-
-        Log.d("TAG","RegisterFragment was loaded");
         return view;
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         getActivity().setTitle("Register");
-/*
-        inflater.inflate(R.menu.menu_main, menu);
-*/
         super.onCreateOptionsMenu(menu, inflater);
     }
     public void setProfilePic(Bitmap pic,String fileName)
@@ -111,50 +105,4 @@ public class RegisterFragment extends Fragment {
         this.profilePic.setImageBitmap(pic);
         this.profilePicFileName = fileName;
     }
-    final int profilePicStatus = 1;
-
-    private void getPicture()
-    {
-        ((RegisterDelegate)getActivity()).handleCamera();
-
-        /*Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getActivity().getApplicationContext().getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, profilePicStatus);
-        }*/
-    }
-
-
- /*   @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == profilePicStatus && resultCode == Activity.RESULT_OK) {
-
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            profilePic.setImageBitmap(imageBitmap);
-            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-*//*            imageFileName = "JPEG_" + timeStamp + ".jpeg";
-            newImageName.setText(imageFileName);
-            Model.getInstance().saveImage(imageBitmap,imageFileName);*//*
-        }
-    }*/
-
-
-/*    @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-        if(!hidden)
-        {
-            Log.d("HIDDEN","FALSE");
-            this.profilePic.setImageDrawable(getResources().getDrawable(R.drawable.camera));
-            this.profilePicFileName="";
-            this.email.setText("");
-            this.firstName.setText("");
-            this.lastName.setText("");
-            this.birthDate.setText("");
-            this.password.setText("");
-            this.passwordConfirm.setText("");
-            super.onResume();
-        }
-    }*/
 }

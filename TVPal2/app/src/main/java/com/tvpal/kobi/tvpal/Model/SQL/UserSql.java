@@ -3,6 +3,8 @@ package com.tvpal.kobi.tvpal.Model.SQL;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.tvpal.kobi.tvpal.Model.User;
 
@@ -21,27 +23,42 @@ public class UserSql {
     private static final String USERS_BDATE = "birthDate";
     private static final String USERS_PASSWORD = "password";
     private static final String USERS_IMAGE_NAME = "image_name";
-    private static final String USERS_LAST_UPDATED = "image_name";
+    private static final String USERS_LAST_UPDATED = "last_update";
 
 
     public static void create(SQLiteDatabase db) {
+        Log.d("TAG","Creating users table");
         db.execSQL("create table " +
                 USERS_TABLE      + " (" +
+                USERS_LAST_UPDATED + " TEXT," +
                 USERS_EMAIL      + " TEXT," +
                 USERS_FNAME      + " TEXT," +
                 USERS_LNAME      + " TEXT," +
                 USERS_BDATE      + " TEXT," +
-                USERS_PASSWORD    + " TEXT," +
-                USERS_IMAGE_NAME + " TEXT," +
-                USERS_LAST_UPDATED        + "TEXT" +
+                USERS_PASSWORD   + " TEXT," +
+                USERS_IMAGE_NAME + " TEXT" +
                  ");");
     }
+
+
+    public static void addUser(SQLiteDatabase db, User user) {
+        ContentValues values = new ContentValues();
+        values.put(USERS_EMAIL, user.getEmail());
+        values.put(USERS_FNAME, user.getFirstName());
+        values.put(USERS_LNAME, user.getLastName());
+        values.put(USERS_BDATE, user.getBirthDate());
+        values.put(USERS_PASSWORD, user.getPassword());
+        values.put(USERS_IMAGE_NAME, user.getProfilePic());
+        values.put(USERS_LAST_UPDATED, user.getLastUpdateDate());
+        db.insert(USERS_TABLE, null, values);
+    }
+
 
     public static void drop(SQLiteDatabase db)  {
         db.execSQL("drop table " + USERS_TABLE);
     }
 
-    public static void delete(SQLiteDatabase db, User u) {db.delete(USERS_TABLE,USERS_EMAIL+" = ?" , new String[]{u.getEmail()+""});}
+    public static void delete(SQLiteDatabase db, User u) {db.delete(USERS_TABLE,USERS_EMAIL+" = ?" , new String[]{u.getEmail()});}
 
     public static List<User> getAllUsers(SQLiteDatabase db) {
         Cursor cursor = db.query(USERS_TABLE, null, null, null, null, null, null);
@@ -72,6 +89,7 @@ public class UserSql {
         return list;
     }
 
+    @Nullable
     public static User getUser(SQLiteDatabase db, String email) {
         Cursor cursor = db.query(USERS_TABLE, null, USERS_EMAIL + " = ?", new String[]{email}, null, null, null);
         if (cursor.moveToFirst()) {
@@ -93,17 +111,6 @@ public class UserSql {
         return null;
     }
 
-    public static void addUser(SQLiteDatabase db, User user) {
-        ContentValues values = new ContentValues();
-        values.put(USERS_EMAIL, user.getEmail());
-        values.put(USERS_FNAME, user.getFirstName());
-        values.put(USERS_LNAME, user.getLastName());
-        values.put(USERS_BDATE, user.getBirthDate());
-        values.put(USERS_PASSWORD, user.getPassword());
-        values.put(USERS_IMAGE_NAME, user.getProfilePic());
-        values.put(USERS_LAST_UPDATED, user.getLastUpdateDate());
-        db.insert(USERS_TABLE, null, values);
-    }
 
     public static void updateUserByEmail(SQLiteDatabase db, String email, User updated) {
         ContentValues values = new ContentValues();
@@ -137,7 +144,7 @@ public class UserSql {
                 String imageName = cursor.getString(imageNameIndex);
                 String lastUpdated = cursor.getString(lastUpdatedIndex);
                 return (new User(email,fname,lname,bDate,password,imageName,lastUpdated));
-
+                ////need to handle woth the pic
             }
         }
         return null;

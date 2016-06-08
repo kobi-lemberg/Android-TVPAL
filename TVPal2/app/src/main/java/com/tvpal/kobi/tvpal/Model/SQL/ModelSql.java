@@ -3,6 +3,7 @@ package com.tvpal.kobi.tvpal.Model.SQL;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.tvpal.kobi.tvpal.Model.User;
 import com.tvpal.kobi.tvpal.MyApplication;
@@ -14,7 +15,7 @@ import java.util.List;
  */
 public class ModelSql {
 
-    private final static int VERSION =7;
+    private final static int VERSION =21;
     MyDBHelper dbHelper;
 
     public ModelSql() {
@@ -58,7 +59,7 @@ public class ModelSql {
     class MyDBHelper extends SQLiteOpenHelper {
 
         public MyDBHelper(Context context) {
-            super(context, "myDB.db", null, VERSION);
+            super(context, "my_DB.db", null, VERSION);
         }
 
         @Override

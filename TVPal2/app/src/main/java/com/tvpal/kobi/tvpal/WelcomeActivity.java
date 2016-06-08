@@ -56,7 +56,7 @@ public class WelcomeActivity extends Activity implements WelcomeFragment.Welcome
         }
         else
         {
-            Log.d("CURRENT USER is not null","SHOULD move to news feed");
+            Log.d("TAG","CURRENT USER is not null SHOULD move to news feed");
             Intent intent = new Intent(getApplicationContext(),NewsFeedActivity.class);
             startActivity(intent);
         }
@@ -220,6 +220,7 @@ public class WelcomeActivity extends Activity implements WelcomeFragment.Welcome
             public void onClick(DialogInterface dialog, int item) {
                 if (items[item].equals("Take Photo")) {
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    startActivityForResult(intent, REQUEST_CAMERA);
                 } else if (items[item].equals("Choose from Library")) {
                     Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     intent.setType("image/*");
