@@ -11,7 +11,8 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+        android:layout_height="fill_parent"
+        android:id="@+id/linearLayout">
     <TextView
         android:layout_width="154dp"
         android:layout_height="wrap_content"
@@ -26,8 +27,8 @@
         android:weightSum="1">
 
         <ImageView
-            android:layout_width="133dp"
-            android:layout_height="171dp"
+            android:layout_width="96dp"
+            android:layout_height="124dp"
             android:id="@+id/activity_addShow_imageView"
             android:src="@drawable/default_profile_pic" />
         <LinearLayout
@@ -41,14 +42,10 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text="Movie Name: "/>
                 <EditText
-                    android:layout_width="wrap_content"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text=" "
                     android:id="@+id/activity_addShow_movieName"/>
             </LinearLayout>
@@ -59,14 +56,10 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text="Famous Actors: "/>
                 <EditText
-                    android:layout_width="wrap_content"
+                    android:layout_width="129dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text=" "
                     android:id="@+id/activity_addShow_famousActors"/>
             </LinearLayout>
@@ -77,14 +70,10 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text="Number of Episodes "/>
                 <EditText
-                    android:layout_width="wrap_content"
+                    android:layout_width="101dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text=" "
                     android:id="@+id/activity_addShow_NumberOfEpisodes"/>
             </LinearLayout>
@@ -95,17 +84,20 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text="Categories "/>
                 <EditText
-                    android:layout_width="wrap_content"
+                    android:layout_width="159dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text=" "
                     android:id="@+id/activity_addShow_Categories"/>
             </LinearLayout>
+            <RatingBar
+                android:id="@+id/ratingBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:numStars="4"
+                android:stepSize="1.0"
+                android:rating="2.0" />
         </LinearLayout>
 
     </LinearLayout>
@@ -115,6 +107,10 @@
     android:layout_height="fill_parent"
     android:orientation="vertical"
     android:layout_marginBottom="60dp">
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Summary:"/>
     <EditText
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
@@ -135,4 +131,21 @@
 
     </LinearLayout>
     </LinearLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save"
+        android:id="@+id/activity_add_Show_Save"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="280dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cancel"
+        android:id="@+id/activity_add_show_cancel"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="259dp" />
 </RelativeLayout>
