@@ -22,7 +22,7 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="194dp"
             android:weightSum="1">
             <FrameLayout
                 android:layout_width="wrap_content"
@@ -100,11 +100,38 @@
                 </LinearLayout>
         </LinearLayout>
 
-            <Button
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/edit_profile_button"
-                android:text="Edit Profile"/>
+                android:orientation="vertical">
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/edit_profile_button"
+                    android:text="Edit Profile"/>
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Add Show"
+                    android:id="@+id/button_profile_activity_add_Show"
+                    android:layout_gravity="right" />
+            </LinearLayout>
+
+
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+            <ListView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/listView_activity_profile"
+                android:layout_weight="1" />
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

@@ -5,37 +5,48 @@ package com.tvpal.kobi.tvpal.Model;
  * Created by Kobi on 04/06/2016.
  */
 public class Post {
-    String postID;
-    String showID;
+    String showName;
     String userEmail;
     String text;
     String date;
     int currentPart;
     boolean finished;
     int grade;
+    int season;
+    String event;
+    String imagePath ;
+
 
     public Post() {
     }
 
-    public Post(String showID, String userEmail, String text, String date, int currentPart, boolean finished, int grade) {
-        this.showID = showID;
+    public Post(String showName, String userEmail, String text, String date,int season ,int currentPart, boolean finished, int grade,String event,String imagePath) {
+        this.showName = showName;
         this.userEmail = userEmail;
         this.text = text;
         this.date = date;
+        this.season = season;
         this.currentPart = currentPart;
         this.finished = finished;
         this.grade = grade;
+        this.event = event;
+        this.imagePath = imagePath;
     }
 
-    public Post(String postID, String showID, String userEmail, String date, String text, int currentPart, boolean finished, int grade) {
-        this.postID = postID;
-        this.showID = showID;
-        this.userEmail = userEmail;
-        this.date = date;
-        this.text = text;
-        this.currentPart = currentPart;
-        this.finished = finished;
-        this.grade = grade;
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+    public int getSeason() {
+        return season;
+    }
+
+    public void setSeason(int season) {
+        this.season = season;
     }
 
     @Override
@@ -51,8 +62,7 @@ public class Post {
     @Override
     public String toString() {
         return "Post{" +
-                "postID='" + postID + '\'' +
-                ", showID='" + showID + '\'' +
+                ", showID='" + showName + '\'' +
                 ", userEmail='" + userEmail + '\'' +
                 ", text='" + text + '\'' +
                 ", date='" + date + '\'' +
@@ -62,21 +72,13 @@ public class Post {
                 '}';
     }
 
-    public String getPostID() {
-        return postID;
-    }
+    public String getShowName() {return showName;}
 
-    public void setPostID(String postID) {
-        this.postID = postID;
-    }
+    public void setShowName(String showName) {this.showName = showName;}
 
-    public String getShowID() {
-        return showID;
-    }
+    public String getEvent() {return event;}
 
-    public void setShowID(String showID) {
-        this.showID = showID;
-    }
+    public void setEvent(String event) {this.event = event;}
 
     public String getText() {
         return text;

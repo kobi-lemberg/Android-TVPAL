@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/rowImageFrame">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/image_rowlayout_post"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:src="@mipmap/ic_launcher" />
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/rowImageProgressBar"
+            android:visibility="gone"/>
+    </FrameLayout>
+
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Large Text"
+        android:id="@+id/nameTextView"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/rowImageFrame"
+        android:layout_toEndOf="@+id/rowImageFrame"
+        android:layout_margin="10px" />
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/TVShow_Progress_Bar"
+        android:layout_alignEnd="@+id/nameTextView"
+        android:layout_alignBottom="@+id/rowImageFrame"
+        android:layout_alignStart="@+id/nameTextView"
+        android:layout_below="@+id/rowImageFrame" />
+
+
+</RelativeLayout>

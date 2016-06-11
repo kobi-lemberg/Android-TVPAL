@@ -8,7 +8,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TVShow {
-    String id;
     String name;
     String mainActor;
     int episodes;
@@ -16,9 +15,12 @@ public class TVShow {
     String summery;
     String lastUpdated;
 
+
+    String imagePath;
+
     public TVShow() {}
 
-    public TVShow(String id, String name, String mainActor, int episodes, String category, String lastUpdated, String summery) {
+/*    public TVShow(String id, String name, String mainActor, int episodes, String category, String lastUpdated, String summery) {
         this.id = id;
         this.name = name;
         this.mainActor = mainActor;
@@ -26,22 +28,21 @@ public class TVShow {
         this.category = category;
         this.lastUpdated = lastUpdated;
         this.summery = summery;
-    }
+    }*/
 
-    public TVShow(String name, String mainActor, int episodes, String category, String lastUpdated, String summery) {
-        this.id = "";
+    public TVShow(String name, String mainActor,int episodes, String category, String lastUpdated, String summery,String imagePath) {
         this.name = name;
         this.mainActor = mainActor;
         this.episodes = episodes;
         this.category = category;
         this.lastUpdated = lastUpdated;
         this.summery = summery;
+        this.imagePath = imagePath;
     }
     @JsonIgnore
     @Override
     public String toString() {
         return "TVShow{" +
-                "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", mainActor='" + mainActor + '\'' +
                 ", episodes=" + episodes +
@@ -63,13 +64,14 @@ public class TVShow {
         return this.toString().hashCode();
     }
 
-    public String getId() {
-        return id;
+    public String getImagePath() {
+        return imagePath;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
+
 
     public String getName() {
         return name;

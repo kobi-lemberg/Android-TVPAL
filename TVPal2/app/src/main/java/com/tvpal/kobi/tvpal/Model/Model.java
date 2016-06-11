@@ -22,6 +22,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -34,8 +35,22 @@ public class Model {
         public void onError(String err);
     }
 
+    public interface ShowCreator{
+        public void Create();
+    }
+
     public interface UserUpdater{
         public void onDone();
+    }
+
+    public interface showCreatorListener{
+        public void onDone();
+        public void onError(String error);
+    }
+
+    public interface eventPostsListener{
+        public void onResult(LinkedList<Post> o);
+        public void onError(String error);
     }
 
     public interface UserCreatorListener{
@@ -177,21 +192,22 @@ public class Model {
     public void updateUserByEmailWithPic(final String email, final User updated, final Bitmap profilePic, final UserUpdater listener)
     {
         modelFireBase.updateUser(getCurrentUid(), updated, new Firebase.CompletionListener() {
-            @Override public void onComplete(FirebaseError firebaseError, Firebase firebase) {
-                if(firebaseError==null)
-                {
+            @Override
+            public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                if (firebaseError == null) {
                     uploadImageAsync(profilePic, updated.getProfilePic(), new UploadImageListener() {
                         @Override
                         public void onResult() {
-                            modelSql.updateUserByID(email,updated);
-                            saveImageToFile(profilePic,updated.getProfilePic());
+                            modelSql.updateUserByID(email, updated);
+                            saveImageToFile(profilePic, updated.getProfilePic());
 
-                            setCurrentUser(updated,getCurrentUid());
+                            setCurrentUser(updated, getCurrentUid());
                             listener.onDone();
                         }
                     });
                 }
-            }});
+            }
+        });
     }
 
 
@@ -208,7 +224,37 @@ public class Model {
 
     }
 
+    public void createShow(final Bitmap imageBitMap,final TVShow show,Post post ,final showCreatorListener showCreatorListener){
+        modelFireBase.createShow(show, post, new ShowCreator() {
+            @Override
+            public void Create() {
+                try {
+                    if (show.getImagePath() != "default_show_pic") {
+                        modelCloudinary.saveImage(imageBitMap, show.getImagePath());
+                    }
+                    showCreatorListener.onDone();
+                } catch (Exception e) {
+                    showCreatorListener.onError(e.toString());
+                }
+            }
+        });
+    }
 
+    public void getAllPostsPerUser(String email, final eventPostsListener eventpostslistener)
+    {
+        modelFireBase.getAllPostsPerUser(email, new FireBaseModel.eventsComplitionListener() {
+            @Override
+            public void onComplete(LinkedList<Post> o) {
+                eventpostslistener.onResult(o);
+            }
+
+            @Override
+            public void onError(String error) {
+                eventpostslistener.onError(error);
+                Log.d("Error","could not read from firebase.");
+            }
+        });
+    }
 
     public User getCurrentUser(){
         if(modelFireBase.isAuthenticated())
@@ -279,4 +325,6 @@ public class Model {
         }
         return bitmap;
     }
+
+
 }

@@ -30,7 +30,7 @@
             android:layout_width="96dp"
             android:layout_height="124dp"
             android:id="@+id/activity_addShow_imageView"
-            android:src="@drawable/default_profile_pic" />
+            android:src="@drawable/default_show_pic" />
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -67,6 +67,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Number of Seasons "/>
+            <EditText
+                android:layout_width="101dp"
+                android:layout_height="wrap_content"
+                android:text=" "
+                android:id="@+id/activity_addShow_NumberOfSeasons"/>
+                </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

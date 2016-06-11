@@ -1,6 +1,7 @@
 package com.tvpal.kobi.tvpal.Model;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.firebase.client.AuthData;
@@ -10,12 +11,19 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
 
+import java.util.LinkedList;
 import java.util.Map;
 
 /**
  * Created by Kobi on 03/06/2016.
  */
 public class FireBaseModel {
+
+    public interface eventsComplitionListener
+    {
+        public void onComplete(LinkedList<Post> o);
+        public void onError(String error);
+    }
 
     Firebase myFirebaseRef;
 
@@ -44,7 +52,7 @@ public class FireBaseModel {
     public void updateUser(String uid, User user,Firebase.CompletionListener completionlistener)
     {
         Firebase  stRef = myFirebaseRef.child("users").child(Model.instance().getCurrentUid());
-        stRef.updateChildren(user.getUserMap(),completionlistener);
+        stRef.updateChildren(user.getUserMap(), completionlistener);
     }
 
     private String getObjectKey(String invalidKey)
@@ -79,8 +87,6 @@ public class FireBaseModel {
                 Log.d("TAG", "The read failed: " + firebaseError.getMessage());
             }
         });
-
-
             /*Log.d("TAG","in If!");
             Query queryLastDate = myFirebaseRef.child(child).child("email").equalTo(key);
             queryLastDate.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -98,6 +104,36 @@ public class FireBaseModel {
             });*/
             //Firebase stRef = myFirebaseRef.child(child).child("email");
         return "false";
+    }
+    public void getAllPostsPerUser(String email,final eventsComplitionListener eventscomplitionlistener)
+    {
+        Query qr = myFirebaseRef.child("Post").orderByChild("userEmail").equalTo(email);
+        qr.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                LinkedList<Post> posts= new LinkedList<Post>();
+                System.out.println("There are " + snapshot.getChildrenCount() + " posts");
+                for (DataSnapshot postSnapshot: snapshot.getChildren()) {
+                    Post post = postSnapshot.getValue(Post.class);
+                    posts.add(post);
+                    System.out.println(post.getShowName() + " - " + post.getUserEmail());
+                }
+                eventscomplitionlistener.onComplete(posts);
+            }
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+                eventscomplitionlistener.onError(firebaseError.toString());
+            }
+        });
+    }
+
+    public void createShow(final TVShow show,final Post post,final Model.ShowCreator showCreator)
+    {
+        myFirebaseRef.child("TVShows").child(show.getName()).setValue(show);
+        myFirebaseRef.child("Post").child(post.getShowName()+"_"+post.getDate()).setValue(post);
+        showCreator.Create();
+
     }
 
     public void authenticate(String email, String pwd,Firebase.AuthResultHandler auth) {

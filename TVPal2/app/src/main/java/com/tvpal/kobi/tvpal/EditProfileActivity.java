@@ -35,8 +35,6 @@ public class EditProfileActivity extends Activity
 
     User user = Model.instance().getCurrentUser();
     Button saveButton;
-    Button cancelButton;
-    Button addShowButton;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -57,16 +55,6 @@ public class EditProfileActivity extends Activity
                 selectImage();
             }
         });
-        addShowButton = (Button) findViewById(R.id.button_edit_activity_add_Show);
-        addShowButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("TAG", "Move to ADD SHOW ACTIVITY");
-                Intent intent = new Intent(getApplicationContext(),AddShowActivity.class);
-                startActivity(intent);
-            }
-        });
-
 
 
         //profilePic.setImageBitmap(user.getProfilePic());
