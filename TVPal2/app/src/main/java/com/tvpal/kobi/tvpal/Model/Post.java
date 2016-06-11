@@ -1,9 +1,12 @@
 package com.tvpal.kobi.tvpal.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * Created by Kobi on 04/06/2016.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Post {
     String showName;
     String userEmail;
@@ -12,53 +15,55 @@ public class Post {
     int currentPart;
     boolean finished;
     int grade;
-    int season;
-    String event;
-    String imagePath ;
+    TVShow show;
 
 
     public Post() {
     }
 
-    public Post(String showName, String userEmail, String text, String date,int season ,int currentPart, boolean finished, int grade,String event,String imagePath) {
+    public Post(String showName, String userEmail, String text, String date ,int currentPart, boolean finished, int grade,TVShow show) {
         this.showName = showName;
         this.userEmail = userEmail;
         this.text = text;
         this.date = date;
-        this.season = season;
         this.currentPart = currentPart;
         this.finished = finished;
         this.grade = grade;
-        this.event = event;
-        this.imagePath = imagePath;
+        this.show = show;
     }
 
 
-    public String getImagePath() {
-        return imagePath;
+    public TVShow getShow() {
+        return show;
     }
 
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
+    public void setShow(TVShow show) {
+        this.show = show;
     }
-    public int getSeason() {
-        return season;
+    @JsonIgnore
+    public String getImagePath(){
+        return this.show.getImagePath();
     }
-
-    public void setSeason(int season) {
-        this.season = season;
+    @JsonIgnore
+    public int getEpisode(){
+        return this.show.getEpisode();
     }
-
+    @JsonIgnore
+    public int getNumOfChapters(){
+        return this.show.getNumOfChapters();
+    }
+    @JsonIgnore
     @Override
     public boolean equals(Object o) {
         return this.toString().equals(o.toString());
     }
-
+    @JsonIgnore
     @Override
     public int hashCode() {
         return this.toString().hashCode();
     }
 
+    @JsonIgnore
     @Override
     public String toString() {
         return "Post{" +
@@ -69,6 +74,7 @@ public class Post {
                 ", currentPart=" + currentPart +
                 ", finished=" + finished +
                 ", grade=" + grade +
+                ", show=" + show +
                 '}';
     }
 
@@ -76,9 +82,28 @@ public class Post {
 
     public void setShowName(String showName) {this.showName = showName;}
 
-    public String getEvent() {return event;}
+    @JsonIgnore
+    public String getEvent()
+    {
+        if((this.getNumOfChapters()-this.currentPart)==0)
+        {
+            return "Finished";
+        }
+        if(this.currentPart==0)
+        {
+            return "Started";
+        }
+        if ((this.getNumOfChapters()-this.currentPart)>0)
+        {
+            return "Is On";
+        }
+        return "Error";
+    }
+    @JsonIgnore
+    public int getProgress(){
+        return ((this.getNumOfChapters()-this.currentPart)/this.getNumOfChapters());
+    }
 
-    public void setEvent(String event) {this.event = event;}
 
     public String getText() {
         return text;

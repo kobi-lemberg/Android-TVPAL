@@ -70,13 +70,12 @@ public class AddShowActivity extends Activity {
             public void onClick(View v) {
                 //    public TVShow(String id, String name, String mainActor, int episodes, String category, String lastUpdated, String summery) {
                 int episodes = new Integer(numberOfEpisodes.getText().toString().trim());
-
+//    public TVShow(String name, String mainActor,int episode,int numOfChapters ,String category, String lastUpdated, String summery,String imagePath) {
                 show = new TVShow(showName.getText().toString(),famousActors.getText().toString(),episodes,
                         categories.getText().toString(),MyApplication.getCurrentDate(),summary.getText().toString(),fileName);
                 post = new Post(show.getName(), Model.instance().getCurrentUser().getEmail()
                         ,"",MyApplication.getCurrentDate(),new Integer(season.getText().toString().trim()),
                         0,false,ratingBar.getNumStars(),"Started",show.getImagePath());
-
                 Log.d("TAG","Adding Post: "+ post.toString());
                 Model.instance().createShow(((BitmapDrawable) showImage.getDrawable()).getBitmap(), show,post ,new Model.showCreatorListener() {
                     @Override

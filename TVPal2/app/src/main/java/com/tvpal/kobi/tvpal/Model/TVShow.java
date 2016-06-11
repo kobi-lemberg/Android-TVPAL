@@ -10,12 +10,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class TVShow {
     String name;
     String mainActor;
-    int episodes;
+    int episode;
+    int numOfChapters;
     String category;
     String summery;
     String lastUpdated;
-
-
     String imagePath;
 
     public TVShow() {}
@@ -30,10 +29,11 @@ public class TVShow {
         this.summery = summery;
     }*/
 
-    public TVShow(String name, String mainActor,int episodes, String category, String lastUpdated, String summery,String imagePath) {
+    public TVShow(String name, String mainActor,int episode,int numOfChapters ,String category, String lastUpdated, String summery,String imagePath) {
         this.name = name;
         this.mainActor = mainActor;
-        this.episodes = episodes;
+        this.episode = episode;
+        this.numOfChapters = numOfChapters;
         this.category = category;
         this.lastUpdated = lastUpdated;
         this.summery = summery;
@@ -45,7 +45,7 @@ public class TVShow {
         return "TVShow{" +
                 ", name='" + name + '\'' +
                 ", mainActor='" + mainActor + '\'' +
-                ", episodes=" + episodes +
+                ", episodes=" + episode +
                 ", category='" + category + '\'' +
                 ", summery='" + summery + '\'' +
                 ", lastUpdated='" + lastUpdated + '\'' +
@@ -57,6 +57,15 @@ public class TVShow {
     public boolean equals(Object o) {
         return this.toString().equals(o.toString());
     }
+
+    public int getNumOfChapters() {
+        return numOfChapters;
+    }
+
+    public void setNumOfChapters(int numOfChapters) {
+        this.numOfChapters = numOfChapters;
+    }
+
 
     @JsonIgnore
     @Override
@@ -89,12 +98,12 @@ public class TVShow {
         this.mainActor = mainActor;
     }
 
-    public int getEpisodes() {
-        return episodes;
+    public int getEpisode() {
+        return episode;
     }
 
-    public void setEpisodes(int episodes) {
-        this.episodes = episodes;
+    public void setEpisode(int episode) {
+        this.episode = episode;
     }
 
     public String getCategory() {

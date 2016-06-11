@@ -226,16 +226,17 @@ public class ProfileActivity  extends Activity{
             final ImageView image = (ImageView) convertView.findViewById(R.id.image_rowlayout_post);
             TextView name = (TextView) convertView.findViewById(R.id.nameTextView);
             ProgressBar pb = (ProgressBar) convertView.findViewById(R.id.TVShow_Progress_Bar);
+            Post post = data.get(position);
+            pb.setProgress(post.getProgress());
             /*TextView id = (TextView) convertView.findViewById(R.id.idTextView);
             final CheckBox cb = (CheckBox) convertView.findViewById(R.id.checkBox);
             cb.setTag(new Integer(position));*/
             convertView.setTag(position);
-            Post post = data.get(position);
-            name.setText("On Season "+ post.getSeason()+ " Episode " + post.getCurrentPart());
+            name.setText("Episode "+ post.getEpisode()+ " from " + post.getCurrentPart());
             //id.setText(st.getId());
             //cb.setChecked(st.isChecked());
 
-            if (post.getImagePath() != "default_show_pic"){
+            if (!post.getImagePath().equals("default_show_pic")){
                 Log.d("TAG","list gets image " + post.getImagePath());
                 final ProgressBar progress = (ProgressBar) convertView.findViewById(R.id.rowImageProgressBar);
                 progress.setVisibility(View.VISIBLE);
