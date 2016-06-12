@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    tools:context=".NewsFeedActivity"
+    android:layout_height="match_parent">
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:orientation="vertical"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:orientation="horizontal"
+        android:layout_height="match_parent">
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/rowImageFrame">
+
+                <ImageView
+                    android:layout_width="82dp"
+                    android:layout_height="111dp"
+                    android:id="@+id/news_feed_raw_profile_image"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:src="@drawable/default_show_pic" />
+
+                <ProgressBar
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/news_feed_raw_user_image_progressBar"
+                    android:indeterminate="true"
+                    android:visibility="gone" />
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:orientation="vertical"
+                android:layout_height="fill_parent">
+                        <TextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:text="Kobi Lemberg"
+                            android:id="@+id/news_feed_raw_profile_displayName"
+                            android:layout_alignParentTop="true"
+                            android:layout_toRightOf="@+id/rowImageFrame"
+                            android:layout_toEndOf="@+id/rowImageFrame"
+                            android:layout_margin="10px" />
+
+
+                        <TextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:text="Started XXX"
+                            android:id="@+id/news_feed_raw_show_event"
+                            android:layout_alignParentTop="true"
+                            android:layout_toRightOf="@+id/rowImageFrame"
+                            android:layout_toEndOf="@+id/rowImageFrame"
+                            android:layout_margin="10px" />
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_height="wrap_content"
+                            android:weightSum="1">
+                            <TextView
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/news_feed_raw_rated"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:text="Rated"
+                                android:layout_alignParentTop="true"
+                                android:layout_toRightOf="@+id/rowImageFrame"
+                                android:layout_toEndOf="@+id/rowImageFrame"
+                                android:layout_margin="10px" />
+                            <RatingBar
+                                android:id="@+id/news_feed_raw_ratingBar"
+                                style="?android:attr/ratingBarStyleSmall"
+                                android:layout_marginTop="10dp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:numStars="4"
+                                android:isIndicator="true"
+                                android:stepSize="1.0"
+                                android:rating="2.0"
+                                android:layout_weight="1.23" />
+                            <TextView
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/news_feed_raw_page"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:text="Page: "
+                                android:layout_alignParentTop="true"
+                                android:layout_toRightOf="@+id/rowImageFrame"
+                                android:layout_toEndOf="@+id/rowImageFrame"
+                                android:layout_margin="10px" />
+
+                        </LinearLayout>
+
+
+            </LinearLayout>
+
+    </LinearLayout>
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/news_feed_raw_post"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="POST: "
+        android:layout_alignParentTop="true"
+        android:layout_margin="10px" />
+</LinearLayout>
+</RelativeLayout>

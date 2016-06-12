@@ -23,6 +23,7 @@ import android.widget.RatingBar;
 import com.tvpal.kobi.tvpal.Model.Model;
 import com.tvpal.kobi.tvpal.Model.Post;
 import com.tvpal.kobi.tvpal.Model.TVShow;
+import com.tvpal.kobi.tvpal.Model.User;
 
 import java.io.ByteArrayOutputStream;
 
@@ -39,7 +40,7 @@ public class AddShowActivity extends Activity {
     Button save;
     Button cancel;
     TVShow show;
-    EditText season;
+    EditText seasonText;
 
     Post post;
     RatingBar ratingBar;
@@ -57,7 +58,7 @@ public class AddShowActivity extends Activity {
         save = (Button) findViewById(R.id.activity_add_Show_Save);
         cancel = (Button) findViewById(R.id.activity_add_show_cancel);
         ratingBar = (RatingBar) findViewById(R.id.ratingBar);
-        season = (EditText) findViewById(R.id.activity_addShow_NumberOfSeasons);
+        seasonText = (EditText) findViewById(R.id.activity_addShow_NumberOfSeasons);
         showImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -68,14 +69,14 @@ public class AddShowActivity extends Activity {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //    public TVShow(String id, String name, String mainActor, int episodes, String category, String lastUpdated, String summery) {
                 int episodes = new Integer(numberOfEpisodes.getText().toString().trim());
-//    public TVShow(String name, String mainActor,int episode,int numOfChapters ,String category, String lastUpdated, String summery,String imagePath) {
-                show = new TVShow(showName.getText().toString(),famousActors.getText().toString(),episodes,
-                        categories.getText().toString(),MyApplication.getCurrentDate(),summary.getText().toString(),fileName);
-                post = new Post(show.getName(), Model.instance().getCurrentUser().getEmail()
-                        ,"",MyApplication.getCurrentDate(),new Integer(season.getText().toString().trim()),
-                        0,false,ratingBar.getNumStars(),"Started",show.getImagePath());
+                int season = new Integer(seasonText.getText().toString().trim());
+//     public TVShow(String name, String mainActor,int season,int episode ,String category, String lastUpdated, String summery,String imagePath)
+                show = new TVShow(showName.getText().toString(),famousActors.getText().toString(),season,episodes, categories.getText().toString(),MyApplication.getCurrentDate(),summary.getText().toString(),fileName);
+                // public Post(String showName, String userEmail, String text, String date ,int currentPart, boolean finished, int grade,TVShow show)
+                User user = Model.instance().getCurrentUser();
+                int currentPart = 0;
+                post = new Post(show.getName(), user.getEmail(),user.displayName()+" Started "+show.getName(),MyApplication.getCurrentDate(),currentPart,false,ratingBar.getNumStars(),show);
                 Log.d("TAG","Adding Post: "+ post.toString());
                 Model.instance().createShow(((BitmapDrawable) showImage.getDrawable()).getBitmap(), show,post ,new Model.showCreatorListener() {
                     @Override

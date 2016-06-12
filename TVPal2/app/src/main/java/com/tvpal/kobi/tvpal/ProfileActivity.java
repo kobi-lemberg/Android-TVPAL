@@ -65,7 +65,7 @@ public class ProfileActivity  extends Activity{
             }
         });
 
-        Model.instance().getAllPostsPerUser(user.getEmail(), new Model.eventPostsListener() {
+        Model.instance().getAllPostsPerUser(user.getEmail(), new Model.EventPostsListener() {
             @Override
             public void onResult(LinkedList<Post> o) {
                 if(o!=null) {
@@ -232,13 +232,13 @@ public class ProfileActivity  extends Activity{
             final CheckBox cb = (CheckBox) convertView.findViewById(R.id.checkBox);
             cb.setTag(new Integer(position));*/
             convertView.setTag(position);
-            name.setText("Episode "+ post.getEpisode()+ " from " + post.getCurrentPart());
+            name.setText(post.getShowName()+" ("+post.getProgress()+"%)");
             //id.setText(st.getId());
             //cb.setChecked(st.isChecked());
 
             if (!post.getImagePath().equals("default_show_pic")){
                 Log.d("TAG","list gets image " + post.getImagePath());
-                final ProgressBar progress = (ProgressBar) convertView.findViewById(R.id.rowImageProgressBar);
+                final ProgressBar progress = (ProgressBar) convertView.findViewById(R.id.TVShow_Progress_Bar);
                 progress.setVisibility(View.VISIBLE);
                 Model.instance().loadImage(post.getImagePath(), new Model.LoadImageListener() {
                     @Override

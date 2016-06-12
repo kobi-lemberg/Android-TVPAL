@@ -48,8 +48,13 @@ public class Model {
         public void onError(String error);
     }
 
-    public interface eventPostsListener{
+    public interface EventPostsListener{
         public void onResult(LinkedList<Post> o);
+        public void onError(String error);
+    }
+
+    public interface UserEventPostsListener{
+        public void onResult(User u);
         public void onError(String error);
     }
 
@@ -186,7 +191,28 @@ public class Model {
         task.execute();*/
     }
 
-    public User getUserByEmail(String email){return modelSql.getUserByEmail(email);}
+    public void getUserByEmail(String email, final UserEventPostsListener userEventPostsListener){
+        User u = modelSql.getUserByEmail(email);
+        if(u!=null)
+            userEventPostsListener.onResult(u);
+        else{
+            modelFireBase.getUserByEmailAsync(email, new FireBaseModel.userEventsComplitionListener() {
+                @Override
+                public void onComplete(User u) {
+                    userEventPostsListener.onResult(u);
+                }
+
+                @Override
+                public void onError(String error) {
+                    userEventPostsListener.onError(error);
+                }
+            });
+
+        }
+
+
+
+    }
     public List<User> getAllUsers(){return modelSql.getAllUsers();}
     public void deleteUser(User u){modelSql.delete(u);}
     public void updateUserByEmailWithPic(final String email, final User updated, final Bitmap profilePic, final UserUpdater listener)
@@ -240,9 +266,25 @@ public class Model {
         });
     }
 
-    public void getAllPostsPerUser(String email, final eventPostsListener eventpostslistener)
+    public void getAllPostsPerUser(String email, final EventPostsListener eventpostslistener)
     {
         modelFireBase.getAllPostsPerUser(email, new FireBaseModel.eventsComplitionListener() {
+            @Override
+            public void onComplete(LinkedList<Post> o) {
+                eventpostslistener.onResult(o);
+            }
+
+            @Override
+            public void onError(String error) {
+                eventpostslistener.onError(error);
+                Log.d("Error","could not read from firebase.");
+            }
+        });
+    }
+
+    public void getAllPosts(final EventPostsListener eventpostslistener)
+    {
+        modelFireBase.getAllPostsAsync(new FireBaseModel.eventsComplitionListener() {
             @Override
             public void onComplete(LinkedList<Post> o) {
                 eventpostslistener.onResult(o);

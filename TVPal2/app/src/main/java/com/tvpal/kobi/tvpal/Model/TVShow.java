@@ -10,8 +10,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class TVShow {
     String name;
     String mainActor;
+    int season;
     int episode;
-    int numOfChapters;
     String category;
     String summery;
     String lastUpdated;
@@ -29,26 +29,29 @@ public class TVShow {
         this.summery = summery;
     }*/
 
-    public TVShow(String name, String mainActor,int episode,int numOfChapters ,String category, String lastUpdated, String summery,String imagePath) {
+    public TVShow(String name, String mainActor,int season,int episode ,String category, String lastUpdated, String summery,String imagePath) {
         this.name = name;
         this.mainActor = mainActor;
+        this.season = season;
         this.episode = episode;
-        this.numOfChapters = numOfChapters;
         this.category = category;
         this.lastUpdated = lastUpdated;
         this.summery = summery;
         this.imagePath = imagePath;
     }
+
     @JsonIgnore
     @Override
     public String toString() {
         return "TVShow{" +
-                ", name='" + name + '\'' +
+                "name='" + name + '\'' +
                 ", mainActor='" + mainActor + '\'' +
-                ", episodes=" + episode +
+                ", season=" + season +
+                ", episode=" + episode +
                 ", category='" + category + '\'' +
                 ", summery='" + summery + '\'' +
                 ", lastUpdated='" + lastUpdated + '\'' +
+                ", imagePath='" + imagePath + '\'' +
                 '}';
     }
 
@@ -58,27 +61,11 @@ public class TVShow {
         return this.toString().equals(o.toString());
     }
 
-    public int getNumOfChapters() {
-        return numOfChapters;
-    }
-
-    public void setNumOfChapters(int numOfChapters) {
-        this.numOfChapters = numOfChapters;
-    }
-
 
     @JsonIgnore
     @Override
     public int hashCode() {
         return this.toString().hashCode();
-    }
-
-    public String getImagePath() {
-        return imagePath;
-    }
-
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
     }
 
 
@@ -96,6 +83,14 @@ public class TVShow {
 
     public void setMainActor(String mainActor) {
         this.mainActor = mainActor;
+    }
+
+    public int getSeason() {
+        return season;
+    }
+
+    public void setSeason(int season) {
+        this.season = season;
     }
 
     public int getEpisode() {
@@ -122,6 +117,14 @@ public class TVShow {
         this.summery = summery;
     }
 
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
     public String getLastUpdated() {
         return lastUpdated;
     }
@@ -129,6 +132,4 @@ public class TVShow {
     public void setLastUpdated(String lastUpdated) {
         this.lastUpdated = lastUpdated;
     }
-
-
 }

@@ -50,7 +50,7 @@ public class Post {
     }
     @JsonIgnore
     public int getNumOfChapters(){
-        return this.show.getNumOfChapters();
+        return this.show.getEpisode();
     }
     @JsonIgnore
     @Override
@@ -101,7 +101,7 @@ public class Post {
     }
     @JsonIgnore
     public int getProgress(){
-        return ((this.getNumOfChapters()-this.currentPart)/this.getNumOfChapters());
+        return (this.currentPart/this.getNumOfChapters());
     }
 
 

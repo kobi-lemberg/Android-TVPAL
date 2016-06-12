@@ -25,6 +25,12 @@ public class FireBaseModel {
         public void onError(String error);
     }
 
+    public interface userEventsComplitionListener
+    {
+        public void onComplete(User u);
+        public void onError(String error);
+    }
+
     Firebase myFirebaseRef;
 
     FireBaseModel(Context context){
@@ -108,6 +114,48 @@ public class FireBaseModel {
     public void getAllPostsPerUser(String email,final eventsComplitionListener eventscomplitionlistener)
     {
         Query qr = myFirebaseRef.child("Post").orderByChild("userEmail").equalTo(email);
+        qr.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                LinkedList<Post> posts= new LinkedList<Post>();
+                System.out.println("There are " + snapshot.getChildrenCount() + " posts");
+                for (DataSnapshot postSnapshot: snapshot.getChildren()) {
+                    Post post = postSnapshot.getValue(Post.class);
+                    posts.add(post);
+                    System.out.println(post.getShowName() + " - " + post.getUserEmail());
+                }
+                eventscomplitionlistener.onComplete(posts);
+            }
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+                eventscomplitionlistener.onError(firebaseError.toString());
+            }
+        });
+    }
+
+    public void getUserByEmailAsync(String email,final userEventsComplitionListener userEventscomplitionlistener)
+    {
+        Query qr = myFirebaseRef.child("users").orderByChild("email").equalTo(email);
+        qr.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.d("TAG", "DataSnapShot: " + dataSnapshot);
+                User user = dataSnapshot.getValue(User.class);
+                Log.d("TAG", "User have been changed : " + user.toString());
+                //checking if date have been changed.
+                userEventscomplitionlistener.onComplete(user);
+            }
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Log.d("TAG", "The read failed: " + firebaseError.getMessage());
+            }
+        });
+    }
+
+    public void getAllPostsAsync(final eventsComplitionListener eventscomplitionlistener)
+    {
+        Query qr = myFirebaseRef.child("Post");
         qr.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
