@@ -19,4 +19,6 @@
         completions."
     </string>
     <string name="action_about">About</string>
+    <string name="title_activity_user_displayer">UserDisplayerActivity</string>
+    <string name="title_activity_show_displayer">ShowDisplayerActivity</string>
 </resources>

@@ -11,18 +11,13 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.tvpal.kobi.tvpal.Model.Model;
 import com.tvpal.kobi.tvpal.Model.Post;
 import com.tvpal.kobi.tvpal.Model.User;
-
 import java.util.LinkedList;
 import java.util.List;
 
@@ -44,10 +39,6 @@ public class ProfileActivity  extends Activity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-        //06-07 10:48:12.518 11759-11759/com.tvpal.kobi.tvpal D/TAG: User have been changed : User{email='m@n.com', firstName='q', lastName='p', birthDate='5/6/2016', password='m', profilePic='null', lastUpdateDate='06/05/2016 21:41:54'}
-
         setContentView(R.layout.activity_profile);
 
 
@@ -91,7 +82,7 @@ public class ProfileActivity  extends Activity{
         email = (TextView) findViewById(R.id.activity_profile_Email);
         birthDate = (TextView) findViewById(R.id.activity_profile_Birh_Date);
         profilePic = (ImageView) findViewById(R.id.activity_profile_imageView);
-        if(!Model.instance().isDefaultProfilePic(user.getProfilePic())){
+        if(!Model.Constant.isDefaultProfilePic(user.getProfilePic())){
             imageProgressBar.setVisibility(View.VISIBLE);
             Model.instance().loadImage(user.getProfilePic(), new Model.LoadImageListener() {
                 @Override
@@ -159,7 +150,7 @@ public class ProfileActivity  extends Activity{
                     }
                 });
             }*/
-            if(!Model.instance().isDefaultProfilePic(user.getProfilePic()))
+            if(!Model.Constant.isDefaultProfilePic(user.getProfilePic()))
             {
                 imageProgressBar.setVisibility(View.VISIBLE);
                 Log.d("TAG","Profile Pic is different");
@@ -180,7 +171,7 @@ public class ProfileActivity  extends Activity{
         displayName.setText(user.displayName());
         email.setText(user.getEmail());
         birthDate.setText(user.getBirthDate());
-        if(!Model.instance().isDefaultProfilePic(user.getProfilePic())){
+        if(!Model.Constant.isDefaultProfilePic(user.getProfilePic())){
             imageProgressBar.setVisibility(View.VISIBLE);
             Model.instance().loadImage(user.getProfilePic(), new Model.LoadImageListener() {
                 @Override

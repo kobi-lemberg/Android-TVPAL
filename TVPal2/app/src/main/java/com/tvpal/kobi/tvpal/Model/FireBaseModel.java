@@ -25,6 +25,12 @@ public class FireBaseModel {
         public void onError(String error);
     }
 
+    public interface TVShowComplitionListener
+    {
+        public void onComplete(TVShow show);
+        public void onError(String error);
+    }
+
     public interface userEventsComplitionListener
     {
         public void onComplete(User u);
@@ -172,6 +178,44 @@ public class FireBaseModel {
             public void onCancelled(FirebaseError firebaseError) {
                 System.out.println("The read failed: " + firebaseError.getMessage());
                 eventscomplitionlistener.onError(firebaseError.toString());
+            }
+        });
+    }
+
+    public void getPostsByShowNameAsync(final String showName, final eventsComplitionListener eventscomplitionlistener)
+    {
+        Query qr = myFirebaseRef.child("Post").orderByChild("showName").equalTo(showName);
+        qr.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                LinkedList<Post> posts= new LinkedList<Post>();
+                System.out.println("There are " + snapshot.getChildrenCount() + " posts with showName"+ showName);
+                for (DataSnapshot postSnapshot: snapshot.getChildren()) {
+                    Post post = postSnapshot.getValue(Post.class);
+                    posts.add(post);
+                }
+                eventscomplitionlistener.onComplete(posts);
+            }
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+                eventscomplitionlistener.onError(firebaseError.toString());
+            }
+        });
+    }
+
+    public void getShowByNameAsync(final String showName, final TVShowComplitionListener tvShowComplitionListener)
+    {
+        myFirebaseRef.child("TVShows").child(showName).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                TVShow show = dataSnapshot.getValue(TVShow.class);
+                tvShowComplitionListener.onComplete(show);
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                tvShowComplitionListener.onError(firebaseError.toString());
             }
         });
     }

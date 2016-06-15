@@ -166,7 +166,7 @@ public class WelcomeActivity extends Activity implements WelcomeFragment.Welcome
         Log.d("birthDate:",birthDate);
         Log.d("profilePicPath:",profilePicPath);
 
-        Model.instance().addUser(new User(email.trim().toLowerCase(), firstName.trim(), lastName.trim(), birthDate,password ,profilePicPath, MyApplication.getCurrentDate()), profilePic, new Model.UserCreatorListener() {
+        Model.instance().addUser(new User(email.trim().toLowerCase(), firstName.trim(), lastName.trim(), birthDate,password ,profilePicPath, Model.Constant.getCurrentDate()), profilePic, new Model.UserCreatorListener() {
             @Override
             public void onResult(User u) {
                 if(u!=null)
@@ -242,7 +242,7 @@ public class WelcomeActivity extends Activity implements WelcomeFragment.Welcome
                 Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream();
                 thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
-                String fileName="Profile_Pic_"+MyApplication.getCurrentDate()+ ".jpg";
+                String fileName="Profile_Pic_"+ Model.Constant.getCurrentDate()+ ".jpg";
                 this.registerFragment.setProfilePic(thumbnail,fileName);
 
             } else if (requestCode == SELECT_FILE) {
@@ -265,7 +265,7 @@ public class WelcomeActivity extends Activity implements WelcomeFragment.Welcome
                 options.inJustDecodeBounds = false;
                 bm = BitmapFactory.decodeFile(selectedImagePath, options);
                 //ivImage.setImageBitmap(bm);
-                String fileName="Profile_Pic_"+MyApplication.getCurrentDate()+ ".jpg";
+                String fileName="Profile_Pic_"+ Model.Constant.getCurrentDate()+ ".jpg";
                 this.registerFragment.setProfilePic(bm,fileName);
             }
         }

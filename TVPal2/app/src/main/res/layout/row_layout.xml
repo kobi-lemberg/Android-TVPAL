@@ -17,11 +17,6 @@
             android:layout_alignParentStart="true"
             android:src="@drawable/default_show_pic" />
 
-<!--        <ProgressBar
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/rowImageProgressBar"
-            android:visibility="gone"/>-->
     </FrameLayout>
 
 

@@ -1,118 +1,114 @@
 package com.tvpal.kobi.tvpal;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.app.Activity;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
+
 import com.tvpal.kobi.tvpal.Model.Model;
 import com.tvpal.kobi.tvpal.Model.Post;
+import com.tvpal.kobi.tvpal.Model.TVShow;
 import com.tvpal.kobi.tvpal.Model.User;
+
 import java.util.LinkedList;
 
-public class NewsFeedActivity extends Activity
-{
-
-
+public class ShowDisplayerActivity extends Activity {
+    String showNameStr;
+    ImageView showImageView;
+    TextView showNameTextView;
+    TextView episodeAndSeason;
+    TextView catagories;
+    LinearLayout summerySection;
     ListView listView;
+    ProgressBar showDisplayerUpperProgressBar;
+    TVShow show;
     CustomAdapter adapter;
+    TextView summery;
     LinkedList<Post> data = new LinkedList<Post>();
-    @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_news_feed);
-        Log.d("TAG", "In NewsFeed Activity");
 
-        listView = (ListView) findViewById(R.id.news_feed_listView);
-        adapter = new CustomAdapter();
-        listView.setAdapter(adapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            /*Toast.makeText(getApplicationContext(), "item click " + position, Toast.LENGTH_LONG).show();
-            Intent intent = new Intent(getApplicationContext(),StudentDetailsActivity.class);
-            intent.putExtra("id",data.get(position).getShowName());
-            startActivity(intent);*/
+
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_show_displayer);
+        showNameStr = getIntent().getStringExtra("showName");
+        Model.instance().getShowByNameAsync(showNameStr, new Model.TVShowListener() {
+            @Override
+            public void onResult(TVShow result) {
+                show = result;
+
+            }
+
+            @Override
+            public void onError(String error) {
+                Log.d("TAG",error);
             }
         });
 
-        Model.instance().getAllPosts(new Model.EventPostsListener() {
+        ListView listView = (ListView) findViewById(R.id.display_show_feed_list);
+        adapter = new CustomAdapter();
+        listView.setAdapter(adapter);
+        if(!Model.Constant.isDefaultShowPic(show.getImagePath())) {
+            final ProgressBar showImagePB = (ProgressBar) findViewById(R.id.show_display_ImageProgressBar);
+            showImagePB.setVisibility(View.VISIBLE);
+            Model.instance().loadImage(show.getImagePath(), new Model.LoadImageListener() {
+                @Override
+                public void onResult(Bitmap imageBmp) {
+                    showImageView = (ImageView) findViewById(R.id.show_display_imageView);
+                    showImageView.setImageBitmap(imageBmp);
+                    showImagePB.setVisibility(View.GONE);
+                }
+            });
+        }
+        showDisplayerUpperProgressBar = (ProgressBar) findViewById(R.id.show_display_upper_progressBar);
+        showDisplayerUpperProgressBar.setVisibility(View.VISIBLE);
+        Model.instance().getPostsByShowNameAsync(showNameStr, new Model.EventPostsListener() {
             @Override
             public void onResult(LinkedList<Post> o) {
-                if(o!=null) {
+                if(o!=null){
                     data = o;
                     adapter.notifyDataSetChanged();
+                    showDisplayerUpperProgressBar.setVisibility(View.GONE);
                 }
             }
+
             @Override
             public void onError(String error) {Log.d("Error", "Error: " + error);}
         });
 
 
-
-
-        //Log.d("TAG", "On Accout: " + Model.instance().getCurrentUser().toString());
-/*            Button profileBut = (Button) findViewById(R.id.activity_news_feed_button);
-            profileBut.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.d("TAG", "Clicked on profile button, MOVING TO PROFILE ACTIVITY");
-                    Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
-                    startActivity(intent);
-                }
-            });*/
-
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.news_feed_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        /*int id = item.getItemId();
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        showNameTextView = (TextView) findViewById(R.id.show_display_movieName);
+        showNameTextView.setText(showNameStr);
+        episodeAndSeason = (TextView) findViewById(R.id.show_display_episode_season);
+        episodeAndSeason.setText("Season "+show.getSeason()+", "+show.getEpisode()+" episodes");
+        catagories = (TextView) findViewById(R.id.show_display_Categories);
+        catagories.setText("#"+show.getCategory());
+        summerySection = (LinearLayout) findViewById(R.id.show_display_summery_section);
+        if(show.getSummery().equals("")||show.getSummery()==null)
+            summerySection.setVisibility(View.GONE);
+        else{
+            summerySection.setVisibility(View.VISIBLE);
+            summery = (TextView) findViewById(R.id.show_display_summary);
+            summery.setText(show.getSummery());
         }
-        return super.onOptionsItemSelected(item);*/
 
-        switch (item.getItemId()) {
-/*            case R.id.action_settings:
-                // User chose the "Settings" item, show the app settings UI...
-                return true;*/
 
-            case R.id.go_to_profile_from_menu:
-                // User chose the "Settings" item, show the app settings UI...
-                Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
-                startActivityForResult(intent, 0);
-                return true;
-
-            default:
-                // If we got here, the user's action was not recognized.
-                // Invoke the superclass to handle it.
-                return super.onOptionsItemSelected(item);
-        }
     }
+
+
 
     class CustomAdapter extends BaseAdapter {
 
@@ -153,6 +149,7 @@ public class NewsFeedActivity extends Activity
             TextView page = (TextView)convertView.findViewById(R.id.news_feed_raw_page);
             TextView post = (TextView)convertView.findViewById(R.id.news_feed_raw_post);
             final Post currentPost = data.get(position);
+
             Model.instance().getUserByEmail(currentPost.getUserEmail(), new Model.UserEventPostsListener() {
                 @Override
                 public void onResult(final User u) {
@@ -201,15 +198,7 @@ public class NewsFeedActivity extends Activity
             }
 
             String event = currentPost.getEvent();
-            userEvent.setText(event+" "+currentPost.getShowName());
-            userEvent.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(getApplicationContext(), ShowDisplayerActivity.class);
-                    intent.putExtra("showName", currentPost.getShowName());
-                    startActivity(intent);
-                }
-            });
+            userEvent.setClickable(false);
             if(!event.equals("Is On")){
 
                 rated.setVisibility(View.GONE);
@@ -234,5 +223,9 @@ public class NewsFeedActivity extends Activity
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        adapter.notifyDataSetChanged();
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 }
-

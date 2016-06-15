@@ -6,7 +6,6 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
-
     <uses-permission
         android:name="android.permission.INTERNET"
         android:required="true" />
@@ -47,7 +46,13 @@
         <activity android:name=".NewsFeedActivity" />
         <activity android:name=".ProfileActivity" />
         <activity android:name=".EditProfileActivity" />
-        <activity android:name=".AddShowActivity"></activity>
+        <activity android:name=".AddShowActivity" />
+        <activity
+            android:name=".UserDisplayerActivity"
+            android:label="@string/title_activity_user_displayer" />
+        <activity
+            android:name=".ShowDisplayerActivity"
+            android:label="@string/title_activity_show_displayer"></activity>
     </application>
 
 </manifest>

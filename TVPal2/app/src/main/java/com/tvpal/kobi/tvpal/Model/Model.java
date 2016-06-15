@@ -22,6 +22,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -50,6 +54,11 @@ public class Model {
 
     public interface EventPostsListener{
         public void onResult(LinkedList<Post> o);
+        public void onError(String error);
+    }
+
+    public interface TVShowListener{
+        public void onResult(TVShow show);
         public void onError(String error);
     }
 
@@ -91,9 +100,7 @@ public class Model {
 
     public static Model instance(){return instance;}
 
-    public boolean isDefaultProfilePic(String picName){
-        return picName.equals("defaultProfilePic");
-    }
+
     public void addUser(final User user, final Bitmap profilePic, final UserCreatorListener creatorListener ){
         modelFireBase.createUser(user, new UserCreator() {
             @Override
@@ -255,7 +262,7 @@ public class Model {
             @Override
             public void Create() {
                 try {
-                    if (show.getImagePath() != "default_show_pic") {
+                    if (!Constant.isDefaultShowPic(show.getImagePath())) {
                         modelCloudinary.saveImage(imageBitMap, show.getImagePath());
                     }
                     showCreatorListener.onDone();
@@ -294,6 +301,37 @@ public class Model {
             public void onError(String error) {
                 eventpostslistener.onError(error);
                 Log.d("Error","could not read from firebase.");
+            }
+        });
+    }
+
+    public void getPostsByShowNameAsync(String showName,final EventPostsListener eventpostslistener)
+    {
+        modelFireBase.getPostsByShowNameAsync(showName,new FireBaseModel.eventsComplitionListener() {
+            @Override
+            public void onComplete(LinkedList<Post> o) {
+                eventpostslistener.onResult(o);
+            }
+
+            @Override
+            public void onError(String error) {
+                eventpostslistener.onError(error);
+                Log.d("Error","could not read from firebase.");
+            }
+        });
+    }
+
+    public void getShowByNameAsync(String showName,final TVShowListener tvShowListener)
+    {
+        modelFireBase.getShowByNameAsync(showName, new FireBaseModel.TVShowComplitionListener() {
+            @Override
+            public void onComplete(TVShow show) {
+                tvShowListener.onResult(show);
+            }
+
+            @Override
+            public void onError(String error) {
+                tvShowListener.onError(error);
             }
         });
     }
@@ -366,6 +404,25 @@ public class Model {
             e.printStackTrace();
         }
         return bitmap;
+    }
+
+    public static class Constant{
+        public static String getCurrentDate() {
+            DateFormat df = new SimpleDateFormat("MM_dd_yyyy_HH_mm_ss");
+            // Get the date today using Calendar object.
+            Date today = Calendar.getInstance().getTime();
+            // Using DateFormat format method we can create a string
+            // representation of a date with the defined format.
+            return df.format(today);
+        }
+
+        public static Boolean isDefaultShowPic(String profilePicPath) {
+            return profilePicPath.equals("default_show_pic");
+        }
+
+        public static boolean isDefaultProfilePic(String picName){
+            return picName.equals("defaultProfilePic");
+        }
     }
 
 

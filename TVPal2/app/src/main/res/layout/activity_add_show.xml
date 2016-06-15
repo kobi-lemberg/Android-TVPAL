@@ -13,12 +13,12 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:id="@+id/linearLayout">
-    <TextView
+<!--    <TextView
         android:layout_width="154dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Show Image"/>
+        android:text="Show Image"/>-->
 
     <LinearLayout
         android:orientation="horizontal"

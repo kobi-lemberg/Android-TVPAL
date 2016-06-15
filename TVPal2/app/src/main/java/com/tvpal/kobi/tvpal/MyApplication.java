@@ -19,14 +19,6 @@ public class MyApplication extends Application{
         super.onCreate();
         MyApplication.context = getApplicationContext();
     }
-    public static String getCurrentDate() {
-        DateFormat df = new SimpleDateFormat("MM_dd_yyyy_HH_mm_ss");
-        // Get the date today using Calendar object.
-        Date today = Calendar.getInstance().getTime();
-        // Using DateFormat format method we can create a string
-        // representation of a date with the defined format.
-        return df.format(today);
-    }
 
     public static Context getAppContext(){return MyApplication.context;}
 

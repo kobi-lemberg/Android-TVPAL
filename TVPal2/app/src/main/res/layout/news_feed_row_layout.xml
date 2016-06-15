@@ -4,31 +4,33 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     tools:context=".NewsFeedActivity"
-    android:layout_height="match_parent">
-<LinearLayout
-    android:layout_width="wrap_content"
-    android:orientation="vertical"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent"
+    android:background="@drawable/outline">
     <LinearLayout
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="5dp"
         android:layout_width="fill_parent"
         android:orientation="horizontal"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:id="@+id/linearLayout2">
             <FrameLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/rowImageFrame">
 
                 <ImageView
-                    android:layout_width="82dp"
-                    android:layout_height="111dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:scaleType="centerCrop"
                     android:id="@+id/news_feed_raw_profile_image"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
+                    android:focusable="false"
                     android:src="@drawable/default_show_pic" />
 
                 <ProgressBar
-                    android:layout_width="fill_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/news_feed_raw_user_image_progressBar"
                     android:indeterminate="true"
@@ -38,71 +40,61 @@
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:orientation="vertical"
-                android:layout_height="fill_parent">
-                        <TextView
-                            android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:text="Kobi Lemberg"
-                            android:id="@+id/news_feed_raw_profile_displayName"
-                            android:layout_alignParentTop="true"
-                            android:layout_toRightOf="@+id/rowImageFrame"
-                            android:layout_toEndOf="@+id/rowImageFrame"
-                            android:layout_margin="10px" />
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textStyle="bold"
+                    android:text="Kobi Lemberg"
+                    android:id="@+id/news_feed_raw_profile_displayName"
+                    android:layout_toEndOf="@+id/rowImageFrame"
+                    android:layout_margin="10px"
+                    android:clickable="true"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:focusable="false"/>
+                <!--android:onClick="onClickUsername"-->
 
-
-                        <TextView
-                            android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:text="Started XXX"
-                            android:id="@+id/news_feed_raw_show_event"
-                            android:layout_alignParentTop="true"
-                            android:layout_toRightOf="@+id/rowImageFrame"
-                            android:layout_toEndOf="@+id/rowImageFrame"
-                            android:layout_margin="10px" />
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_height="wrap_content"
-                            android:weightSum="1">
-                            <TextView
-                                android:layout_width="fill_parent"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/news_feed_raw_rated"
-                                android:textAppearance="?android:attr/textAppearanceLarge"
-                                android:text="Rated"
-                                android:layout_alignParentTop="true"
-                                android:layout_toRightOf="@+id/rowImageFrame"
-                                android:layout_toEndOf="@+id/rowImageFrame"
-                                android:layout_margin="10px" />
-                            <RatingBar
-                                android:id="@+id/news_feed_raw_ratingBar"
-                                style="?android:attr/ratingBarStyleSmall"
-                                android:layout_marginTop="10dp"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:numStars="4"
-                                android:isIndicator="true"
-                                android:stepSize="1.0"
-                                android:rating="2.0"
-                                android:layout_weight="1.23" />
-                            <TextView
-                                android:layout_width="fill_parent"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/news_feed_raw_page"
-                                android:textAppearance="?android:attr/textAppearanceLarge"
-                                android:text="Page: "
-                                android:layout_alignParentTop="true"
-                                android:layout_toRightOf="@+id/rowImageFrame"
-                                android:layout_toEndOf="@+id/rowImageFrame"
-                                android:layout_margin="10px" />
-
-                        </LinearLayout>
-
-
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Started XXX"
+                    android:clickable="true"
+                    android:focusable="false"
+                    android:id="@+id/news_feed_raw_show_event"
+                    android:layout_margin="10px" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:weightSum="1">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:id="@+id/news_feed_raw_rated"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="Rated" />
+                    <RatingBar
+                        android:id="@+id/news_feed_raw_ratingBar"
+                        style="?android:attr/ratingBarStyleSmall"
+                        android:layout_marginTop="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="6dp"
+                        android:numStars="4"
+                        android:isIndicator="true"
+                        android:stepSize="1.0"
+                        android:rating="2.0" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:id="@+id/news_feed_raw_page"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="Page: " />
+                </LinearLayout>
             </LinearLayout>
-
     </LinearLayout>
     <TextView
         android:layout_width="fill_parent"
@@ -110,7 +102,7 @@
         android:id="@+id/news_feed_raw_post"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="POST: "
-        android:layout_alignParentTop="true"
-        android:layout_margin="10px" />
-</LinearLayout>
+        android:layout_marginLeft="10px"
+        android:layout_marginRight="10px"
+        android:layout_below="@+id/linearLayout2" />
 </RelativeLayout>

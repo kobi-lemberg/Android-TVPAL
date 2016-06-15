@@ -72,11 +72,11 @@ public class AddShowActivity extends Activity {
                 int episodes = new Integer(numberOfEpisodes.getText().toString().trim());
                 int season = new Integer(seasonText.getText().toString().trim());
 //     public TVShow(String name, String mainActor,int season,int episode ,String category, String lastUpdated, String summery,String imagePath)
-                show = new TVShow(showName.getText().toString(),famousActors.getText().toString(),season,episodes, categories.getText().toString(),MyApplication.getCurrentDate(),summary.getText().toString(),fileName);
+                show = new TVShow(showName.getText().toString(),famousActors.getText().toString(),season,episodes, categories.getText().toString(),Model.Constant.getCurrentDate(),summary.getText().toString(),fileName);
                 // public Post(String showName, String userEmail, String text, String date ,int currentPart, boolean finished, int grade,TVShow show)
                 User user = Model.instance().getCurrentUser();
                 int currentPart = 0;
-                post = new Post(show.getName(), user.getEmail(),user.displayName()+" Started "+show.getName(),MyApplication.getCurrentDate(),currentPart,false,ratingBar.getNumStars(),show);
+                post = new Post(show.getName(), user.getEmail(),user.displayName()+" Started "+show.getName(), Model.Constant.getCurrentDate(),currentPart,false,ratingBar.getNumStars(),show);
                 Log.d("TAG","Adding Post: "+ post.toString());
                 Model.instance().createShow(((BitmapDrawable) showImage.getDrawable()).getBitmap(), show,post ,new Model.showCreatorListener() {
                     @Override
@@ -147,7 +147,7 @@ public class AddShowActivity extends Activity {
                 Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream();
                 thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
-                fileName="Profile_Pic_"+MyApplication.getCurrentDate()+ ".jpg";
+                fileName="Profile_Pic_"+Model.Constant.getCurrentDate()+ ".jpg";
                 showImage.setImageBitmap(thumbnail);
             } else if (requestCode == SELECT_FILE) {
                 Uri selectedImageUri = data.getData();
@@ -168,7 +168,7 @@ public class AddShowActivity extends Activity {
                 options.inSampleSize = scale;
                 options.inJustDecodeBounds = false;
                 bm = BitmapFactory.decodeFile(selectedImagePath, options);
-                fileName="Profile_Pic_"+MyApplication.getCurrentDate()+ ".jpg";
+                fileName="Profile_Pic_"+Model.Constant.getCurrentDate()+ ".jpg";
                 showImage.setImageBitmap(bm);
             }
         }
