@@ -49,14 +49,16 @@ public class ProfileActivity  extends Activity{
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                /*Toast.makeText(getApplicationContext(), "item click " + position, Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(getApplicationContext(),StudentDetailsActivity.class);
-                intent.putExtra("id",data.get(position).getShowName());
-                startActivity(intent);*/
+               // Toast.makeText(getApplicationContext(), "item click " + position, Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(getApplicationContext(),UpdateShowProgressActivity.class);
+                intent.putExtra("showName",data.get(position).getShowName());
+                intent.putExtra("date",data.get(position).getDate());
+                intent.putExtra("text",data.get(position).getText());
+                startActivity(intent);
             }
         });
 
-        Model.instance().getAllPostsPerUser(user.getEmail(), new Model.EventPostsListener() {
+        Model.instance().getAllPostsPerUserUniq(user.getEmail(), new Model.EventPostsListener() {
             @Override
             public void onResult(LinkedList<Post> o) {
                 if(o!=null) {
@@ -132,6 +134,7 @@ public class ProfileActivity  extends Activity{
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         //super.onActivityResult(requestCode, resultCode, data);
+        adapter.notifyDataSetChanged();
         if(resultCode==1) {
             user = Model.instance().getCurrentUser();
             Log.d("TAG","User Edited: "+user.toString());
@@ -150,12 +153,11 @@ public class ProfileActivity  extends Activity{
                     }
                 });
             }*/
-            if(!Model.Constant.isDefaultProfilePic(user.getProfilePic()))
-            {
+            if(!Model.Constant.isDefaultProfilePic(user.getProfilePic())) {
                 imageProgressBar.setVisibility(View.VISIBLE);
                 Log.d("TAG","Profile Pic is different");
                 profilePic.setImageBitmap(Model.instance().loadImageFromFile(user.getProfilePic()));
-                imageProgressBar.setVisibility(View.INVISIBLE);
+                imageProgressBar.setVisibility(View.GONE);
             }
             //updateUser();
 
@@ -203,33 +205,25 @@ public class ProfileActivity  extends Activity{
             if(convertView == null){
                 LayoutInflater inflater = getLayoutInflater();
                 convertView = inflater.inflate(R.layout.row_layout,null);
-                /*CheckBox cb1 = (CheckBox) convertView.findViewById(R.id.checkBox);
-                cb1.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Log.d("LISTAPP", "my tag is: " + v.getTag());
-                        Student st = data.get((Integer) v.getTag());
-                        st.setChecked(!st.isChecked());
-                    }
-                });*/
             }
-
+            convertView.setTag(position);
             final ImageView image = (ImageView) convertView.findViewById(R.id.image_rowlayout_post);
             TextView name = (TextView) convertView.findViewById(R.id.nameTextView);
             ProgressBar pb = (ProgressBar) convertView.findViewById(R.id.TVShow_Progress_Bar);
             Post post = data.get(position);
+            name.setText(post.getShowName()+" ("+post.getProgress()+"%)");
             pb.setProgress(post.getProgress());
             /*TextView id = (TextView) convertView.findViewById(R.id.idTextView);
             final CheckBox cb = (CheckBox) convertView.findViewById(R.id.checkBox);
             cb.setTag(new Integer(position));*/
-            convertView.setTag(position);
-            name.setText(post.getShowName()+" ("+post.getProgress()+"%)");
+
+
             //id.setText(st.getId());
             //cb.setChecked(st.isChecked());
 
-            if (!post.getImagePath().equals("default_show_pic")){
+            if (!Model.Constant.isDefaultShowPic(post.getImagePath())) {
                 Log.d("TAG","list gets image " + post.getImagePath());
-                final ProgressBar progress = (ProgressBar) convertView.findViewById(R.id.TVShow_Progress_Bar);
+                final ProgressBar progress = (ProgressBar) convertView.findViewById(R.id.row_layout_ImageProgressBar);
                 progress.setVisibility(View.VISIBLE);
                 Model.instance().loadImage(post.getImagePath(), new Model.LoadImageListener() {
                     @Override

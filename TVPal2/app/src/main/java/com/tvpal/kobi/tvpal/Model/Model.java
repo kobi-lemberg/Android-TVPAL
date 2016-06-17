@@ -25,6 +25,7 @@ import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -59,6 +60,11 @@ public class Model {
 
     public interface TVShowListener{
         public void onResult(TVShow show);
+        public void onError(String error);
+    }
+
+    public interface PostListener{
+        public void onResult(Post post);
         public void onError(String error);
     }
 
@@ -199,10 +205,10 @@ public class Model {
     }
 
     public void getUserByEmail(String email, final UserEventPostsListener userEventPostsListener){
-        User u = modelSql.getUserByEmail(email);
+       User u = modelSql.getUserByEmail(email);
         if(u!=null)
             userEventPostsListener.onResult(u);
-        else{
+       else{
             modelFireBase.getUserByEmailAsync(email, new FireBaseModel.userEventsComplitionListener() {
                 @Override
                 public void onComplete(User u) {
@@ -228,16 +234,18 @@ public class Model {
             @Override
             public void onComplete(FirebaseError firebaseError, Firebase firebase) {
                 if (firebaseError == null) {
+
                     uploadImageAsync(profilePic, updated.getProfilePic(), new UploadImageListener() {
                         @Override
                         public void onResult() {
-                            modelSql.updateUserByID(email, updated);
+
                             saveImageToFile(profilePic, updated.getProfilePic());
 
                             setCurrentUser(updated, getCurrentUid());
                             listener.onDone();
                         }
                     });
+                    modelSql.updateUserByID(email, updated);
                 }
             }
         });
@@ -273,9 +281,39 @@ public class Model {
         });
     }
 
+    public void addPost(Post post ,final PostListener PostListener){
+        modelFireBase.createPost(post, new FireBaseModel.PostComplitionListener() {
+            @Override
+            public void onComplete(Post post) {
+                PostListener.onResult(post);
+            }
+
+            @Override
+            public void onError(String error) {
+                PostListener.onError(error);
+            }
+        });
+    }
+
     public void getAllPostsPerUser(String email, final EventPostsListener eventpostslistener)
     {
         modelFireBase.getAllPostsPerUser(email, new FireBaseModel.eventsComplitionListener() {
+            @Override
+            public void onComplete(LinkedList<Post> o) {
+                eventpostslistener.onResult(o);
+            }
+
+            @Override
+            public void onError(String error) {
+                eventpostslistener.onError(error);
+                Log.d("Error","could not read from firebase.");
+            }
+        });
+    }
+
+    public void getAllPostsPerUserUniq(String email, final EventPostsListener eventpostslistener)
+    {
+        modelFireBase.getAllPostsPerUserUniq(email, new FireBaseModel.eventsComplitionListener() {
             @Override
             public void onComplete(LinkedList<Post> o) {
                 eventpostslistener.onResult(o);
@@ -332,6 +370,21 @@ public class Model {
             @Override
             public void onError(String error) {
                 tvShowListener.onError(error);
+            }
+        });
+    }
+
+    public void getPostByParamsAsync(String showName,String date,String text,final PostListener postListener)
+    {
+        modelFireBase.getPostByParamsAsync(showName, date, text, new FireBaseModel.PostComplitionListener() {
+            @Override
+            public void onComplete(Post post) {
+                postListener.onResult(post);
+            }
+
+            @Override
+            public void onError(String error) {
+                postListener.onError(error);
             }
         });
     }
@@ -407,8 +460,10 @@ public class Model {
     }
 
     public static class Constant{
+        private static final DateFormat df = new SimpleDateFormat("MM_dd_yyyy_HH_mm_ss");
+        private static final String defaultShowPic  = "default_show_pic";
+        private static final String defaultProfilePic  = "defaultProfilePic";
         public static String getCurrentDate() {
-            DateFormat df = new SimpleDateFormat("MM_dd_yyyy_HH_mm_ss");
             // Get the date today using Calendar object.
             Date today = Calendar.getInstance().getTime();
             // Using DateFormat format method we can create a string
@@ -416,12 +471,21 @@ public class Model {
             return df.format(today);
         }
 
-        public static Boolean isDefaultShowPic(String profilePicPath) {
-            return profilePicPath.equals("default_show_pic");
-        }
+        public static Boolean isDefaultShowPic(String profilePicPath) {return profilePicPath.equals(defaultProfilePic);}
 
-        public static boolean isDefaultProfilePic(String picName){
-            return picName.equals("defaultProfilePic");
+        public static boolean isDefaultProfilePic(String picName){return picName.equals(defaultProfilePic);}
+
+        public static String getDefaultShowPic() {return defaultShowPic;}
+
+        public static String getDefaultProfilePic() {return defaultProfilePic;}
+
+        public static boolean isBiggerDate(String lhs, String rhs){
+            String[] fd = lhs.split("_");
+            String[] sd = rhs.split("_");
+            long firstDate = new Long((fd[2]+fd[0]+fd[1]+fd[3]+fd[4]+fd[5]));
+            Log.d("TAG","after: "+firstDate);
+            long lastDate = new Long((sd[2]+sd[0]+sd[1]+sd[3]+sd[4]+sd[5]));
+            return firstDate>lastDate;
         }
     }
 

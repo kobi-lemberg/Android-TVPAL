@@ -49,6 +49,52 @@ public class ShowDisplayerActivity extends Activity {
             @Override
             public void onResult(TVShow result) {
                 show = result;
+                listView = (ListView) findViewById(R.id.display_show_feed_list);
+                adapter = new CustomAdapter();
+                listView.setAdapter(adapter);
+                if(!Model.Constant.isDefaultShowPic(show.getImagePath())) {
+                    final ProgressBar showImagePB = (ProgressBar) findViewById(R.id.show_display_ImageProgressBar);
+                    showImagePB.setVisibility(View.VISIBLE);
+                    Model.instance().loadImage(show.getImagePath(), new Model.LoadImageListener() {
+                        @Override
+                        public void onResult(Bitmap imageBmp) {
+                            showImageView = (ImageView) findViewById(R.id.show_display_imageView);
+                            showImageView.setImageBitmap(imageBmp);
+                            showImagePB.setVisibility(View.GONE);
+                        }
+                    });
+                }
+                showDisplayerUpperProgressBar = (ProgressBar) findViewById(R.id.show_display_upper_progressBar);
+                showDisplayerUpperProgressBar.setVisibility(View.VISIBLE);
+                Model.instance().getPostsByShowNameAsync(showNameStr, new Model.EventPostsListener() {
+                    @Override
+                    public void onResult(LinkedList<Post> o) {
+                        if(o!=null){
+                            data = o;
+                            adapter.notifyDataSetChanged();
+                            showDisplayerUpperProgressBar.setVisibility(View.GONE);
+                        }
+                    }
+
+                    @Override
+                    public void onError(String error) {Log.d("Error", "Error: " + error);}
+                });
+
+
+                showNameTextView = (TextView) findViewById(R.id.show_display_movieName);
+                showNameTextView.setText(showNameStr);
+                episodeAndSeason = (TextView) findViewById(R.id.show_display_episode_season);
+                episodeAndSeason.setText("Season "+show.getSeason()+", "+show.getEpisode()+" episodes");
+                catagories = (TextView) findViewById(R.id.show_display_Categories);
+                catagories.setText("#"+show.getCategory());
+                summerySection = (LinearLayout) findViewById(R.id.show_display_summery_section);
+                if(show.getSummery().equals("")||show.getSummery()==null)
+                    summerySection.setVisibility(View.GONE);
+                else{
+                    summerySection.setVisibility(View.VISIBLE);
+                    summery = (TextView) findViewById(R.id.show_display_summary);
+                    summery.setText(show.getSummery());
+                }
 
             }
 
@@ -57,55 +103,6 @@ public class ShowDisplayerActivity extends Activity {
                 Log.d("TAG",error);
             }
         });
-
-        ListView listView = (ListView) findViewById(R.id.display_show_feed_list);
-        adapter = new CustomAdapter();
-        listView.setAdapter(adapter);
-        if(!Model.Constant.isDefaultShowPic(show.getImagePath())) {
-            final ProgressBar showImagePB = (ProgressBar) findViewById(R.id.show_display_ImageProgressBar);
-            showImagePB.setVisibility(View.VISIBLE);
-            Model.instance().loadImage(show.getImagePath(), new Model.LoadImageListener() {
-                @Override
-                public void onResult(Bitmap imageBmp) {
-                    showImageView = (ImageView) findViewById(R.id.show_display_imageView);
-                    showImageView.setImageBitmap(imageBmp);
-                    showImagePB.setVisibility(View.GONE);
-                }
-            });
-        }
-        showDisplayerUpperProgressBar = (ProgressBar) findViewById(R.id.show_display_upper_progressBar);
-        showDisplayerUpperProgressBar.setVisibility(View.VISIBLE);
-        Model.instance().getPostsByShowNameAsync(showNameStr, new Model.EventPostsListener() {
-            @Override
-            public void onResult(LinkedList<Post> o) {
-                if(o!=null){
-                    data = o;
-                    adapter.notifyDataSetChanged();
-                    showDisplayerUpperProgressBar.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onError(String error) {Log.d("Error", "Error: " + error);}
-        });
-
-
-        showNameTextView = (TextView) findViewById(R.id.show_display_movieName);
-        showNameTextView.setText(showNameStr);
-        episodeAndSeason = (TextView) findViewById(R.id.show_display_episode_season);
-        episodeAndSeason.setText("Season "+show.getSeason()+", "+show.getEpisode()+" episodes");
-        catagories = (TextView) findViewById(R.id.show_display_Categories);
-        catagories.setText("#"+show.getCategory());
-        summerySection = (LinearLayout) findViewById(R.id.show_display_summery_section);
-        if(show.getSummery().equals("")||show.getSummery()==null)
-            summerySection.setVisibility(View.GONE);
-        else{
-            summerySection.setVisibility(View.VISIBLE);
-            summery = (TextView) findViewById(R.id.show_display_summary);
-            summery.setText(show.getSummery());
-        }
-
-
     }
 
 
@@ -141,6 +138,7 @@ public class ShowDisplayerActivity extends Activity {
             }
 
             final ProgressBar imageProgressbar = (ProgressBar) convertView.findViewById(R.id.news_feed_raw_user_image_progressBar);
+            imageProgressbar.setVisibility(View.VISIBLE);
             final TextView userNameText = (TextView) convertView.findViewById(R.id.news_feed_raw_profile_displayName);
             final TextView userEvent = (TextView) convertView.findViewById(R.id.news_feed_raw_show_event);
             final ImageView imageView = (ImageView) convertView.findViewById(R.id.news_feed_raw_profile_image);
@@ -154,9 +152,19 @@ public class ShowDisplayerActivity extends Activity {
                 @Override
                 public void onResult(final User u) {
                     Log.d("TAG",u.displayName());
-                    if(userNameText==null)
-                        Log.d("userNameText==null","TRUE");
-                    else Log.d("userNameText==null","FALSE");
+                    if(!Model.Constant.isDefaultShowPic(u.getProfilePic())){
+                        Log.d("TAG","list gets image " + currentPost.getImagePath());
+
+                        Model.instance().loadImage(currentPost.getImagePath(), new Model.LoadImageListener() {
+                            @Override
+                            public void onResult(Bitmap imageBmp) {
+                                if (imageBmp != null) {
+                                    imageView.setImageBitmap(imageBmp);
+                                    imageProgressbar.setVisibility(View.GONE);
+                                }
+                            }
+                        });
+                    }
                     userNameText.setText(u.displayName());
                     userNameText.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -183,21 +191,10 @@ public class ShowDisplayerActivity extends Activity {
                     userNameText.setText(error);
                 }
             });
-            if(!Model.Constant.isDefaultShowPic(currentPost.getImagePath())){
-                Log.d("TAG","list gets image " + currentPost.getImagePath());
-                imageProgressbar.setVisibility(View.VISIBLE);
-                Model.instance().loadImage(currentPost.getImagePath(), new Model.LoadImageListener() {
-                    @Override
-                    public void onResult(Bitmap imageBmp) {
-                        if (imageBmp != null) {
-                            imageView.setImageBitmap(imageBmp);
-                            imageProgressbar.setVisibility(View.GONE);
-                        }
-                    }
-                });
-            }
+
 
             String event = currentPost.getEvent();
+            userEvent.setText(event+" this show");
             userEvent.setClickable(false);
             if(!event.equals("Is On")){
 

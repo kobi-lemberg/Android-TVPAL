@@ -1,18 +1,19 @@
 package com.tvpal.kobi.tvpal.Model;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.util.Log;
-
-import com.firebase.client.AuthData;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
-
+import com.google.common.collect.Lists;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+
+import static com.tvpal.kobi.tvpal.Model.Reversed.reversed;
 
 /**
  * Created by Kobi on 03/06/2016.
@@ -28,6 +29,12 @@ public class FireBaseModel {
     public interface TVShowComplitionListener
     {
         public void onComplete(TVShow show);
+        public void onError(String error);
+    }
+
+    public interface PostComplitionListener
+    {
+        public void onComplete(Post post);
         public void onError(String error);
     }
 
@@ -140,6 +147,37 @@ public class FireBaseModel {
         });
     }
 
+    public void getAllPostsPerUserUniq(String email,final eventsComplitionListener eventscomplitionlistener)
+    {
+        Query qr = myFirebaseRef.child("Post").orderByChild("userEmail").equalTo(email);
+        qr.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                HashMap<String,Post> finalMap = new HashMap<>();
+                for (DataSnapshot postSnapshot : snapshot.getChildren() ){
+                    Post post = postSnapshot.getValue(Post.class);
+
+                    if(!finalMap.containsKey(post.showName))
+                        finalMap.put(post.showName,post);
+                    else{
+                        Post firstPost  = finalMap.get(post.showName);
+                        if(!Model.Constant.isBiggerDate(firstPost.date,post.date)){
+                            finalMap.put(post.showName,post);
+                        }
+                    }
+
+                    System.out.println(post.getShowName() + " - " + post.getUserEmail());
+                }
+                eventscomplitionlistener.onComplete(new LinkedList<Post>(finalMap.values()));
+            }
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+                eventscomplitionlistener.onError(firebaseError.toString());
+            }
+        });
+    }
+
     public void getUserByEmailAsync(String email,final userEventsComplitionListener userEventscomplitionlistener)
     {
         Query qr = myFirebaseRef.child("users").orderByChild("email").equalTo(email);
@@ -220,6 +258,22 @@ public class FireBaseModel {
         });
     }
 
+    public void getPostByParamsAsync(final String showName,final String date, final String text,final PostComplitionListener postComplitionListener)
+    {
+        myFirebaseRef.child("Post").child(showName+"_"+date).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Post post = dataSnapshot.getValue(Post.class);
+                postComplitionListener.onComplete(post);
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                postComplitionListener.onError(firebaseError.toString());
+            }
+        });
+    }
+
     public void createShow(final TVShow show,final Post post,final Model.ShowCreator showCreator)
     {
         myFirebaseRef.child("TVShows").child(show.getName()).setValue(show);
@@ -227,6 +281,20 @@ public class FireBaseModel {
         showCreator.Create();
 
     }
+
+    public void createPost(final Post post,final PostComplitionListener postComplitionListener)
+    {
+        try{
+            myFirebaseRef.child("Post").child(post.getShowName()+"_"+post.getDate()).setValue(post);
+            postComplitionListener.onComplete(post);
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            postComplitionListener.onError(e.toString());
+        }
+
+    }
+
 
     public void authenticate(String email, String pwd,Firebase.AuthResultHandler auth) {
             myFirebaseRef.authWithPassword(email, pwd, auth);

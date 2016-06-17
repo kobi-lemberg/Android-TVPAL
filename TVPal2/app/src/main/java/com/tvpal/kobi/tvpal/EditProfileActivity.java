@@ -65,8 +65,8 @@ public class EditProfileActivity extends Activity
 
                 //    public User(String email, String firstName,String lastName, String birthDate, String password , String profilePic,String lastUpdated) {
 
-                String profilePath="Profile_Pic_"+MyApplication.getCurrentDate()+ ".jpg";
-                User changedUser = new User(user.getEmail(),firstName.getText().toString(), lastName.getText().toString(), user.getBirthDate(),user.getPassword(),profilePath,MyApplication.getCurrentDate());
+                String profilePath="Profile_Pic_"+ Model.Constant.getCurrentDate()+ ".jpg";
+                User changedUser = new User(user.getEmail(),firstName.getText().toString(), lastName.getText().toString(), user.getBirthDate(),user.getPassword(),profilePath, Model.Constant.getCurrentDate());
                 Model.instance().updateUserByEmailWithPic(user.getEmail(), changedUser, ((BitmapDrawable) profilePic.getDrawable()).getBitmap(), new Model.UserUpdater() {
                     @Override
                     public void onDone() {
@@ -125,7 +125,7 @@ public class EditProfileActivity extends Activity
                 Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream();
                 thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
-                String fileName="Profile_Pic_"+MyApplication.getCurrentDate()+ ".jpg";
+                String fileName="Profile_Pic_"+ Model.Constant.getCurrentDate()+ ".jpg";
                 profilePic.setImageBitmap(thumbnail);
             } else if (requestCode == SELECT_FILE) {
                 Uri selectedImageUri = data.getData();
@@ -147,7 +147,7 @@ public class EditProfileActivity extends Activity
                 options.inJustDecodeBounds = false;
                 bm = BitmapFactory.decodeFile(selectedImagePath, options);
                 //ivImage.setImageBitmap(bm);
-                String fileName="Profile_Pic_"+MyApplication.getCurrentDate()+ ".jpg";
+                String fileName="Profile_Pic_"+ Model.Constant.getCurrentDate()+ ".jpg";
                 profilePic.setImageBitmap(bm);
             }
         }

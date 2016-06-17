@@ -130,6 +130,7 @@ public class NewsFeedActivity extends Activity
 
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
+            final Post currentPost;
             if(convertView == null){
                 LayoutInflater inflater = getLayoutInflater();
                 convertView = inflater.inflate(R.layout.news_feed_row_layout,null);
@@ -142,8 +143,13 @@ public class NewsFeedActivity extends Activity
                         st.setChecked(!st.isChecked());
                     }
                 });*/
-            }
+             //   currentPost = (Post) convertView.getTag();
 
+            }else
+            {
+               // currentPost = data.get(position);
+            }
+            currentPost = data.get(position);
             final ProgressBar imageProgressbar = (ProgressBar) convertView.findViewById(R.id.news_feed_raw_user_image_progressBar);
             final TextView userNameText = (TextView) convertView.findViewById(R.id.news_feed_raw_profile_displayName);
             final TextView userEvent = (TextView) convertView.findViewById(R.id.news_feed_raw_show_event);
@@ -152,14 +158,11 @@ public class NewsFeedActivity extends Activity
             RatingBar ratingBar = (RatingBar)convertView.findViewById(R.id.news_feed_raw_ratingBar);
             TextView page = (TextView)convertView.findViewById(R.id.news_feed_raw_page);
             TextView post = (TextView)convertView.findViewById(R.id.news_feed_raw_post);
-            final Post currentPost = data.get(position);
+
             Model.instance().getUserByEmail(currentPost.getUserEmail(), new Model.UserEventPostsListener() {
                 @Override
                 public void onResult(final User u) {
                     Log.d("TAG",u.displayName());
-                    if(userNameText==null)
-                        Log.d("userNameText==null","TRUE");
-                    else Log.d("userNameText==null","FALSE");
                     userNameText.setText(u.displayName());
                     userNameText.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -187,17 +190,44 @@ public class NewsFeedActivity extends Activity
                 }
             });
             if(!Model.Constant.isDefaultShowPic(currentPost.getImagePath())){
-                Log.d("TAG","list gets image " + currentPost.getImagePath());
                 imageProgressbar.setVisibility(View.VISIBLE);
-                Model.instance().loadImage(currentPost.getImagePath(), new Model.LoadImageListener() {
+                Thread t = new Thread(new Runnable() {
                     @Override
-                    public void onResult(Bitmap imageBmp) {
-                        if (imageBmp != null) {
-                            imageView.setImageBitmap(imageBmp);
-                            imageProgressbar.setVisibility(View.GONE);
-                        }
+                    public void run() {
+                        Model.instance().getUserByEmail(currentPost.getUserEmail(), new Model.UserEventPostsListener() {
+                            @Override
+                            public void onResult(User u) {
+                                Model.instance().loadImage(u.getProfilePic(), new Model.LoadImageListener() {
+                                    @Override
+                                    public void onResult(Bitmap imageBmp) {
+                                        if (imageBmp != null) {
+                                            imageView.setImageBitmap(imageBmp);
+                                            imageProgressbar.setVisibility(View.GONE);
+                                        }
+                                    }
+                                });
+                            }
+
+                            @Override
+                            public void onError(String error) {
+                                Log.d("TAG","list gets image " + currentPost.getImagePath());
+                                Model.instance().loadImage(currentPost.getImagePath(), new Model.LoadImageListener() {
+                                    @Override
+                                    public void onResult(Bitmap imageBmp) {
+                                        if (imageBmp != null) {
+                                            imageView.setImageBitmap(imageBmp);
+                                            imageProgressbar.setVisibility(View.GONE);
+                                        }
+                                    }
+                                });
+                            }
+                        });
                     }
                 });
+                t.start();
+
+
+
             }
 
             String event = currentPost.getEvent();
@@ -230,6 +260,7 @@ public class NewsFeedActivity extends Activity
                     post.setText(comment);
                 }
             }
+
             return convertView;
         }
     }

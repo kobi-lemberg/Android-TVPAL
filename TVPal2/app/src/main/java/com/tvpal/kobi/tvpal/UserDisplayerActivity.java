@@ -71,18 +71,31 @@ public class UserDisplayerActivity extends Activity {
         email = (TextView) findViewById(R.id.user_displayer_Email);
         email.setText(userEmail);
         imageProgressBar = (ProgressBar) findViewById(R.id.user_displayer_UserImageProgressBar);
-        profilePic = (ImageView) findViewById(R.id.user_displayer_activity_profile_imageView);
-        if(!Model.Constant.isDefaultProfilePic(profilePicStr)){
-            imageProgressBar.setVisibility(View.VISIBLE);
-            Model.instance().loadImage(profilePicStr, new Model.LoadImageListener() {
-                @Override
-                public void onResult(Bitmap imageBmp) {
-                    if(imageBmp!=null)
-                        profilePic.setImageBitmap(imageBmp);
-                        imageProgressBar.setVisibility(View.GONE);
+        imageProgressBar.setVisibility(View.VISIBLE);
+
+        Model.instance().getUserByEmail(userEmail, new Model.UserEventPostsListener() {
+            @Override
+            public void onResult(User u) {
+                profilePic = (ImageView) findViewById(R.id.user_displayer_activity_profile_imageView);
+                if(!Model.Constant.isDefaultProfilePic(u.getProfilePic())){
+
+                    Model.instance().loadImage(u.getProfilePic(), new Model.LoadImageListener() {
+                        @Override
+                        public void onResult(Bitmap imageBmp) {
+                            if(imageBmp!=null)
+                                profilePic.setImageBitmap(imageBmp);
+                            imageProgressBar.setVisibility(View.GONE);
+                        }
+                    });
                 }
-            });
-        }
+            }
+
+            @Override
+            public void onError(String error) {
+                    Log.d("FBERROR",error);
+            }
+        });
+
     }
 
 
@@ -115,22 +128,27 @@ public class UserDisplayerActivity extends Activity {
                 });*/
             }
             Post post = data.get(position);
+            final ProgressBar progress = (ProgressBar) convertView.findViewById(R.id.TVShow_Progress_Bar);
+            progress.setProgress(post.getProgress());
 
             final ImageView image = (ImageView) convertView.findViewById(R.id.image_rowlayout_post);
+            final ProgressBar imageProgress = (ProgressBar) convertView.findViewById(R.id.row_layout_ImageProgressBar);
             if (!post.getImagePath().equals("default_show_pic")){
                 Log.d("TAG","list gets image " + post.getImagePath());
-                final ProgressBar progress = (ProgressBar) convertView.findViewById(R.id.TVShow_Progress_Bar);
-                progress.setVisibility(View.VISIBLE);
+
+                imageProgress.setVisibility(View.VISIBLE);
                 Model.instance().loadImage(post.getImagePath(), new Model.LoadImageListener() {
                     @Override
                     public void onResult(Bitmap imageBmp) {
                         if (imageBmp != null) {
                             image.setImageBitmap(imageBmp);
-                            progress.setVisibility(View.GONE);
                         }
+                        imageProgress.setVisibility(View.GONE);
                     }
                 });
             }
+            else
+                imageProgress.setVisibility(View.GONE);
 
             TextView name = (TextView) convertView.findViewById(R.id.nameTextView);
             ProgressBar pb = (ProgressBar) convertView.findViewById(R.id.TVShow_Progress_Bar);
