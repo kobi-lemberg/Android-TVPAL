@@ -77,30 +77,7 @@ public class FireBaseModel {
         }
         return str;
     }
-/*    public String getUpdateDate() {
-        //child = users.
-        //key = email.
-        Firebase  stRef = myFirebaseRef.child("users").child(Model.instance().getCurrentUid());
-        stRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.d("TAG", "DataSnapShot: " + dataSnapshot);
-                User user = dataSnapshot.getValue(User.class);
-                Log.d("TAG", "User have been changed : " + user.toString());
-                //checking if date have been changed.
 
-                if(!user.getLastUpdateDate().equals(Model.instance().getCurrentUser().getLastUpdateDate()))
-                {
-                    Model.instance().updateUserByEmail(user.getEmail(),user);
-                }
-            }
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-                Log.d("TAG", "The read failed: " + firebaseError.getMessage());
-            }
-        });
-        return "false";
-    }*/
     public void getAllPostsPerUser(String email,final eventsCompletionListener eventscomplitionlistener)
     {
         Query qr = myFirebaseRef.child("Post").orderByChild("userEmail").equalTo(email);
@@ -126,32 +103,26 @@ public class FireBaseModel {
 
     public void getAllPostsPerUserUniq(String email,final eventsCompletionListener eventscomplitionlistener)
     {
-        Query qr = myFirebaseRef.child("Post").orderByChild("userEmail").equalTo(email);
-        qr.addValueEventListener(new ValueEventListener() {
+        getAllPostsPerUser(email, new eventsCompletionListener() {
             @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                HashMap<String,Post> finalMap = new HashMap<>();
-                for (DataSnapshot postSnapshot : snapshot.getChildren() ){
-                    Post post = postSnapshot.getValue(Post.class);
-
-                    if(!finalMap.containsKey(post.getShowName()))
-                        finalMap.put(post.getShowName(),post);
+            public void onComplete(LinkedList<Post> o) {
+                HashMap<String,Post> finalMap = new HashMap<String,Post>();
+                for(Post p: o){
+                    if(!finalMap.containsKey(p.getShowName()))
+                        finalMap.put(p.getShowName(),p);
                     else{
-                        Post firstPost  = finalMap.get(post.getShowName());
-                        if(!Model.Constant.isBiggerDate(firstPost.getDate(),post.getDate())){
-                            finalMap.remove(post.getShowName());
-                            finalMap.put(post.getShowName(),post);
+                        if(!Model.Constant.isBiggerDate(finalMap.get(p.getShowName()).getDate(),p.getDate())){
+                            finalMap.remove(p.getShowName());
+                            finalMap.put(p.getShowName(),p);
                         }
                     }
-
-                    System.out.println(post.getShowName() + " - " + post.getUserEmail());
                 }
                 eventscomplitionlistener.onComplete(new LinkedList<Post>(finalMap.values()));
             }
+
             @Override
-            public void onCancelled(FirebaseError firebaseError) {
-                System.out.println("The read failed: " + firebaseError.getMessage());
-                eventscomplitionlistener.onError(firebaseError.toString());
+            public void onError(String error) {
+                eventscomplitionlistener.onError(error);
             }
         });
     }

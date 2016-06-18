@@ -28,8 +28,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
                 <ImageView
-                    android:layout_width="76dp"
-                    android:layout_height="264dp"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
                     android:id="@+id/activity_profile_imageView"
                     android:src="@drawable/default_profile_pic"
                     android:layout_weight="1.30" />
@@ -44,16 +44,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="Name: "/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -61,17 +51,6 @@
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text=" A"
                     android:id="@+id/activity_profile_name"/>
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="Email: "/>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -79,44 +58,27 @@
                         android:textAppearance="?android:attr/textAppearanceLarge"
                         android:text=" A"
                         android:id="@+id/activity_profile_Email"/>
-                </LinearLayout>
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
-                    <TextView
+                    <Button
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="Birth Date: "/>
-                    <TextView
+                        android:id="@+id/edit_profile_button"
+                        android:text="Edit Profile"/>
+
+                    <Button
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text=" A"
-                        android:id="@+id/activity_profile_Birh_Date"/>
+                        android:text="Add Show"
+                        android:id="@+id/button_profile_activity_add_Show"
+                        android:layout_gravity="right" />
                 </LinearLayout>
+
         </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/edit_profile_button"
-                    android:text="Edit Profile"/>
 
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Add Show"
-                    android:id="@+id/button_profile_activity_add_Show"
-                    android:layout_gravity="right" />
-            </LinearLayout>
 
 
 
@@ -127,6 +89,7 @@
             android:orientation="horizontal"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
+
             <ListView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

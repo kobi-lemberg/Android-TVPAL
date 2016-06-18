@@ -3,6 +3,7 @@ package com.tvpal.kobi.tvpal;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.app.Activity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -12,7 +13,6 @@ import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
-
 import com.tvpal.kobi.tvpal.Model.Model;
 import com.tvpal.kobi.tvpal.Model.Post;
 
@@ -28,10 +28,6 @@ public class UpdateShowProgressActivity extends Activity {
     EditText opinion;
     Button save;
     Button cancel;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,8 +53,6 @@ public class UpdateShowProgressActivity extends Activity {
                             }
                         }
                     });
-
-
                 }
                 showNameText = (TextView) findViewById(R.id.activity_updatePost_movieName);
                 showNameText.setText(current.getShowName());
@@ -83,8 +77,7 @@ public class UpdateShowProgressActivity extends Activity {
                     public void onClick(View v) {
                         //Post(String showName, String userEmail, String text, String date ,int currentPart, boolean finished, int grade,TVShow show)
                         int seen  = Integer.parseInt(episodeSpinner.getSelectedItem().toString().trim());
-                        final boolean finished=(seen<current.getShow().getEpisode())?false:true;
-                        Post updated = new Post(current.getShowName(),current.getUserEmail(),opinion.getText().toString(), Model.Constant.getCurrentDate(),seen,finished,rate.getNumStars(),current.getShow());
+                        Post updated = new Post(current.getShowName(),current.getUserEmail(),opinion.getText().toString(), Model.Constant.getCurrentDate(),seen,rate.getNumStars(),current.getShow());
                         Model.instance().addPost(updated, new Model.PostListener() {
                             @Override
                             public void onResult(Post post) {
@@ -111,13 +104,8 @@ public class UpdateShowProgressActivity extends Activity {
 
             @Override
             public void onError(String error) {
-
+                Log.d("TAG",error);
             }
         });
-
     }
-
-
-
-
 }

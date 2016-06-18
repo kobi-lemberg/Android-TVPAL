@@ -29,7 +29,6 @@ public class ProfileActivity  extends Activity{
     List<Post> data = new LinkedList<Post>();
     TextView displayName;
     TextView email;
-    TextView birthDate;
     ImageView profilePic;
     ProgressBar imageProgressBar;
     User user;
@@ -78,7 +77,6 @@ public class ProfileActivity  extends Activity{
 
         displayName = (TextView) findViewById(R.id.activity_profile_name);
         email = (TextView) findViewById(R.id.activity_profile_Email);
-        birthDate = (TextView) findViewById(R.id.activity_profile_Birh_Date);
         profilePic = (ImageView) findViewById(R.id.activity_profile_imageView);
         if(!Model.Constant.isDefaultProfilePic(user.getProfilePic())){
             imageProgressBar.setVisibility(View.VISIBLE);
@@ -93,7 +91,6 @@ public class ProfileActivity  extends Activity{
         //put the variables.
         displayName.setText(user.displayName());
         email.setText(user.getEmail());
-        birthDate.setText(user.getBirthDate());
         addShowButton = (Button) findViewById(R.id.button_profile_activity_add_Show);
         addShowButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -142,7 +139,6 @@ public class ProfileActivity  extends Activity{
             Log.d("TAG","User Edited: "+user.toString());
             displayName.setText(user.displayName());
             email.setText(user.getEmail());
-            birthDate.setText(user.getBirthDate());
 /*            if(!Model.instance().isDefaultProfilePic(user.getProfilePic())){
                 imageProgressBar.setVisibility(View.VISIBLE);
                 Model.instance().loadImage(user.getProfilePic(), new Model.LoadImageListener() {
@@ -174,7 +170,6 @@ public class ProfileActivity  extends Activity{
         user = Model.instance().getCurrentUser();
         displayName.setText(user.displayName());
         email.setText(user.getEmail());
-        birthDate.setText(user.getBirthDate());
         if(!Model.Constant.isDefaultProfilePic(user.getProfilePic())){
             imageProgressBar.setVisibility(View.VISIBLE);
             Model.instance().loadImage(user.getProfilePic(), new Model.LoadImageListener() {

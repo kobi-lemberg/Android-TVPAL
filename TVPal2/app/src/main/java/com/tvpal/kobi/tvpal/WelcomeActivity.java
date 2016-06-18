@@ -96,8 +96,7 @@ public class WelcomeActivity extends Activity implements WelcomeFragment.Welcome
                     DialogFragment df = new StringDialogFragment();
                     ((StringDialogFragment)df).setStrToShow("Welcome "+userName+", Move to News Feed");
                     df.show(getFragmentManager(), "Success login");
-                    Intent newsFeedActivityIntent = new Intent(getApplicationContext(), NewsFeedActivity.class);
-                    startActivity(newsFeedActivityIntent);
+
 
                 }
 

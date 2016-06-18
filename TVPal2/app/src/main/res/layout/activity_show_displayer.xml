@@ -3,16 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
     tools:context="com.tvpal.kobi.tvpal.ShowDisplayerActivity">
     <ProgressBar
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/show_display_upper_progressBar"
         style="@android:style/Widget.Holo.ProgressBar.Horizontal"
+        android:paddingBottom="10dp"
+
         android:indeterminate="true" />
 
     <LinearLayout
@@ -33,6 +33,7 @@
                     android:layout_width="96dp"
                     android:layout_height="124dp"
                     android:id="@+id/show_display_imageView"
+                    android:layout_marginRight="10dp"
                     android:src="@drawable/default_show_pic" />
                 <ProgressBar
                     android:layout_width="fill_parent"
@@ -43,6 +44,7 @@
             </FrameLayout>
 
             <LinearLayout
+                android:paddingTop="15dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -64,37 +66,11 @@
                     android:layout_height="wrap_content"
                     android:text="Categories "
                     android:id="@+id/show_display_Categories"/>
-
-<!--                <RatingBar
-                    android:id="@+id/ratingBar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:numStars="4"
-                    android:stepSize="1.0"
-                    android:rating="2.0" />-->
             </LinearLayout>
 
         </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:id="@+id/show_display_summery_section"
-            android:orientation="vertical">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/show_display_summery_header"
-                android:text="Summary"/>
-            <TextView
-                android:background="@drawable/outline"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/show_display_summary"
-                />
-        </LinearLayout>
         <ListView
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:id="@+id/display_show_feed_list"
             android:layout_alignParentStart="true"

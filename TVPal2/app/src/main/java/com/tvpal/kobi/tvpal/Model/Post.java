@@ -7,13 +7,12 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * Created by Kobi on 04/06/2016.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Post {
+public class Post implements Comparable<Post>{
     String showName;
     String userEmail;
     String text;
     String date;
     int currentPart;
-    boolean finished;
     int grade;
     TVShow show;
 
@@ -21,13 +20,12 @@ public class Post {
     public Post() {
     }
 
-    public Post(String showName, String userEmail, String text, String date ,int currentPart, boolean finished, int grade,TVShow show) {
+    public Post(String showName, String userEmail, String text, String date ,int currentPart, int grade,TVShow show) {
         this.showName = showName;
         this.userEmail = userEmail;
         this.text = text;
         this.date = date;
         this.currentPart = currentPart;
-        this.finished = finished;
         this.grade = grade;
         this.show = show;
     }
@@ -72,7 +70,6 @@ public class Post {
                 ", text='" + text + '\'' +
                 ", date='" + date + '\'' +
                 ", currentPart=" + currentPart +
-                ", finished=" + finished +
                 ", grade=" + grade +
                 ", show=" + show +
                 '}';
@@ -101,7 +98,9 @@ public class Post {
     }
     @JsonIgnore
     public int getProgress(){
-        return (this.currentPart/this.getNumOfChapters());
+        double percents = (((float)this.currentPart/(float)this.getNumOfChapters()))*100;
+
+        return ((int)percents);
     }
 
 
@@ -145,11 +144,13 @@ public class Post {
         this.grade = grade;
     }
 
-    public boolean isFinished() {
-        return finished;
-    }
-
-    public void setFinished(boolean finished) {
-        this.finished = finished;
+    @Override
+    @JsonIgnore
+    public int compareTo(Post another) {
+        String[] first = this.getDate().split("_");
+        String[] second = another.getDate().split("_");
+        long firstDate = new Long((first[2]+first[0]+first[1]+first[3]+first[4]+first[5]));
+        long secondDate = new Long((second[2]+second[0]+second[1]+second[3]+second[4]+second[5]));
+        return (int)(secondDate-firstDate);
     }
 }

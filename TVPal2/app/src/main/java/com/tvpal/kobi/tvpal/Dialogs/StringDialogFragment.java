@@ -4,8 +4,12 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+
+import com.tvpal.kobi.tvpal.MyApplication;
+import com.tvpal.kobi.tvpal.NewsFeedActivity;
 
 /**
  * Created by Kobi on 12/04/2016.
@@ -30,6 +34,8 @@ public class StringDialogFragment extends DialogFragment {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
                         Log.d("SuccessDialogFragment", "SuccessDialogFragment");
+                        Intent newsFeedActivityIntent = new Intent(MyApplication.getAppContext(), NewsFeedActivity.class);
+                        startActivity(newsFeedActivityIntent);
                     }
                 });
         builder.setCancelable(true);

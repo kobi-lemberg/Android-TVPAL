@@ -10,7 +10,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -20,19 +19,17 @@ import android.widget.TextView;
 import com.tvpal.kobi.tvpal.Model.Model;
 import com.tvpal.kobi.tvpal.Model.Post;
 import com.tvpal.kobi.tvpal.Model.User;
+
+import java.util.Collections;
 import java.util.LinkedList;
 
 public class NewsFeedActivity extends Activity
 {
-
-
     ListView listView;
     CustomAdapter adapter;
     LinkedList<Post> data = new LinkedList<Post>();
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
-
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news_feed);
         Log.d("TAG", "In NewsFeed Activity");
@@ -44,6 +41,7 @@ public class NewsFeedActivity extends Activity
             @Override
             public void onResult(LinkedList<Post> o) {
                 if(o!=null) {
+                    Collections.sort(o);
                     data = o;
                     adapter.notifyDataSetChanged();
                 }
@@ -92,7 +90,6 @@ public class NewsFeedActivity extends Activity
 
     class CustomAdapter extends BaseAdapter {
 
-
         @Override
         public int getCount() {return data.size();}
 
@@ -111,7 +108,6 @@ public class NewsFeedActivity extends Activity
                 LayoutInflater inflater = getLayoutInflater();
                 convertView = inflater.inflate(R.layout.news_feed_row_layout,null);
             }
-            //else {// currentPost = data.get(position);}
             currentPost = data.get(position);
             final ProgressBar imageProgressbar = (ProgressBar) convertView.findViewById(R.id.news_feed_raw_user_image_progressBar);
             final TextView userNameText = (TextView) convertView.findViewById(R.id.news_feed_raw_profile_displayName);
@@ -163,39 +159,6 @@ public class NewsFeedActivity extends Activity
                     userNameText.setText(error);
                 }
             });
-/*            if(!Model.Constant.isDefaultProfilePic(currentPost.getImagePath())){
-
-                Thread t = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Model.instance().getUserByEmail(currentPost.getUserEmail(), new Model.UserEventPostsListener() {
-                            @Override
-                            public void onResult(User u) {
-
-                            }
-
-                            @Override
-                            public void onError(String error) {
-                                Log.d("TAG","list gets image " + currentPost.getImagePath());
-                                Model.instance().loadImage(currentPost.getImagePath(), new Model.LoadImageListener() {
-                                    @Override
-                                    public void onResult(Bitmap imageBmp) {
-                                        if (imageBmp != null) {
-                                            imageView.setImageBitmap(imageBmp);
-                                            imageProgressbar.setVisibility(View.GONE);
-                                        }
-                                    }
-                                });
-                            }
-                        });
-                    }
-                });
-                t.start();
-
-
-
-            }*/
-
             String event = currentPost.getEvent();
             userEvent.setText(event+" "+currentPost.getShowName());
             userEvent.setOnClickListener(new View.OnClickListener() {
@@ -206,29 +169,29 @@ public class NewsFeedActivity extends Activity
                     startActivity(intent);
                 }
             });
-            if(!event.equals("Is On")){
 
+            if(!event.equals("Is On")){
                 rated.setVisibility(View.GONE);
                 ratingBar.setVisibility(View.GONE);
                 page.setVisibility(View.GONE);
                 post.setVisibility(View.GONE);
-
             }
             else {
                 rated.setVisibility(View.VISIBLE);
                 ratingBar.setVisibility(View.VISIBLE);
                 page.setVisibility(View.VISIBLE);
-
                 Log.d("TAG","set starts for "+currentPost.getShow()+": "+currentPost.getGrade());
                 ratingBar.setRating(currentPost.getGrade());
                 page.setText("Page: "+currentPost.getCurrentPart());
                 String comment = currentPost.getText();
-                if(comment!=null&&comment!="") {
+                if(comment!=null&&!comment.equals("")) {
+                    post.setVisibility(View.VISIBLE);
+                    post.setText("\""+comment+"\"");
+                }
+                else {
                     post.setVisibility(View.GONE);
-                    post.setText(comment);
                 }
             }
-
             return convertView;
         }
     }
@@ -240,6 +203,7 @@ public class NewsFeedActivity extends Activity
             @Override
             public void onResult(LinkedList<Post> o) {
                 if(o!=null) {
+                    Collections.sort(o);
                     data = o;
                     adapter.notifyDataSetChanged();
                 }
@@ -256,6 +220,7 @@ public class NewsFeedActivity extends Activity
             @Override
             public void onResult(LinkedList<Post> o) {
                 if(o!=null) {
+                    Collections.sort(o);
                     data = o;
                     adapter.notifyDataSetChanged();
                 }

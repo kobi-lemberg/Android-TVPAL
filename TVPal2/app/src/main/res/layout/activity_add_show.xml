@@ -20,132 +20,97 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Show Image"/>-->
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:weightSum="1">
-
-        <ImageView
-            android:layout_width="96dp"
-            android:layout_height="124dp"
-            android:id="@+id/activity_addShow_imageView"
-            android:src="@drawable/default_show_pic" />
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Show Name: "/>
-                <EditText
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Game of :) "
-                    android:id="@+id/activity_addShow_movieName"/>
-            </LinearLayout>
-            <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Famous Actors: "/>
-                <EditText
-                    android:layout_width="129dp"
-                    android:layout_height="wrap_content"
-                    android:text=" "
-                    android:id="@+id/activity_addShow_famousActors"/>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Season "/>
-            <EditText
-                android:layout_width="101dp"
-                android:layout_height="wrap_content"
-                android:text=" "
-                android:id="@+id/activity_addShow_NumberOfSeasons"/>
-                </LinearLayout>
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:weightSum="1">
 
+                <ImageView
+                    android:layout_width="96dp"
+                    android:layout_height="124dp"
+                    android:id="@+id/activity_addShow_imageView"
+                    android:src="@drawable/default_show_pic" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Show Name: "/>
+                        <EditText
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Game of :) "
+                            android:id="@+id/activity_addShow_movieName"/>
+                    </LinearLayout>
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Famous Actors: "/>
+                    <EditText
+                        android:layout_width="129dp"
+                        android:layout_height="wrap_content"
+                        android:text=" "
+                        android:id="@+id/activity_addShow_famousActors"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Episodes "/>
+                    android:text="Season "/>
                 <EditText
                     android:layout_width="101dp"
                     android:layout_height="wrap_content"
                     android:text=" "
-                    android:id="@+id/activity_addShow_NumberOfEpisodes"/>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <TextView
+                    android:id="@+id/activity_addShow_NumberOfSeasons"/>
+                </LinearLayout>
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Categories "/>
-                <EditText
-                    android:layout_width="159dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Episodes "/>
+                    <EditText
+                        android:layout_width="101dp"
+                        android:layout_height="wrap_content"
+                        android:text=" "
+                        android:id="@+id/activity_addShow_NumberOfEpisodes"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text=" "
-                    android:id="@+id/activity_addShow_Categories"/>
-            </LinearLayout>
-            <RatingBar
-                android:id="@+id/ratingBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:numStars="4"
-                android:stepSize="1.0"
-                android:rating="2.0" />
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Categories "/>
+                    <EditText
+                        android:layout_width="159dp"
+                        android:layout_height="wrap_content"
+                        android:text=" "
+                        android:id="@+id/activity_addShow_Categories"/>
+                </LinearLayout>
+
         </LinearLayout>
-
+            </LinearLayout>
     </LinearLayout>
 
-<LinearLayout
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical"
-    android:layout_marginBottom="60dp">
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Summary:"/>
-    <EditText
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:id="@+id/addShow_activity_summary"
-        />
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="62dp"
-            android:text="Save"
-            android:id="@+id/button_Save_addShow"
-            />
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Cancel"
-            android:id="@+id/button_Cancel_addShow"
-            />
-
-    </LinearLayout>
-    </LinearLayout>
 
     <Button
         android:layout_width="wrap_content"

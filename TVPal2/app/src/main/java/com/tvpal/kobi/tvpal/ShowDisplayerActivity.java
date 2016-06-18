@@ -20,6 +20,7 @@ import com.tvpal.kobi.tvpal.Model.Post;
 import com.tvpal.kobi.tvpal.Model.TVShow;
 import com.tvpal.kobi.tvpal.Model.User;
 
+import java.util.Collections;
 import java.util.LinkedList;
 
 public class ShowDisplayerActivity extends Activity {
@@ -28,16 +29,11 @@ public class ShowDisplayerActivity extends Activity {
     TextView showNameTextView;
     TextView episodeAndSeason;
     TextView catagories;
-    LinearLayout summerySection;
     ListView listView;
     ProgressBar showDisplayerUpperProgressBar;
     TVShow show;
     CustomAdapter adapter;
-    TextView summery;
     LinkedList<Post> data = new LinkedList<Post>();
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,19 +63,8 @@ public class ShowDisplayerActivity extends Activity {
             if(convertView == null){
                 LayoutInflater inflater = getLayoutInflater();
                 convertView = inflater.inflate(R.layout.news_feed_row_layout,null);
-                /*CheckBox cb1 = (CheckBox) convertView.findViewById(R.id.checkBox);
-                cb1.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Log.d("LISTAPP", "my tag is: " + v.getTag());
-                        Student st = data.get((Integer) v.getTag());
-                        st.setChecked(!st.isChecked());
-                    }
-                });*/
             }
-
             final ProgressBar imageProgressbar = (ProgressBar) convertView.findViewById(R.id.news_feed_raw_user_image_progressBar);
-
             final TextView userNameText = (TextView) convertView.findViewById(R.id.news_feed_raw_profile_displayName);
             final TextView userEvent = (TextView) convertView.findViewById(R.id.news_feed_raw_show_event);
             final ImageView imageView = (ImageView) convertView.findViewById(R.id.news_feed_raw_profile_image);
@@ -96,19 +81,17 @@ public class ShowDisplayerActivity extends Activity {
                     if(!Model.Constant.isDefaultProfilePic(u.getProfilePic())){
                         imageProgressbar.setVisibility(View.VISIBLE);
                         Log.d("TAG","list gets image " + currentPost.getImagePath());
-
                         Model.instance().loadImage(u.getProfilePic(), new Model.LoadImageListener() {
                             @Override
                             public void onResult(Bitmap imageBmp) {
                                 if (imageBmp != null) {
                                     imageView.setImageBitmap(imageBmp);
-                                    imageProgressbar.setVisibility(View.GONE);
                                 }
+                                imageProgressbar.setVisibility(View.GONE);
                             }
                         });
                     }
-                    else
-                        imageProgressbar.setVisibility(View.GONE);
+                    else imageProgressbar.setVisibility(View.GONE);
                     userNameText.setText(u.displayName());
                     userNameText.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -124,10 +107,8 @@ public class ShowDisplayerActivity extends Activity {
                                 intent.putExtra("pic", u.getProfilePic());
                                 startActivity(intent);
                             }
-
                         }
                     });
-
                 }
 
                 @Override
@@ -153,11 +134,11 @@ public class ShowDisplayerActivity extends Activity {
                 ratingBar.setVisibility(View.VISIBLE);
                 page.setVisibility(View.VISIBLE);
                 ratingBar.setRating(currentPost.getGrade());
-                page.setText("Page: "+currentPost.getCurrentPart());
+                page.setText("Page "+currentPost.getCurrentPart());
                 String comment = currentPost.getText();
-                if(comment!=null&&comment!="") {
-                    post.setVisibility(View.GONE);
-                    post.setText(comment);
+                if(comment!=null&&!comment.equals("")) {
+                    post.setVisibility(View.VISIBLE);
+                    post.setText("\""+comment+"\"");
                 }
             }
             return convertView;
@@ -173,13 +154,33 @@ public class ShowDisplayerActivity extends Activity {
     private void handelGUI()
     {
         showNameStr = getIntent().getStringExtra("showName");
-        Model.instance().getShowByNameAsync(showNameStr, new Model.TVShowListener() {
+        listView = (ListView) findViewById(R.id.display_show_feed_list);
+        adapter = new CustomAdapter();
+        listView.setAdapter(adapter);
+        showDisplayerUpperProgressBar = (ProgressBar) findViewById(R.id.show_display_upper_progressBar);
+        showDisplayerUpperProgressBar.setVisibility(View.VISIBLE);
+        showNameTextView = (TextView) findViewById(R.id.show_display_movieName);
+        showNameTextView.setText(showNameStr);
+        Model.instance().getPostsByShowNameAsync(showNameStr, new Model.EventPostsListener() {
+            @Override
+            public void onResult(LinkedList<Post> o) {
+                if(o!=null){
+                    Collections.reverse(o);
+                    data =o ;
+                    adapter.notifyDataSetChanged();
+                    showDisplayerUpperProgressBar.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onError(String error) {Log.d("Error", "Error: " + error);}
+        });
+        Model.instance().getShowByNameAsync(showNameStr, new Model.TVShowListener()
+        {
             @Override
             public void onResult(TVShow result) {
                 show = result;
-                listView = (ListView) findViewById(R.id.display_show_feed_list);
-                adapter = new CustomAdapter();
-                listView.setAdapter(adapter);
+
                 if(!Model.Constant.isDefaultShowPic(show.getImagePath())) {
                     final ProgressBar showImagePB = (ProgressBar) findViewById(R.id.show_display_ImageProgressBar);
                     showImagePB.setVisibility(View.VISIBLE);
@@ -192,38 +193,10 @@ public class ShowDisplayerActivity extends Activity {
                         }
                     });
                 }
-                showDisplayerUpperProgressBar = (ProgressBar) findViewById(R.id.show_display_upper_progressBar);
-                showDisplayerUpperProgressBar.setVisibility(View.VISIBLE);
-                Model.instance().getPostsByShowNameAsync(showNameStr, new Model.EventPostsListener() {
-                    @Override
-                    public void onResult(LinkedList<Post> o) {
-                        if(o!=null){
-                            data = o;
-                            adapter.notifyDataSetChanged();
-                            showDisplayerUpperProgressBar.setVisibility(View.GONE);
-                        }
-                    }
-
-                    @Override
-                    public void onError(String error) {Log.d("Error", "Error: " + error);}
-                });
-
-
-                showNameTextView = (TextView) findViewById(R.id.show_display_movieName);
-                showNameTextView.setText(showNameStr);
                 episodeAndSeason = (TextView) findViewById(R.id.show_display_episode_season);
                 episodeAndSeason.setText("Season "+show.getSeason()+", "+show.getEpisode()+" episodes");
                 catagories = (TextView) findViewById(R.id.show_display_Categories);
                 catagories.setText("#"+show.getCategory());
-                summerySection = (LinearLayout) findViewById(R.id.show_display_summery_section);
-                if(show.getSummery().equals("")||show.getSummery()==null)
-                    summerySection.setVisibility(View.GONE);
-                else{
-                    summerySection.setVisibility(View.VISIBLE);
-                    summery = (TextView) findViewById(R.id.show_display_summary);
-                    summery.setText(show.getSummery());
-                }
-
             }
 
             @Override

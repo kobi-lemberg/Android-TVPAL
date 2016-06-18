@@ -13,7 +13,6 @@ public class TVShow {
     int season;
     int episode;
     String category;
-    String summery;
     String lastUpdated;
     String imagePath;
 
@@ -29,14 +28,13 @@ public class TVShow {
         this.summery = summery;
     }*/
 
-    public TVShow(String name, String mainActor,int season,int episode ,String category, String lastUpdated, String summery,String imagePath) {
+    public TVShow(String name, String mainActor,int season,int episode ,String category, String lastUpdated,String imagePath) {
         this.name = name;
         this.mainActor = mainActor;
         this.season = season;
         this.episode = episode;
         this.category = category;
         this.lastUpdated = lastUpdated;
-        this.summery = summery;
         this.imagePath = imagePath;
     }
 
@@ -49,7 +47,6 @@ public class TVShow {
                 ", season=" + season +
                 ", episode=" + episode +
                 ", category='" + category + '\'' +
-                ", summery='" + summery + '\'' +
                 ", lastUpdated='" + lastUpdated + '\'' +
                 ", imagePath='" + imagePath + '\'' +
                 '}';
@@ -107,14 +104,6 @@ public class TVShow {
 
     public void setCategory(String category) {
         this.category = category;
-    }
-
-    public String getSummery() {
-        return summery;
-    }
-
-    public void setSummery(String summery) {
-        this.summery = summery;
     }
 
     public String getImagePath() {

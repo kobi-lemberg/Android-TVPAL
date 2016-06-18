@@ -36,14 +36,14 @@ public class AddShowActivity extends Activity {
     EditText famousActors;
     EditText numberOfEpisodes;
     EditText categories;
-    EditText summary;
+   // EditText summary;
     Button save;
     Button cancel;
     TVShow show;
     EditText seasonText;
 
     Post post;
-    RatingBar ratingBar;
+   // RatingBar ratingBar;
     String fileName = Model.Constant.getDefaultShowPic();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,10 +54,14 @@ public class AddShowActivity extends Activity {
         famousActors = (EditText) findViewById(R.id.activity_addShow_famousActors);
         numberOfEpisodes = (EditText) findViewById(R.id.activity_addShow_NumberOfEpisodes);
         categories = (EditText) findViewById(R.id.activity_addShow_Categories);
+/*
         summary = (EditText) findViewById(R.id.addShow_activity_summary);
+*/
         save = (Button) findViewById(R.id.activity_add_Show_Save);
         cancel = (Button) findViewById(R.id.activity_add_show_cancel);
+/*
         ratingBar = (RatingBar) findViewById(R.id.ratingBar);
+*/
         seasonText = (EditText) findViewById(R.id.activity_addShow_NumberOfSeasons);
         showImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,10 +75,12 @@ public class AddShowActivity extends Activity {
             public void onClick(View v) {
                 int episodes = new Integer(numberOfEpisodes.getText().toString().trim());
                 int season = new Integer(seasonText.getText().toString().trim());
-                show = new TVShow(showName.getText().toString(),famousActors.getText().toString(),season,episodes, categories.getText().toString(),Model.Constant.getCurrentDate(),summary.getText().toString(),fileName);
+                show = new TVShow(showName.getText().toString(),famousActors.getText().toString(),season,episodes, categories.getText().toString(),Model.Constant.getCurrentDate(),fileName);
                 User user = Model.instance().getCurrentUser();
                 int currentPart = 0;
-                post = new Post(show.getName(), user.getEmail(),user.displayName()+" Started "+show.getName(), Model.Constant.getCurrentDate(),currentPart,false,ratingBar.getNumStars(),show);
+                int currentGrade=0;
+                //Post(String showName, String userEmail, String text, String date ,int currentPart, int grade,TVShow show)
+                post = new Post(show.getName(), user.getEmail(),user.displayName()+" Started "+show.getName(), Model.Constant.getCurrentDate(),currentPart,currentGrade,show);
                 Model.instance().createShow(((BitmapDrawable) showImage.getDrawable()).getBitmap(), show,post ,new Model.showCreatorListener() {
                     @Override
                     public void onDone() {

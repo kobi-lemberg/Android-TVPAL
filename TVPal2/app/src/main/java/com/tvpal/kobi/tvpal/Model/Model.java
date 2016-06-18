@@ -483,13 +483,13 @@ public class Model {
 
         public static String getDefaultProfilePic() {return defaultProfilePic;}
 
-        public static boolean isBiggerDate(String lhs, String rhs){
-            String[] fd = lhs.split("_");
-            String[] sd = rhs.split("_");
+        public static boolean isBiggerDate(String date1, String date2){
+            String[] fd = date1.split("_");
+            String[] sd = date2.split("_");
             long firstDate = new Long((fd[2]+fd[0]+fd[1]+fd[3]+fd[4]+fd[5]));
             Log.d("TAG","after: "+firstDate);
             long lastDate = new Long((sd[2]+sd[0]+sd[1]+sd[3]+sd[4]+sd[5]));
-            return firstDate>lastDate;
+            return (firstDate>=lastDate);
         }
     }
 
