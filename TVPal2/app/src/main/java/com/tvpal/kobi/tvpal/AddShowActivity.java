@@ -44,7 +44,7 @@ public class AddShowActivity extends Activity {
 
     Post post;
     RatingBar ratingBar;
-    String fileName = "default_show_pic";
+    String fileName = Model.Constant.getDefaultShowPic();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,13 +71,10 @@ public class AddShowActivity extends Activity {
             public void onClick(View v) {
                 int episodes = new Integer(numberOfEpisodes.getText().toString().trim());
                 int season = new Integer(seasonText.getText().toString().trim());
-//     public TVShow(String name, String mainActor,int season,int episode ,String category, String lastUpdated, String summery,String imagePath)
                 show = new TVShow(showName.getText().toString(),famousActors.getText().toString(),season,episodes, categories.getText().toString(),Model.Constant.getCurrentDate(),summary.getText().toString(),fileName);
-                // public Post(String showName, String userEmail, String text, String date ,int currentPart, boolean finished, int grade,TVShow show)
                 User user = Model.instance().getCurrentUser();
                 int currentPart = 0;
                 post = new Post(show.getName(), user.getEmail(),user.displayName()+" Started "+show.getName(), Model.Constant.getCurrentDate(),currentPart,false,ratingBar.getNumStars(),show);
-                Log.d("TAG","Adding Post: "+ post.toString());
                 Model.instance().createShow(((BitmapDrawable) showImage.getDrawable()).getBitmap(), show,post ,new Model.showCreatorListener() {
                     @Override
                     public void onDone() {

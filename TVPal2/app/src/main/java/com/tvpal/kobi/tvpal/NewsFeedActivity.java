@@ -32,6 +32,7 @@ public class NewsFeedActivity extends Activity
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news_feed);
         Log.d("TAG", "In NewsFeed Activity");
@@ -39,16 +40,6 @@ public class NewsFeedActivity extends Activity
         listView = (ListView) findViewById(R.id.news_feed_listView);
         adapter = new CustomAdapter();
         listView.setAdapter(adapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            /*Toast.makeText(getApplicationContext(), "item click " + position, Toast.LENGTH_LONG).show();
-            Intent intent = new Intent(getApplicationContext(),StudentDetailsActivity.class);
-            intent.putExtra("id",data.get(position).getShowName());
-            startActivity(intent);*/
-            }
-        });
-
         Model.instance().getAllPosts(new Model.EventPostsListener() {
             @Override
             public void onResult(LinkedList<Post> o) {
@@ -60,21 +51,6 @@ public class NewsFeedActivity extends Activity
             @Override
             public void onError(String error) {Log.d("Error", "Error: " + error);}
         });
-
-
-
-
-        //Log.d("TAG", "On Accout: " + Model.instance().getCurrentUser().toString());
-/*            Button profileBut = (Button) findViewById(R.id.activity_news_feed_button);
-            profileBut.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.d("TAG", "Clicked on profile button, MOVING TO PROFILE ACTIVITY");
-                    Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
-                    startActivity(intent);
-                }
-            });*/
-
     }
 
     @Override
@@ -134,21 +110,8 @@ public class NewsFeedActivity extends Activity
             if(convertView == null){
                 LayoutInflater inflater = getLayoutInflater();
                 convertView = inflater.inflate(R.layout.news_feed_row_layout,null);
-                /*CheckBox cb1 = (CheckBox) convertView.findViewById(R.id.checkBox);
-                cb1.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Log.d("LISTAPP", "my tag is: " + v.getTag());
-                        Student st = data.get((Integer) v.getTag());
-                        st.setChecked(!st.isChecked());
-                    }
-                });*/
-             //   currentPost = (Post) convertView.getTag();
-
-            }else
-            {
-               // currentPost = data.get(position);
             }
+            //else {// currentPost = data.get(position);}
             currentPost = data.get(position);
             final ProgressBar imageProgressbar = (ProgressBar) convertView.findViewById(R.id.news_feed_raw_user_image_progressBar);
             final TextView userNameText = (TextView) convertView.findViewById(R.id.news_feed_raw_profile_displayName);
@@ -158,6 +121,7 @@ public class NewsFeedActivity extends Activity
             RatingBar ratingBar = (RatingBar)convertView.findViewById(R.id.news_feed_raw_ratingBar);
             TextView page = (TextView)convertView.findViewById(R.id.news_feed_raw_page);
             TextView post = (TextView)convertView.findViewById(R.id.news_feed_raw_post);
+
 
             Model.instance().getUserByEmail(currentPost.getUserEmail(), new Model.UserEventPostsListener() {
                 @Override
@@ -175,13 +139,23 @@ public class NewsFeedActivity extends Activity
                                 Intent intent = new Intent(getApplicationContext(), UserDisplayerActivity.class);
                                 intent.putExtra("user", u.displayName());
                                 intent.putExtra("email", u.getEmail());
-                                intent.putExtra("pic", u.getProfilePic());
                                 startActivity(intent);
                             }
-
                         }
                     });
+                    if(!Model.Constant.isDefaultProfilePic(u.getProfilePic())){
+                        imageProgressbar.setVisibility(View.VISIBLE);
+                        Model.instance().loadImage(u.getProfilePic(), new Model.LoadImageListener() {
+                            @Override
+                            public void onResult(Bitmap imageBmp) {
+                                if (imageBmp != null) {
+                                    imageView.setImageBitmap(imageBmp);
+                                    imageProgressbar.setVisibility(View.GONE);
+                                }
+                            }
+                        });
 
+                    }
                 }
 
                 @Override
@@ -189,23 +163,15 @@ public class NewsFeedActivity extends Activity
                     userNameText.setText(error);
                 }
             });
-            if(!Model.Constant.isDefaultShowPic(currentPost.getImagePath())){
-                imageProgressbar.setVisibility(View.VISIBLE);
+/*            if(!Model.Constant.isDefaultProfilePic(currentPost.getImagePath())){
+
                 Thread t = new Thread(new Runnable() {
                     @Override
                     public void run() {
                         Model.instance().getUserByEmail(currentPost.getUserEmail(), new Model.UserEventPostsListener() {
                             @Override
                             public void onResult(User u) {
-                                Model.instance().loadImage(u.getProfilePic(), new Model.LoadImageListener() {
-                                    @Override
-                                    public void onResult(Bitmap imageBmp) {
-                                        if (imageBmp != null) {
-                                            imageView.setImageBitmap(imageBmp);
-                                            imageProgressbar.setVisibility(View.GONE);
-                                        }
-                                    }
-                                });
+
                             }
 
                             @Override
@@ -228,7 +194,7 @@ public class NewsFeedActivity extends Activity
 
 
 
-            }
+            }*/
 
             String event = currentPost.getEvent();
             userEvent.setText(event+" "+currentPost.getShowName());
@@ -252,7 +218,9 @@ public class NewsFeedActivity extends Activity
                 rated.setVisibility(View.VISIBLE);
                 ratingBar.setVisibility(View.VISIBLE);
                 page.setVisibility(View.VISIBLE);
-                ratingBar.setNumStars(currentPost.getGrade());
+
+                Log.d("TAG","set starts for "+currentPost.getShow()+": "+currentPost.getGrade());
+                ratingBar.setRating(currentPost.getGrade());
                 page.setText("Page: "+currentPost.getCurrentPart());
                 String comment = currentPost.getText();
                 if(comment!=null&&comment!="") {
@@ -265,5 +233,36 @@ public class NewsFeedActivity extends Activity
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Model.instance().getAllPosts(new Model.EventPostsListener() {
+            @Override
+            public void onResult(LinkedList<Post> o) {
+                if(o!=null) {
+                    data = o;
+                    adapter.notifyDataSetChanged();
+                }
+            }
+            @Override
+            public void onError(String error) {Log.d("Error", "Error: " + error);}
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent dataIntent) {
+        super.onActivityResult(requestCode, resultCode, dataIntent);
+        Model.instance().getAllPosts(new Model.EventPostsListener() {
+            @Override
+            public void onResult(LinkedList<Post> o) {
+                if(o!=null) {
+                    data = o;
+                    adapter.notifyDataSetChanged();
+                }
+            }
+            @Override
+            public void onError(String error) {Log.d("Error", "Error: " + error);}
+        });
+    }
 }
 

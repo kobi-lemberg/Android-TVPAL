@@ -7,38 +7,35 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
-import com.google.common.collect.Lists;
-import java.util.ArrayList;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-
-import static com.tvpal.kobi.tvpal.Model.Reversed.reversed;
 
 /**
  * Created by Kobi on 03/06/2016.
  */
 public class FireBaseModel {
 
-    public interface eventsComplitionListener
+    public interface eventsCompletionListener
     {
         public void onComplete(LinkedList<Post> o);
         public void onError(String error);
     }
 
-    public interface TVShowComplitionListener
+    public interface TVShowCompletionListener
     {
         public void onComplete(TVShow show);
         public void onError(String error);
     }
 
-    public interface PostComplitionListener
+    public interface PostCompletionListener
     {
         public void onComplete(Post post);
         public void onError(String error);
     }
 
-    public interface userEventsComplitionListener
+    public interface userEventsCompletionListener
     {
         public void onComplete(User u);
         public void onError(String error);
@@ -55,14 +52,11 @@ public class FireBaseModel {
         myFirebaseRef.createUser(u.getEmail(), u.getPassword(), new Firebase.ValueResultHandler<Map<String, Object>>() {
             @Override
             public void onSuccess(Map<String, Object> result) {
-                Firebase userRef = myFirebaseRef.child("users").child(result.get("uid").toString());
-                userRef.setValue(u);
+                myFirebaseRef.child("users").child(result.get("uid").toString()).setValue(u);
                 next.onResult(u);
-                System.out.println("Successfully created user account with uid: " + result.get("uid"));
             }
             @Override
             public void onError(FirebaseError firebaseError) {
-                Log.d("TAG:", firebaseError.toString());
                 next.onError(firebaseError.toString());
             }
         });
@@ -83,8 +77,7 @@ public class FireBaseModel {
         }
         return str;
     }
-    public String getUpdateDate()
-    {
+/*    public String getUpdateDate() {
         //child = users.
         //key = email.
         Firebase  stRef = myFirebaseRef.child("users").child(Model.instance().getCurrentUid());
@@ -106,25 +99,9 @@ public class FireBaseModel {
                 Log.d("TAG", "The read failed: " + firebaseError.getMessage());
             }
         });
-            /*Log.d("TAG","in If!");
-            Query queryLastDate = myFirebaseRef.child(child).child("email").equalTo(key);
-            queryLastDate.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot)
-                {
-                    Log.d("TAG","DataSnapShot: "+ dataSnapshot);
-                    User user = dataSnapshot.getValue(User.class);
-                    Log.d("TAG","User have been changed : "+ user.toString());
-                }
-                @Override
-                public void onCancelled(FirebaseError firebaseError) {
-                    Log.d("TAG","The read failed: " + firebaseError.getMessage());
-                }
-            });*/
-            //Firebase stRef = myFirebaseRef.child(child).child("email");
         return "false";
-    }
-    public void getAllPostsPerUser(String email,final eventsComplitionListener eventscomplitionlistener)
+    }*/
+    public void getAllPostsPerUser(String email,final eventsCompletionListener eventscomplitionlistener)
     {
         Query qr = myFirebaseRef.child("Post").orderByChild("userEmail").equalTo(email);
         qr.addValueEventListener(new ValueEventListener() {
@@ -147,7 +124,7 @@ public class FireBaseModel {
         });
     }
 
-    public void getAllPostsPerUserUniq(String email,final eventsComplitionListener eventscomplitionlistener)
+    public void getAllPostsPerUserUniq(String email,final eventsCompletionListener eventscomplitionlistener)
     {
         Query qr = myFirebaseRef.child("Post").orderByChild("userEmail").equalTo(email);
         qr.addValueEventListener(new ValueEventListener() {
@@ -157,12 +134,13 @@ public class FireBaseModel {
                 for (DataSnapshot postSnapshot : snapshot.getChildren() ){
                     Post post = postSnapshot.getValue(Post.class);
 
-                    if(!finalMap.containsKey(post.showName))
-                        finalMap.put(post.showName,post);
+                    if(!finalMap.containsKey(post.getShowName()))
+                        finalMap.put(post.getShowName(),post);
                     else{
-                        Post firstPost  = finalMap.get(post.showName);
-                        if(!Model.Constant.isBiggerDate(firstPost.date,post.date)){
-                            finalMap.put(post.showName,post);
+                        Post firstPost  = finalMap.get(post.getShowName());
+                        if(!Model.Constant.isBiggerDate(firstPost.getDate(),post.getDate())){
+                            finalMap.remove(post.getShowName());
+                            finalMap.put(post.getShowName(),post);
                         }
                     }
 
@@ -178,7 +156,7 @@ public class FireBaseModel {
         });
     }
 
-    public void getUserByEmailAsync(String email,final userEventsComplitionListener userEventscomplitionlistener)
+    public void getUserByEmailAsync(String email,final userEventsCompletionListener userEventscomplitionlistener)
     {
         Query qr = myFirebaseRef.child("users").orderByChild("email").equalTo(email);
         qr.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -197,7 +175,7 @@ public class FireBaseModel {
         });
     }
 
-    public void getAllPostsAsync(final eventsComplitionListener eventscomplitionlistener)
+    public void getAllPostsAsync(final eventsCompletionListener eventscomplitionlistener)
     {
         Query qr = myFirebaseRef.child("Post");
         qr.addValueEventListener(new ValueEventListener() {
@@ -220,7 +198,7 @@ public class FireBaseModel {
         });
     }
 
-    public void getPostsByShowNameAsync(final String showName, final eventsComplitionListener eventscomplitionlistener)
+    public void getPostsByShowNameAsync(final String showName, final eventsCompletionListener eventscomplitionlistener)
     {
         Query qr = myFirebaseRef.child("Post").orderByChild("showName").equalTo(showName);
         qr.addValueEventListener(new ValueEventListener() {
@@ -242,7 +220,7 @@ public class FireBaseModel {
         });
     }
 
-    public void getShowByNameAsync(final String showName, final TVShowComplitionListener tvShowComplitionListener)
+    public void getShowByNameAsync(final String showName, final TVShowCompletionListener tvShowComplitionListener)
     {
         myFirebaseRef.child("TVShows").child(showName).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -258,18 +236,18 @@ public class FireBaseModel {
         });
     }
 
-    public void getPostByParamsAsync(final String showName,final String date, final String text,final PostComplitionListener postComplitionListener)
+    public void getPostByParamsAsync(final String showName,final String date, final String text,final PostCompletionListener postCompletionListener)
     {
         myFirebaseRef.child("Post").child(showName+"_"+date).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Post post = dataSnapshot.getValue(Post.class);
-                postComplitionListener.onComplete(post);
+                postCompletionListener.onComplete(post);
             }
 
             @Override
             public void onCancelled(FirebaseError firebaseError) {
-                postComplitionListener.onError(firebaseError.toString());
+                postCompletionListener.onError(firebaseError.toString());
             }
         });
     }
@@ -282,15 +260,15 @@ public class FireBaseModel {
 
     }
 
-    public void createPost(final Post post,final PostComplitionListener postComplitionListener)
+    public void createPost(final Post post,final PostCompletionListener postCompletionListener)
     {
         try{
             myFirebaseRef.child("Post").child(post.getShowName()+"_"+post.getDate()).setValue(post);
-            postComplitionListener.onComplete(post);
+            postCompletionListener.onComplete(post);
         }catch (Exception e)
         {
             e.printStackTrace();
-            postComplitionListener.onError(e.toString());
+            postCompletionListener.onError(e.toString());
         }
 
     }

@@ -156,7 +156,7 @@ public class WelcomeActivity extends Activity implements WelcomeFragment.Welcome
         if(profilePicPath==null || profilePicPath.equals(""))
         {
             profilePic = BitmapFactory.decodeResource(getResources(),R.drawable.default_profile_pic);
-            profilePicPath = "defaultProfilePic";
+            profilePicPath = Model.Constant.getDefaultProfilePic();
         }
         Log.d("TAG:","Add the following user to DB");
         Log.d("USER:",email);

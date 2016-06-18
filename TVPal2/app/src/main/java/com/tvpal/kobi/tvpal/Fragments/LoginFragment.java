@@ -1,6 +1,7 @@
 package com.tvpal.kobi.tvpal.Fragments;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
@@ -66,7 +67,22 @@ public class LoginFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-/*    @Override
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(progressBar!=null)
+            progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if(progressBar!=null)
+            progressBar.setVisibility(View.GONE);
+
+    }
+
+    /*    @Override
     public void onStart() {
         getActivity().setTitle("Sign in");
         super.onStart();

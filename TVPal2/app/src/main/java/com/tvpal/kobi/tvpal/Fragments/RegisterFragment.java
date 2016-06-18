@@ -1,17 +1,8 @@
 package com.tvpal.kobi.tvpal.Fragments;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.provider.MediaStore;
-import android.support.annotation.DrawableRes;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,13 +14,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
 import com.tvpal.kobi.tvpal.Pickers.DateEditText;
 import com.tvpal.kobi.tvpal.R;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 
 public class RegisterFragment extends Fragment {
 

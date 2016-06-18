@@ -31,14 +31,13 @@ public class UserDisplayerActivity extends Activity {
     ProgressBar imageProgressBar;
     ListView listView;
     CustomAdapter adapter;
+    String userEmail;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_displayer);
 
-        String userName = getIntent().getExtras().getString("user");
-        String userEmail = getIntent().getExtras().getString("email");
-        String profilePicStr = getIntent().getExtras().getString("pic");
+        userEmail = getIntent().getExtras().getString("email");
         listView = (ListView) findViewById(R.id.user_displayer_listView);
         adapter = new CustomAdapter();
         listView.setAdapter(adapter);
@@ -66,8 +65,10 @@ public class UserDisplayerActivity extends Activity {
                 Log.d("Error", "Error: " + error);
             }
         });
+
+
         displayName = (TextView) findViewById(R.id.user_displayer_profile_name);
-        displayName.setText(userName);
+
         email = (TextView) findViewById(R.id.user_displayer_Email);
         email.setText(userEmail);
         imageProgressBar = (ProgressBar) findViewById(R.id.user_displayer_UserImageProgressBar);
@@ -76,6 +77,7 @@ public class UserDisplayerActivity extends Activity {
         Model.instance().getUserByEmail(userEmail, new Model.UserEventPostsListener() {
             @Override
             public void onResult(User u) {
+                displayName.setText(u.displayName());
                 profilePic = (ImageView) findViewById(R.id.user_displayer_activity_profile_imageView);
                 if(!Model.Constant.isDefaultProfilePic(u.getProfilePic())){
 
@@ -84,10 +86,11 @@ public class UserDisplayerActivity extends Activity {
                         public void onResult(Bitmap imageBmp) {
                             if(imageBmp!=null)
                                 profilePic.setImageBitmap(imageBmp);
-                            imageProgressBar.setVisibility(View.GONE);
                         }
                     });
                 }
+                imageProgressBar.setVisibility(View.GONE);
+
             }
 
             @Override
@@ -133,9 +136,8 @@ public class UserDisplayerActivity extends Activity {
 
             final ImageView image = (ImageView) convertView.findViewById(R.id.image_rowlayout_post);
             final ProgressBar imageProgress = (ProgressBar) convertView.findViewById(R.id.row_layout_ImageProgressBar);
-            if (!post.getImagePath().equals("default_show_pic")){
+            if (!Model.Constant.isDefaultShowPic(post.getImagePath())){
                 Log.d("TAG","list gets image " + post.getImagePath());
-
                 imageProgress.setVisibility(View.VISIBLE);
                 Model.instance().loadImage(post.getImagePath(), new Model.LoadImageListener() {
                     @Override
@@ -147,16 +149,31 @@ public class UserDisplayerActivity extends Activity {
                     }
                 });
             }
-            else
-                imageProgress.setVisibility(View.GONE);
+            else imageProgress.setVisibility(View.GONE);
 
             TextView name = (TextView) convertView.findViewById(R.id.nameTextView);
-            ProgressBar pb = (ProgressBar) convertView.findViewById(R.id.TVShow_Progress_Bar);
-            pb.setProgress(post.getProgress());
             name.setText(post.getShowName()+" ("+post.getProgress()+"%)");
             convertView.setTag(position);
             return convertView;
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Model.instance().getAllPostsPerUser(userEmail, new Model.EventPostsListener() {
+            @Override
+            public void onResult(LinkedList<Post> o) {
+                if(o!=null) {
+                    data = o;
+                    adapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onError(String error) {
+                Log.d("Error", "Error: " + error);
+            }
+        });
+    }
 }

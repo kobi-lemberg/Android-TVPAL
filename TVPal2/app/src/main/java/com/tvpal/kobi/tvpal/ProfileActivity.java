@@ -72,12 +72,8 @@ public class ProfileActivity  extends Activity{
                 Log.d("Error", "Error: " + error);
             }
         });
-
-
         Log.d("TAG", "In Profile activity.");
         Log.d("TAG","USER: "+user.toString());
-        Model.instance().getUpdateDate();
-        Log.d("TAG", "Finished.");
         imageProgressBar = (ProgressBar) findViewById(R.id.UserImageProgressBar);
 
         displayName = (TextView) findViewById(R.id.activity_profile_name);
@@ -89,8 +85,7 @@ public class ProfileActivity  extends Activity{
             Model.instance().loadImage(user.getProfilePic(), new Model.LoadImageListener() {
                 @Override
                 public void onResult(Bitmap imageBmp) {
-                    if(imageBmp!=null)
-                        profilePic.setImageBitmap(imageBmp);
+                    if(imageBmp!=null) profilePic.setImageBitmap(imageBmp);
                     imageProgressBar.setVisibility(View.INVISIBLE);
                 }
             });
@@ -103,21 +98,14 @@ public class ProfileActivity  extends Activity{
         addShowButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("TAG", "Move to ADD SHOW ACTIVITY");
                 Intent intent = new Intent(getApplicationContext(), AddShowActivity.class);
                 startActivity(intent);
             }
         });
-
-
-
-        //profilePic.setImageBitmap(user.getProfilePic());
-
         editProfile = (Button) findViewById(R.id.edit_profile_button);
         editProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("TAG", "Clicked on Edit profile button, MOVING TO Edit PROFILE ACTIVITY");
                 Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
                 startActivityForResult(intent,0);
             }
@@ -132,9 +120,23 @@ public class ProfileActivity  extends Activity{
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent dataIntent) {
         //super.onActivityResult(requestCode, resultCode, data);
-        adapter.notifyDataSetChanged();
+        Model.instance().getAllPostsPerUserUniq(user.getEmail(), new Model.EventPostsListener() {
+            @Override
+            public void onResult(LinkedList<Post> o) {
+                if(o!=null) {
+                    data = o;
+                    adapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onError(String error) {
+                Log.d("Error", "Error: " + error);
+            }
+        });
+
         if(resultCode==1) {
             user = Model.instance().getCurrentUser();
             Log.d("TAG","User Edited: "+user.toString());
@@ -164,7 +166,7 @@ public class ProfileActivity  extends Activity{
 
 
         }
-        super.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, dataIntent);
     }
 
     private void updateUser()

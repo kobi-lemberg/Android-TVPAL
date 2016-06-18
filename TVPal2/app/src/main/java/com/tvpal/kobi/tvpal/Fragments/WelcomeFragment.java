@@ -1,6 +1,5 @@
 package com.tvpal.kobi.tvpal.Fragments;
 
-
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
@@ -10,9 +9,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-
 import com.tvpal.kobi.tvpal.R;
-
 
 public class WelcomeFragment extends Fragment {
 
@@ -20,7 +17,6 @@ public class WelcomeFragment extends Fragment {
         public void getRegister();
         public void getLogin();
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
@@ -54,7 +50,4 @@ public class WelcomeFragment extends Fragment {
 */
         super.onCreateOptionsMenu(menu, inflater);
     }
-
-
-
 }

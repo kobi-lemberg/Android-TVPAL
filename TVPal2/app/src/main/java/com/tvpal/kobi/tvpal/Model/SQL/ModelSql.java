@@ -3,11 +3,8 @@ package com.tvpal.kobi.tvpal.Model.SQL;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
-
 import com.tvpal.kobi.tvpal.Model.User;
 import com.tvpal.kobi.tvpal.MyApplication;
-
 import java.util.List;
 
 /**
@@ -15,7 +12,7 @@ import java.util.List;
  */
 public class ModelSql {
 
-    private final static int VERSION =22;
+    private final static int VERSION =23;
     MyDBHelper dbHelper;
 
     public ModelSql() {

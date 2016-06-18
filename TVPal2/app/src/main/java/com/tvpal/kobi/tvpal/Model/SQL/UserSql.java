@@ -5,9 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.Nullable;
 import android.util.Log;
-
 import com.tvpal.kobi.tvpal.Model.User;
-
 import java.util.LinkedList;
 import java.util.List;
 
@@ -79,8 +77,6 @@ public class UserSql {
                 String password = cursor.getString(passwdIndex);
                 String imageName = cursor.getString(imageNameIndex);
                 String lastUpdated = cursor.getString(lastUpdatedIndex);
-                //    public User(String email, String firstName,String lastName, String birthDate, String password , String profilePic,String lastUpdated) {
-
                 list.add(new User(email,fname,lname,bDate,password,imageName,lastUpdated));
             }
             while (cursor.moveToNext());
@@ -144,7 +140,6 @@ public class UserSql {
                 String imageName = cursor.getString(imageNameIndex);
                 String lastUpdated = cursor.getString(lastUpdatedIndex);
                 return (new User(email,fname,lname,bDate,password,imageName,lastUpdated));
-                ////need to handle woth the pic
             }
         }
         return null;

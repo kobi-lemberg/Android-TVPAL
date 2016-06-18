@@ -25,7 +25,6 @@ import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -111,13 +110,17 @@ public class Model {
         modelFireBase.createUser(user, new UserCreator() {
             @Override
             public void onResult(User u) {
-                Thread t = new Thread(new Runnable() {
-                    @Override
-                    public void run() {modelCloudinary.saveImage(profilePic,user.getProfilePic());}
-                });
-                t.start();
+                if(!Constant.isDefaultProfilePic(u.getProfilePic()))
+                {
+                    Thread t = new Thread(new Runnable() {
+                        @Override
+                        public void run() {modelCloudinary.saveImage(profilePic,user.getProfilePic());}
+                    });
+                    t.start();
+                    saveImageToFile(profilePic,user.getProfilePic()); //Save profile Pic to cache
+                }
+
                 modelSql.addUser(user); //Add to SQL
-                saveImageToFile(profilePic,user.getProfilePic()); //Save profile Pic to cache
                 creatorListener.onResult(user);
             }
             @Override
@@ -209,7 +212,7 @@ public class Model {
         if(u!=null)
             userEventPostsListener.onResult(u);
        else{
-            modelFireBase.getUserByEmailAsync(email, new FireBaseModel.userEventsComplitionListener() {
+            modelFireBase.getUserByEmailAsync(email, new FireBaseModel.userEventsCompletionListener() {
                 @Override
                 public void onComplete(User u) {
                     userEventPostsListener.onResult(u);
@@ -234,32 +237,33 @@ public class Model {
             @Override
             public void onComplete(FirebaseError firebaseError, Firebase firebase) {
                 if (firebaseError == null) {
-
                     uploadImageAsync(profilePic, updated.getProfilePic(), new UploadImageListener() {
                         @Override
                         public void onResult() {
-
                             saveImageToFile(profilePic, updated.getProfilePic());
-
-                            setCurrentUser(updated, getCurrentUid());
                             listener.onDone();
                         }
                     });
                     modelSql.updateUserByID(email, updated);
+                    setCurrentUser(updated, getCurrentUid());
+
                 }
             }
         });
     }
 
 
-    public void updateUserByEmail(final String email, final User updated)
+    public void updateUserByEmail(final String email, final User updated,final UserUpdater listener)
     {
         modelFireBase.updateUser(getCurrentUid(), updated, new Firebase.CompletionListener() {
             @Override
             public void onComplete(FirebaseError firebaseError, Firebase firebase) {
-                modelSql.updateUserByID(email, updated);
-                setCurrentUser(updated, getCurrentUid());
-
+                if(firebaseError==null) {
+                    modelSql.updateUserByID(email, updated);
+                    setCurrentUser(updated, getCurrentUid());
+                    listener.onDone();
+                }
+                else Log.d("TAG","UPDATE ERROR");
             }
         });
 
@@ -282,7 +286,7 @@ public class Model {
     }
 
     public void addPost(Post post ,final PostListener PostListener){
-        modelFireBase.createPost(post, new FireBaseModel.PostComplitionListener() {
+        modelFireBase.createPost(post, new FireBaseModel.PostCompletionListener() {
             @Override
             public void onComplete(Post post) {
                 PostListener.onResult(post);
@@ -297,7 +301,7 @@ public class Model {
 
     public void getAllPostsPerUser(String email, final EventPostsListener eventpostslistener)
     {
-        modelFireBase.getAllPostsPerUser(email, new FireBaseModel.eventsComplitionListener() {
+        modelFireBase.getAllPostsPerUser(email, new FireBaseModel.eventsCompletionListener() {
             @Override
             public void onComplete(LinkedList<Post> o) {
                 eventpostslistener.onResult(o);
@@ -313,7 +317,7 @@ public class Model {
 
     public void getAllPostsPerUserUniq(String email, final EventPostsListener eventpostslistener)
     {
-        modelFireBase.getAllPostsPerUserUniq(email, new FireBaseModel.eventsComplitionListener() {
+        modelFireBase.getAllPostsPerUserUniq(email, new FireBaseModel.eventsCompletionListener() {
             @Override
             public void onComplete(LinkedList<Post> o) {
                 eventpostslistener.onResult(o);
@@ -329,7 +333,7 @@ public class Model {
 
     public void getAllPosts(final EventPostsListener eventpostslistener)
     {
-        modelFireBase.getAllPostsAsync(new FireBaseModel.eventsComplitionListener() {
+        modelFireBase.getAllPostsAsync(new FireBaseModel.eventsCompletionListener() {
             @Override
             public void onComplete(LinkedList<Post> o) {
                 eventpostslistener.onResult(o);
@@ -345,7 +349,7 @@ public class Model {
 
     public void getPostsByShowNameAsync(String showName,final EventPostsListener eventpostslistener)
     {
-        modelFireBase.getPostsByShowNameAsync(showName,new FireBaseModel.eventsComplitionListener() {
+        modelFireBase.getPostsByShowNameAsync(showName,new FireBaseModel.eventsCompletionListener() {
             @Override
             public void onComplete(LinkedList<Post> o) {
                 eventpostslistener.onResult(o);
@@ -361,7 +365,7 @@ public class Model {
 
     public void getShowByNameAsync(String showName,final TVShowListener tvShowListener)
     {
-        modelFireBase.getShowByNameAsync(showName, new FireBaseModel.TVShowComplitionListener() {
+        modelFireBase.getShowByNameAsync(showName, new FireBaseModel.TVShowCompletionListener() {
             @Override
             public void onComplete(TVShow show) {
                 tvShowListener.onResult(show);
@@ -376,7 +380,7 @@ public class Model {
 
     public void getPostByParamsAsync(String showName,String date,String text,final PostListener postListener)
     {
-        modelFireBase.getPostByParamsAsync(showName, date, text, new FireBaseModel.PostComplitionListener() {
+        modelFireBase.getPostByParamsAsync(showName, date, text, new FireBaseModel.PostCompletionListener() {
             @Override
             public void onComplete(Post post) {
                 postListener.onResult(post);
@@ -404,10 +408,10 @@ public class Model {
         return currentUid;
     }
 
-    public String getUpdateDate()
+    /*public String getUpdateDate()
     {
         return modelFireBase.getUpdateDate();
-    }
+    }*/
 
     private void saveImageToFile(Bitmap imageBitmap, String imageFileName){
         FileOutputStream fos;
