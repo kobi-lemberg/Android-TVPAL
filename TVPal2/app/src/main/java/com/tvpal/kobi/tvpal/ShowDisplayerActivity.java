@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -70,7 +72,7 @@ public class ShowDisplayerActivity extends Activity {
             final ImageView imageView = (ImageView) convertView.findViewById(R.id.news_feed_raw_profile_image);
             TextView rated = (TextView) convertView.findViewById(R.id.news_feed_raw_rated);
             RatingBar ratingBar = (RatingBar)convertView.findViewById(R.id.news_feed_raw_ratingBar);
-            TextView page = (TextView)convertView.findViewById(R.id.news_feed_raw_page);
+            TextView Episode = (TextView)convertView.findViewById(R.id.news_feed_raw_episode);
             TextView post = (TextView)convertView.findViewById(R.id.news_feed_raw_post);
             final Post currentPost = data.get(position);
 
@@ -105,7 +107,7 @@ public class ShowDisplayerActivity extends Activity {
                                 intent.putExtra("user", u.displayName());
                                 intent.putExtra("email", u.getEmail());
                                 intent.putExtra("pic", u.getProfilePic());
-                                startActivity(intent);
+                                startActivityForResult(intent,0);
                             }
                         }
                     });
@@ -125,16 +127,16 @@ public class ShowDisplayerActivity extends Activity {
 
                 rated.setVisibility(View.GONE);
                 ratingBar.setVisibility(View.GONE);
-                page.setVisibility(View.GONE);
+                Episode.setVisibility(View.GONE);
                 post.setVisibility(View.GONE);
 
             }
             else {
                 rated.setVisibility(View.VISIBLE);
                 ratingBar.setVisibility(View.VISIBLE);
-                page.setVisibility(View.VISIBLE);
+                Episode.setVisibility(View.VISIBLE);
                 ratingBar.setRating(currentPost.getGrade());
-                page.setText("Page "+currentPost.getCurrentPart());
+                Episode.setText(" episode "+currentPost.getCurrentPart());
                 String comment = currentPost.getText();
                 if(comment!=null&&!comment.equals("")) {
                     post.setVisibility(View.VISIBLE);
@@ -147,16 +149,24 @@ public class ShowDisplayerActivity extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        handelGUI();
+        if(resultCode== Model.Constant.logOut){
+            setResult(Model.Constant.logOut);
+            finish();
+        }
+        else {
+            handelGUI();
+        }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
     private void handelGUI()
     {
         showNameStr = getIntent().getStringExtra("showName");
+        setTitle(showNameStr);
         listView = (ListView) findViewById(R.id.display_show_feed_list);
         adapter = new CustomAdapter();
         listView.setAdapter(adapter);
+        listView.setClickable(false);
         showDisplayerUpperProgressBar = (ProgressBar) findViewById(R.id.show_display_upper_progressBar);
         showDisplayerUpperProgressBar.setVisibility(View.VISIBLE);
         showNameTextView = (TextView) findViewById(R.id.show_display_movieName);
@@ -211,4 +221,59 @@ public class ShowDisplayerActivity extends Activity {
         super.onResume();
         handelGUI();
     }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.show_displayer_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        /*int id = item.getItemId();
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);*/
+        Intent intent;
+        switch (item.getItemId()) {
+/*            case R.id.action_settings:
+                // User chose the "Settings" item, show the app settings UI...
+                return true;*/
+
+            case R.id.go_to_profile_from_menu:
+                intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                startActivityForResult(intent, 0);
+                return true;
+
+            case R.id.go_to_add_show_from_menu:
+                intent = new Intent(getApplicationContext(), AddShowActivity.class);
+                startActivityForResult(intent, 0);
+                return true;
+
+            case R.id.go_to_news_feed_from_menu:
+                intent = new Intent(getApplicationContext(), NewsFeedActivity.class);
+                startActivityForResult(intent, 0);
+                return true;
+
+
+            case R.id.sign_out_from_menu:
+                setResult(Model.Constant.logOut);
+                finish();
+                return true;
+
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+
 }

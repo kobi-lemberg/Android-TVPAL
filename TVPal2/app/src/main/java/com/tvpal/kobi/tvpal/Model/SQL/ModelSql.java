@@ -3,54 +3,55 @@ package com.tvpal.kobi.tvpal.Model.SQL;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import com.tvpal.kobi.tvpal.Model.Post;
+import com.tvpal.kobi.tvpal.Model.TVShow;
 import com.tvpal.kobi.tvpal.Model.User;
 import com.tvpal.kobi.tvpal.MyApplication;
-import java.util.List;
 
-/**
- * Created by Kobi on 11/05/2016.
- */
+import java.util.ArrayList;
+import java.util.LinkedList;
 public class ModelSql {
 
-    private final static int VERSION =24;
+    private final static int VERSION =33;
     MyDBHelper dbHelper;
 
-    public ModelSql() {
-        dbHelper = new MyDBHelper(MyApplication.getAppContext());
-    }
+    public ModelSql() {dbHelper = new MyDBHelper(MyApplication.getAppContext());}
 
-    public void addUser(User user) {
+    public void addUser(User user) {UserSql.addUser(dbHelper.getWritableDatabase(), user);}
 
+    public User getUserByEmail(String email) {return UserSql.getUser(dbHelper.getReadableDatabase(),email);}
+
+    public void updateUserByID(String email, User updated) {UserSql.updateUserByEmail(dbHelper.getReadableDatabase(),email,updated);}
+
+    public User authenticate(String email, String password) {return UserSql.authenticate(dbHelper.getReadableDatabase(),email,password);}
+
+    public void setLastUpdate(String tableName, String lastUpdateDate) {LastUpdateSql.setLastUpdate(dbHelper.getWritableDatabase(),tableName,lastUpdateDate);}
+
+    public String getLastUpdate(String table) {return LastUpdateSql.getLastUpdate(dbHelper.getWritableDatabase(),table);}
+
+    public void addShow(TVShow show) {TVShowSql.addShow(dbHelper.getWritableDatabase(),show);}
+
+    public void addNewPost(TVShow show, Post post) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        UserSql.addUser(db, user);
+        TVShowSql.addShow(db,show);
+        PostSql.addPost(db,post);
     }
 
-    public User getUserByEmail(String email) {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        return UserSql.getUser(db,email);
-    }
+    public void addPost(Post post) {PostSql.addPost(dbHelper.getWritableDatabase(),post);}
 
-    public List<User> getAllUsers() {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        return UserSql.getAllUsers(db);
-    }
+    public  LinkedList<Post> getAllPostsPerUser(String email) {return PostSql.getAllPostsByUser(dbHelper.getWritableDatabase(),email);}
 
-    public void delete(User u) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        UserSql.delete(db, u);
-    }
+    public LinkedList<Post> getAllPostsPerUserUniq(String email) {return PostSql.getAllPostsPerUserUniq(dbHelper.getWritableDatabase(),email);}
 
-    public void updateUserByID(String email, User updated) {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        UserSql.updateUserByEmail(db,email,updated);
-    }
+    public LinkedList<Post> getAllPosts() {return PostSql.getAllPosts(dbHelper.getWritableDatabase());}
 
-    public User authenticate(String email, String password) {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        return UserSql.authenticate(db,email,password);
+    public TVShow getShow(String showName) {return TVShowSql.getShow(dbHelper.getWritableDatabase(),showName);}
 
+    public LinkedList<Post> getPostsByShowNamw(String showName) {return PostSql.getAllPostsByShow(dbHelper.getWritableDatabase(),showName);}
 
-    }
+    public Post getPostByParams(String showName, String date, String text) {return PostSql.getAllPostsByParams(dbHelper.getWritableDatabase(),showName,date,text).getFirst();}
+
+    public ArrayList<TVShow> getAllNoneIncludesShowsForUser(String email){return PostSql.getNoneShowsForUserByPosts(dbHelper.getWritableDatabase(),email);}
 
 
     class MyDBHelper extends SQLiteOpenHelper {
@@ -63,12 +64,17 @@ public class ModelSql {
         public void onCreate(SQLiteDatabase db) {
             //create the DB schema
             UserSql.create(db);
-
+            LastUpdateSql.create(db);
+            PostSql.create(db);
+            TVShowSql.create(db);
         }
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             UserSql.drop(db);
+           LastUpdateSql.drop(db);
+        PostSql.drop(db);
+         TVShowSql.drop(db);
             onCreate(db);
         }
     }

@@ -34,6 +34,7 @@ public class EditProfileActivity extends Activity
     String profilePicPath ;
     User user = Model.instance().getCurrentUser();
     Button saveButton;
+    Button cancelButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,12 +43,15 @@ public class EditProfileActivity extends Activity
         firstName= (TextView) findViewById(R.id.activity_EditProfile_First_name);
         lastName = (TextView) findViewById(R.id.activity_EditProfile_Last_name);
         profilePic = (ImageView) findViewById(R.id.activity_Edit_profile_imageView);
-        Model.instance().loadImage(user.getProfilePic(), new Model.LoadImageListener() {
-            @Override
-            public void onResult(Bitmap imageBmp) {
-                profilePic.setImageBitmap(Model.instance().loadImageFromFile(user.getProfilePic()));
-            }
-        });
+        if(!Model.Constant.isDefaultProfilePic(user.getProfilePic()))
+        {
+            Model.instance().loadImage(user.getProfilePic(), new Model.LoadImageListener() {
+                @Override
+                public void onResult(Bitmap imageBmp) {
+                    profilePic.setImageBitmap(Model.instance().loadImageFromFile(user.getProfilePic()));
+                }
+            });
+        }
         firstName.setText(user.getFirstName());
         lastName.setText(user.getLastName());
         profilePic.setOnClickListener(new View.OnClickListener() {
@@ -83,6 +87,14 @@ public class EditProfileActivity extends Activity
                 }
             }
         });
+        cancelButton = (Button) findViewById(R.id.button_Cancel_edit_profile);
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
     }
 
     private void selectImage() {
@@ -124,36 +136,43 @@ public class EditProfileActivity extends Activity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            if (requestCode == REQUEST_CAMERA) {
-                Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
-                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
-                profilePicPath="Profile_Pic_"+ Model.Constant.getCurrentDate()+ ".jpg";
-                profilePic.setImageBitmap(thumbnail);
-            } else if (requestCode == SELECT_FILE) {
-                Uri selectedImageUri = data.getData();
-                String[] projection = {MediaStore.MediaColumns.DATA};
-                CursorLoader cursorLoader = new CursorLoader(this, selectedImageUri, projection, null, null, null);
-                Cursor cursor = cursorLoader.loadInBackground();
-                int column_index = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
-                cursor.moveToFirst();
-                String selectedImagePath = cursor.getString(column_index);
-                Bitmap bm;
-                BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inJustDecodeBounds = true;
-                BitmapFactory.decodeFile(selectedImagePath, options);
-                final int REQUIRED_SIZE = 200;
-                int scale = 1;
-                while (options.outWidth / scale / 2 >= REQUIRED_SIZE && options.outHeight / scale / 2 >= REQUIRED_SIZE)
-                    scale *= 2;
-                options.inSampleSize = scale;
-                options.inJustDecodeBounds = false;
-                bm = BitmapFactory.decodeFile(selectedImagePath, options);
-                //ivImage.setImageBitmap(bm);
-                profilePicPath="Profile_Pic_"+ Model.Constant.getCurrentDate()+ ".jpg";
-                profilePic.setImageBitmap(bm);
+        if(requestCode== Model.Constant.logOut){
+            setResult(Model.Constant.logOut);
+            finish();
+        }
+        else{
+            if (resultCode == RESULT_OK) {
+                if (requestCode == REQUEST_CAMERA) {
+                    Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
+                    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                    thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
+                    profilePicPath="Profile_Pic_"+ Model.Constant.getCurrentDate()+ ".jpg";
+                    profilePic.setImageBitmap(thumbnail);
+                } else if (requestCode == SELECT_FILE) {
+                    Uri selectedImageUri = data.getData();
+                    String[] projection = {MediaStore.MediaColumns.DATA};
+                    CursorLoader cursorLoader = new CursorLoader(this, selectedImageUri, projection, null, null, null);
+                    Cursor cursor = cursorLoader.loadInBackground();
+                    int column_index = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
+                    cursor.moveToFirst();
+                    String selectedImagePath = cursor.getString(column_index);
+                    Bitmap bm;
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+                    options.inJustDecodeBounds = true;
+                    BitmapFactory.decodeFile(selectedImagePath, options);
+                    final int REQUIRED_SIZE = 200;
+                    int scale = 1;
+                    while (options.outWidth / scale / 2 >= REQUIRED_SIZE && options.outHeight / scale / 2 >= REQUIRED_SIZE)
+                        scale *= 2;
+                    options.inSampleSize = scale;
+                    options.inJustDecodeBounds = false;
+                    bm = BitmapFactory.decodeFile(selectedImagePath, options);
+                    //ivImage.setImageBitmap(bm);
+                    profilePicPath="Profile_Pic_"+ Model.Constant.getCurrentDate()+ ".jpg";
+                    profilePic.setImageBitmap(bm);
+                }
             }
         }
+
     }
 }

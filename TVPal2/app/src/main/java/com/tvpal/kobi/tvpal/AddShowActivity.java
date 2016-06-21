@@ -15,6 +15,9 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -26,42 +29,34 @@ import com.tvpal.kobi.tvpal.Model.TVShow;
 import com.tvpal.kobi.tvpal.Model.User;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 
 public class AddShowActivity extends Activity {
 
     private static final int REQUEST_CAMERA=1;
     private static final int SELECT_FILE=2;
     ImageView showImage ;
-    EditText showName;
+    AutoCompleteTextView showName;
     EditText famousActors;
     EditText numberOfEpisodes;
     EditText categories;
-   // EditText summary;
     Button save;
     Button cancel;
     TVShow show;
     EditText seasonText;
-
     Post post;
-   // RatingBar ratingBar;
     String fileName = Model.Constant.getDefaultShowPic();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_show);
         showImage = (ImageView)findViewById(R.id.activity_addShow_imageView);
-        showName = (EditText)findViewById(R.id.activity_addShow_movieName);
         famousActors = (EditText) findViewById(R.id.activity_addShow_famousActors);
         numberOfEpisodes = (EditText) findViewById(R.id.activity_addShow_NumberOfEpisodes);
         categories = (EditText) findViewById(R.id.activity_addShow_Categories);
-/*
-        summary = (EditText) findViewById(R.id.addShow_activity_summary);
-*/
         save = (Button) findViewById(R.id.activity_add_Show_Save);
         cancel = (Button) findViewById(R.id.activity_add_show_cancel);
-/*
-        ratingBar = (RatingBar) findViewById(R.id.ratingBar);
-*/
         seasonText = (EditText) findViewById(R.id.activity_addShow_NumberOfSeasons);
         showImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,12 +88,66 @@ public class AddShowActivity extends Activity {
                         Log.d("ERROR","Catch the Exception : "+error);
                     }
                 });
-                //add this show to showDB.
-                //this user started watch this show.
+            }
+        });
 
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+
+        showName = (AutoCompleteTextView)findViewById(R.id.autoComplete);
+        Model.instance().getAutoCompletePosts(Model.instance().getCurrentUser().getEmail(), new Model.ShowListener() {
+            @Override
+            public void onDone(final ArrayList<TVShow> shows) {
+                Log.d("TAG:","GOT "+shows.size()+"shows");
+                String[] showListArr = new String[shows.size()];
+                for (int i = 0; i < shows.size(); i++) {
+                    showListArr[i] = shows.get(i).getName();
+                }
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(MyApplication.getAppContext(), android.R.layout.simple_list_item_1, showListArr);
+                showName.setAdapter(adapter);
+                showName.setThreshold(1);
+                showName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long rowId) {
+                        String showNameSelected = (String) parent.getItemAtPosition(position);
+                        Log.d("TAG", showNameSelected);
+                        for(TVShow s : shows){
+                            if(s.getName().equals(showNameSelected)){
+                                showName.setText(showNameSelected);
+                                famousActors.setText(s.getMainActor());
+                                seasonText.setText(Integer.toString(s.getSeason()));
+                                numberOfEpisodes.setText(s.getEpisode()+"");
+                                categories.setText(s.getCategory());
+                                showImage.setClickable(false);
+                                Log.d("TAG","NEED IMAGE "+ s.getImagePath());
+                                if(!Model.Constant.isDefaultShowPic(s.getImagePath())){
+                                    Model.instance().loadImage(s.getImagePath(), new Model.LoadImageListener() {
+                                        @Override
+                                        public void onResult(Bitmap imageBmp) {
+                                            showImage.setImageBitmap(imageBmp);
+                                        }
+                                    });
+                                }
+                                //break;
+                            }
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onError(String error) {
 
             }
         });
+
+
+
+
     }
 
 
@@ -145,35 +194,44 @@ public class AddShowActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            if (requestCode == REQUEST_CAMERA) {
-                Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
-                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
-                fileName="Profile_Pic_"+Model.Constant.getCurrentDate()+ ".jpg";
-                showImage.setImageBitmap(thumbnail);
-            } else if (requestCode == SELECT_FILE) {
-                Uri selectedImageUri = data.getData();
-                String[] projection = {MediaStore.MediaColumns.DATA};
-                CursorLoader cursorLoader = new CursorLoader(this, selectedImageUri, projection, null, null, null);
-                Cursor cursor = cursorLoader.loadInBackground();
-                int column_index = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
-                cursor.moveToFirst();
-                String selectedImagePath = cursor.getString(column_index);
-                Bitmap bm;
-                BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inJustDecodeBounds = true;
-                BitmapFactory.decodeFile(selectedImagePath, options);
-                final int REQUIRED_SIZE = 200;
-                int scale = 1;
-                while (options.outWidth / scale / 2 >= REQUIRED_SIZE && options.outHeight / scale / 2 >= REQUIRED_SIZE)
-                    scale *= 2;
-                options.inSampleSize = scale;
-                options.inJustDecodeBounds = false;
-                bm = BitmapFactory.decodeFile(selectedImagePath, options);
-                fileName="Profile_Pic_"+Model.Constant.getCurrentDate()+ ".jpg";
-                showImage.setImageBitmap(bm);
+        if(resultCode== Model.Constant.logOut)
+        {
+            setResult(Model.Constant.logOut);
+            finish();
+
+        }
+        else{
+            if (resultCode == RESULT_OK) {
+                if (requestCode == REQUEST_CAMERA) {
+                    Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
+                    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                    thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
+                    fileName="Profile_Pic_"+Model.Constant.getCurrentDate()+ ".jpg";
+                    showImage.setImageBitmap(thumbnail);
+                } else if (requestCode == SELECT_FILE) {
+                    Uri selectedImageUri = data.getData();
+                    String[] projection = {MediaStore.MediaColumns.DATA};
+                    CursorLoader cursorLoader = new CursorLoader(this, selectedImageUri, projection, null, null, null);
+                    Cursor cursor = cursorLoader.loadInBackground();
+                    int column_index = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
+                    cursor.moveToFirst();
+                    String selectedImagePath = cursor.getString(column_index);
+                    Bitmap bm;
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+                    options.inJustDecodeBounds = true;
+                    BitmapFactory.decodeFile(selectedImagePath, options);
+                    final int REQUIRED_SIZE = 200;
+                    int scale = 1;
+                    while (options.outWidth / scale / 2 >= REQUIRED_SIZE && options.outHeight / scale / 2 >= REQUIRED_SIZE)
+                        scale *= 2;
+                    options.inSampleSize = scale;
+                    options.inJustDecodeBounds = false;
+                    bm = BitmapFactory.decodeFile(selectedImagePath, options);
+                    fileName="Profile_Pic_"+Model.Constant.getCurrentDate()+ ".jpg";
+                    showImage.setImageBitmap(bm);
+                }
             }
         }
+
     }
 }

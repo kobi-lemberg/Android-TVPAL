@@ -1,8 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.tvpal.kobi.tvpal.NewsFeedActivity">
-
+    tools:context="com.tvpal.kobi.tvpal.ProfileActivity">
     <item android:id="@+id/go_to_profile_from_menu"
         android:title="My profile"
         app:showAsAction="ifRoom" />
@@ -11,8 +10,11 @@
         android:title="Add Show"
         app:showAsAction="ifRoom" />
 
+    <item android:id="@+id/go_to_news_feed_from_menu"
+        android:title="News Feed"
+        app:showAsAction="ifRoom" />
+
     <item android:id="@+id/sign_out_from_menu"
         android:title="Sign out"
         app:showAsAction="ifRoom" />
-
 </menu>

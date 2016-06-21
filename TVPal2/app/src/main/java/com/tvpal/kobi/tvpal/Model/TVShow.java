@@ -18,16 +18,6 @@ public class TVShow {
 
     public TVShow() {}
 
-/*    public TVShow(String id, String name, String mainActor, int episodes, String category, String lastUpdated, String summery) {
-        this.id = id;
-        this.name = name;
-        this.mainActor = mainActor;
-        this.episodes = episodes;
-        this.category = category;
-        this.lastUpdated = lastUpdated;
-        this.summery = summery;
-    }*/
-
     public TVShow(String name, String mainActor,int season,int episode ,String category, String lastUpdated,String imagePath) {
         this.name = name;
         this.mainActor = mainActor;

@@ -7,22 +7,19 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-
 import com.tvpal.kobi.tvpal.MyApplication;
 import com.tvpal.kobi.tvpal.NewsFeedActivity;
 
-/**
- * Created by Kobi on 12/04/2016.
- */
+
 public class StringDialogFragment extends DialogFragment {
     String strToShow;
-
-  /*  public StringDialogFragment(String strToShow) {
+    MyDialogInterface i;
+    public interface MyDialogInterface{
+        public void onConfirmed();
+    }
+    public void setStrToShowAndListener(String strToShow,MyDialogInterface i) {
         this.strToShow = strToShow;
-    }*/
-
-    public void setStrToShow(String strToShow) {
-        this.strToShow = strToShow;
+        this.i=i;
     }
 
     @Override
@@ -32,10 +29,10 @@ public class StringDialogFragment extends DialogFragment {
         builder.setMessage(strToShow)
                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
+
                         Log.d("SuccessDialogFragment", "SuccessDialogFragment");
-                        Intent newsFeedActivityIntent = new Intent(MyApplication.getAppContext(), NewsFeedActivity.class);
-                        startActivity(newsFeedActivityIntent);
+                        i.onConfirmed();
+                        dialog.cancel();
                     }
                 });
         builder.setCancelable(true);

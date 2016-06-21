@@ -147,10 +147,8 @@ public class Post implements Comparable<Post>{
     @Override
     @JsonIgnore
     public int compareTo(Post another) {
-        String[] first = this.getDate().split("_");
-        String[] second = another.getDate().split("_");
-        long firstDate = new Long((first[2]+first[0]+first[1]+first[3]+first[4]+first[5]));
-        long secondDate = new Long((second[2]+second[0]+second[1]+second[3]+second[4]+second[5]));
+        long firstDate = new Long(getDate());
+        long secondDate = new Long(another.getDate());
         return (int)(secondDate-firstDate);
     }
 }

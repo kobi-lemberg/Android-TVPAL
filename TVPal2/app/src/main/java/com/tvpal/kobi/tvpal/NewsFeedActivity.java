@@ -16,6 +16,8 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
+
+import com.tvpal.kobi.tvpal.Fragments.WelcomeFragment;
 import com.tvpal.kobi.tvpal.Model.Model;
 import com.tvpal.kobi.tvpal.Model.Post;
 import com.tvpal.kobi.tvpal.Model.User;
@@ -33,7 +35,7 @@ public class NewsFeedActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news_feed);
         Log.d("TAG", "In NewsFeed Activity");
-
+        setTitle("News Feed");
         listView = (ListView) findViewById(R.id.news_feed_listView);
         adapter = new CustomAdapter();
         listView.setAdapter(adapter);
@@ -41,7 +43,7 @@ public class NewsFeedActivity extends Activity
             @Override
             public void onResult(LinkedList<Post> o) {
                 if(o!=null) {
-                    Collections.sort(o);
+                    //Collections.sort(o);
                     data = o;
                     adapter.notifyDataSetChanged();
                 }
@@ -59,6 +61,13 @@ public class NewsFeedActivity extends Activity
     }
 
     @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        setResult(Model.Constant.backBtn);
+        finish();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -69,16 +78,25 @@ public class NewsFeedActivity extends Activity
             return true;
         }
         return super.onOptionsItemSelected(item);*/
-
+        Intent intent;
         switch (item.getItemId()) {
 /*            case R.id.action_settings:
                 // User chose the "Settings" item, show the app settings UI...
                 return true;*/
 
             case R.id.go_to_profile_from_menu:
-                // User chose the "Settings" item, show the app settings UI...
-                Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                intent = new Intent(getApplicationContext(), ProfileActivity.class);
                 startActivityForResult(intent, 0);
+                return true;
+
+            case R.id.go_to_add_show_from_menu:
+                intent = new Intent(getApplicationContext(), AddShowActivity.class);
+                startActivityForResult(intent, 0);
+                return true;
+
+            case R.id.sign_out_from_menu:
+                setResult(Model.Constant.logOut);
+                finish();
                 return true;
 
             default:
@@ -115,7 +133,7 @@ public class NewsFeedActivity extends Activity
             final ImageView imageView = (ImageView) convertView.findViewById(R.id.news_feed_raw_profile_image);
             TextView rated = (TextView) convertView.findViewById(R.id.news_feed_raw_rated);
             RatingBar ratingBar = (RatingBar)convertView.findViewById(R.id.news_feed_raw_ratingBar);
-            TextView page = (TextView)convertView.findViewById(R.id.news_feed_raw_page);
+            TextView episode = (TextView)convertView.findViewById(R.id.news_feed_raw_episode);
             TextView post = (TextView)convertView.findViewById(R.id.news_feed_raw_post);
 
 
@@ -135,7 +153,7 @@ public class NewsFeedActivity extends Activity
                                 Intent intent = new Intent(getApplicationContext(), UserDisplayerActivity.class);
                                 intent.putExtra("user", u.displayName());
                                 intent.putExtra("email", u.getEmail());
-                                startActivity(intent);
+                                startActivityForResult(intent,0);
                             }
                         }
                     });
@@ -166,23 +184,23 @@ public class NewsFeedActivity extends Activity
                 public void onClick(View v) {
                     Intent intent = new Intent(getApplicationContext(), ShowDisplayerActivity.class);
                     intent.putExtra("showName", currentPost.getShowName());
-                    startActivity(intent);
+                    startActivityForResult(intent,0);
                 }
             });
 
             if(!event.equals("Is On")){
                 rated.setVisibility(View.GONE);
                 ratingBar.setVisibility(View.GONE);
-                page.setVisibility(View.GONE);
+                episode.setVisibility(View.GONE);
                 post.setVisibility(View.GONE);
             }
             else {
                 rated.setVisibility(View.VISIBLE);
                 ratingBar.setVisibility(View.VISIBLE);
-                page.setVisibility(View.VISIBLE);
+                episode.setVisibility(View.VISIBLE);
                 Log.d("TAG","set starts for "+currentPost.getShow()+": "+currentPost.getGrade());
                 ratingBar.setRating(currentPost.getGrade());
-                page.setText("Page: "+currentPost.getCurrentPart());
+                episode.setText(" episode: "+currentPost.getCurrentPart());
                 String comment = currentPost.getText();
                 if(comment!=null&&!comment.equals("")) {
                     post.setVisibility(View.VISIBLE);
@@ -203,7 +221,7 @@ public class NewsFeedActivity extends Activity
             @Override
             public void onResult(LinkedList<Post> o) {
                 if(o!=null) {
-                    Collections.sort(o);
+                  //  Collections.sort(o);
                     data = o;
                     adapter.notifyDataSetChanged();
                 }
@@ -216,11 +234,17 @@ public class NewsFeedActivity extends Activity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent dataIntent) {
         super.onActivityResult(requestCode, resultCode, dataIntent);
+        if(resultCode== Model.Constant.logOut){
+            setResult(Model.Constant.logOut);
+            finish();
+        }
+
+
         Model.instance().getAllPosts(new Model.EventPostsListener() {
             @Override
             public void onResult(LinkedList<Post> o) {
                 if(o!=null) {
-                    Collections.sort(o);
+                   // Collections.sort(o);
                     data = o;
                     adapter.notifyDataSetChanged();
                 }

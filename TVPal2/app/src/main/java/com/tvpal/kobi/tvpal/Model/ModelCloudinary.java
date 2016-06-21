@@ -42,6 +42,7 @@ public class ModelCloudinary {
             }
         });
         t.start();
+
     }
 
     public Bitmap loadImage(String imageName) {

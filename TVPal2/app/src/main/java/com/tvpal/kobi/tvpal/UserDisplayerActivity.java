@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -41,15 +43,7 @@ public class UserDisplayerActivity extends Activity {
         listView = (ListView) findViewById(R.id.user_displayer_listView);
         adapter = new CustomAdapter();
         listView.setAdapter(adapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                /*Toast.makeText(getApplicationContext(), "item click " + position, Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(getApplicationContext(),StudentDetailsActivity.class);
-                intent.putExtra("id",data.get(position).getShowName());
-                startActivity(intent);*/
-            }
-        });
+        listView.setClickable(false);
 
         Model.instance().getAllPostsPerUser(userEmail, new Model.EventPostsListener() {
             @Override
@@ -78,6 +72,7 @@ public class UserDisplayerActivity extends Activity {
             @Override
             public void onResult(User u) {
                 displayName.setText(u.displayName());
+                setTitle(u.displayName()+" Profile");
                 profilePic = (ImageView) findViewById(R.id.user_displayer_activity_profile_imageView);
                 if(!Model.Constant.isDefaultProfilePic(u.getProfilePic())){
 
@@ -100,6 +95,58 @@ public class UserDisplayerActivity extends Activity {
         });
 
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.user_displayer_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        /*int id = item.getItemId();
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);*/
+        Intent intent;
+        switch (item.getItemId()) {
+/*            case R.id.action_settings:
+                // User chose the "Settings" item, show the app settings UI...
+                return true;*/
+
+            case R.id.go_to_profile_from_menu:
+                intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                startActivityForResult(intent, 0);
+                return true;
+
+            case R.id.go_to_add_show_from_menu:
+                intent = new Intent(getApplicationContext(), AddShowActivity.class);
+                startActivityForResult(intent, 0);
+                return true;
+
+            case R.id.go_to_news_feed_from_menu:
+                intent = new Intent(getApplicationContext(), NewsFeedActivity.class);
+                startActivityForResult(intent, 0);
+                return true;
+
+            case R.id.sign_out_from_menu:
+                setResult(Model.Constant.logOut);
+                finish();
+                return true;
+
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
 
 
     class CustomAdapter extends BaseAdapter {
@@ -175,5 +222,15 @@ public class UserDisplayerActivity extends Activity {
                 Log.d("Error", "Error: " + error);
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode== Model.Constant.logOut)
+        {
+            setResult(Model.Constant.logOut);
+            finish();
+        }
     }
 }

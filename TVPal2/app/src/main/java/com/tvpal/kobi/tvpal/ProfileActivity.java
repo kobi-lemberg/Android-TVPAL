@@ -2,10 +2,13 @@ package com.tvpal.kobi.tvpal;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.AvoidXfermode;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -42,6 +45,7 @@ public class ProfileActivity  extends Activity{
 
 
         user = Model.instance().getCurrentUser();
+        setTitle(user.displayName());
         listView = (ListView) findViewById(R.id.listView_activity_profile);
         adapter = new CustomAdapter();
         listView.setAdapter(adapter);
@@ -53,7 +57,7 @@ public class ProfileActivity  extends Activity{
                 intent.putExtra("showName",data.get(position).getShowName());
                 intent.putExtra("date",data.get(position).getDate());
                 intent.putExtra("text",data.get(position).getText());
-                startActivity(intent);
+                startActivityForResult(intent,0);
             }
         });
 
@@ -96,7 +100,7 @@ public class ProfileActivity  extends Activity{
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), AddShowActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent,0);
             }
         });
         editProfile = (Button) findViewById(R.id.edit_profile_button);
@@ -113,12 +117,6 @@ public class ProfileActivity  extends Activity{
     @Override
     protected void onResume() {
         super.onResume();
-        updateUser();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent dataIntent) {
-        //super.onActivityResult(requestCode, resultCode, data);
         Model.instance().getAllPostsPerUserUniq(user.getEmail(), new Model.EventPostsListener() {
             @Override
             public void onResult(LinkedList<Post> o) {
@@ -133,40 +131,85 @@ public class ProfileActivity  extends Activity{
                 Log.d("Error", "Error: " + error);
             }
         });
+        updateUser();
+    }
 
-        if(resultCode==1) {
-            user = Model.instance().getCurrentUser();
-            Log.d("TAG","User Edited: "+user.toString());
-            displayName.setText(user.displayName());
-            email.setText(user.getEmail());
-/*            if(!Model.instance().isDefaultProfilePic(user.getProfilePic())){
-                imageProgressBar.setVisibility(View.VISIBLE);
-                Model.instance().loadImage(user.getProfilePic(), new Model.LoadImageListener() {
-                    @Override
-                    public void onResult(Bitmap imageBmp) {
-                        if(imageBmp!=null)
-                            profilePic.setImageBitmap(imageBmp);
-                        imageProgressBar.setVisibility(View.INVISIBLE);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.my_profile_menu, menu);
+        return true;
+    }
 
-                    }
-                });
-            }*/
-            if(!Model.Constant.isDefaultProfilePic(user.getProfilePic())) {
-                imageProgressBar.setVisibility(View.VISIBLE);
-                Log.d("TAG","Profile Pic is different");
-                profilePic.setImageBitmap(Model.instance().loadImageFromFile(user.getProfilePic()));
-                imageProgressBar.setVisibility(View.GONE);
-            }
-            //updateUser();
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
+        switch (item.getItemId()) {
+            case R.id.go_to_news_feed_from_menu:
+                intent = new Intent(getApplicationContext(), NewsFeedActivity.class);
+                startActivityForResult(intent, 0);
+                return true;
 
+            case R.id.sign_out_from_menu:
+                setResult(Model.Constant.logOut);
+                finish();
+                return true;
 
-
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent dataIntent) {
+        //super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == Model.Constant.logOut){
+            setResult(Model.Constant.logOut);
+            finish();
+        }
+        else{
+            user = Model.instance().getCurrentUser();
+            Model.instance().getAllPostsPerUserUniq(user.getEmail(), new Model.EventPostsListener() {
+                @Override
+                public void onResult(LinkedList<Post> o) {
+                    if(o!=null) {
+                        data = o;
+                        adapter.notifyDataSetChanged();
+                    }
+                }
+
+                @Override
+                public void onError(String error) {
+                    Log.d("Error", "Error: " + error);
+                }
+            });
+
+            if(resultCode==1) {
+
+                Log.d("TAG","User Edited: "+user.toString());
+                displayName.setText(user.displayName());
+                email.setText(user.getEmail());
+                if(!Model.Constant.isDefaultProfilePic(user.getProfilePic())) {
+                    imageProgressBar.setVisibility(View.VISIBLE);
+                    Log.d("TAG","Profile Pic is different");
+                    profilePic.setImageBitmap(Model.instance().loadImageFromFile(user.getProfilePic()));
+                    imageProgressBar.setVisibility(View.GONE);
+                }
+                //updateUser();
+
+
+
+            }
+        }
+
         super.onActivityResult(requestCode, resultCode, dataIntent);
     }
 
     private void updateUser()
     {
+        Log.d("TAG","UPDATEUSER "+ Model.instance().getCurrentUser().toString());
         user = Model.instance().getCurrentUser();
         displayName.setText(user.displayName());
         email.setText(user.getEmail());
@@ -181,6 +224,8 @@ public class ProfileActivity  extends Activity{
                 }
             });
         }
+
+
     }
 
 
@@ -217,10 +262,10 @@ public class ProfileActivity  extends Activity{
 
             //id.setText(st.getId());
             //cb.setChecked(st.isChecked());
+            final ProgressBar progress = (ProgressBar) convertView.findViewById(R.id.row_layout_ImageProgressBar);
 
             if (!Model.Constant.isDefaultShowPic(post.getImagePath())) {
                 Log.d("TAG","list gets image " + post.getImagePath());
-                final ProgressBar progress = (ProgressBar) convertView.findViewById(R.id.row_layout_ImageProgressBar);
                 progress.setVisibility(View.VISIBLE);
                 Model.instance().loadImage(post.getImagePath(), new Model.LoadImageListener() {
                     @Override
@@ -232,6 +277,7 @@ public class ProfileActivity  extends Activity{
                     }
                 });
             }
+            else progress.setVisibility(View.GONE);
             return convertView;
         }
     }

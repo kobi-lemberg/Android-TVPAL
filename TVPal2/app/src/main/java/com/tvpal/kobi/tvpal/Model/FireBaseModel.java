@@ -7,7 +7,11 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
+import com.tvpal.kobi.tvpal.Model.SQL.ModelSql;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -16,6 +20,8 @@ import java.util.Map;
  * Created by Kobi on 03/06/2016.
  */
 public class FireBaseModel {
+
+
 
     public interface eventsCompletionListener
     {
@@ -26,6 +32,18 @@ public class FireBaseModel {
     public interface TVShowCompletionListener
     {
         public void onComplete(TVShow show);
+        public void onError(String error);
+    }
+
+    public interface AllTVShowsCompletionListener
+    {
+        public void onComplete(ArrayList<TVShow> show);
+        public void onError(String error);
+    }
+
+    public interface UpdateDateCompletionListener
+    {
+        public void onComplete(String updateDate);
         public void onError(String error);
     }
 
@@ -48,11 +66,16 @@ public class FireBaseModel {
         myFirebaseRef = new Firebase("https://sizzling-torch-54.firebaseio.com/");
     }
 
+    public void logOut() {
+        myFirebaseRef.unauth();
+    }
+
     public void createUser(final User u,final Model.UserCreator next) {
         myFirebaseRef.createUser(u.getEmail(), u.getPassword(), new Firebase.ValueResultHandler<Map<String, Object>>() {
             @Override
             public void onSuccess(Map<String, Object> result) {
                 myFirebaseRef.child("users").child(result.get("uid").toString()).setValue(u);
+                //child(result.get("uid").toString())
                 next.onResult(u);
             }
             @Override
@@ -129,15 +152,15 @@ public class FireBaseModel {
 
     public void getUserByEmailAsync(String email,final userEventsCompletionListener userEventscomplitionlistener)
     {
-        Query qr = myFirebaseRef.child("users").orderByChild("email").equalTo(email);
-        qr.addListenerForSingleValueEvent(new ValueEventListener() {
+        Query qr = myFirebaseRef.child(Model.Constant.usersTable).orderByChild("email").equalTo(email);
+        qr.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.d("TAG", "DataSnapShot: " + dataSnapshot);
-                User user = dataSnapshot.getValue(User.class);
-                Log.d("TAG", "User have been changed : " + user.toString());
-                //checking if date have been changed.
-                userEventscomplitionlistener.onComplete(user);
+              //  Log.d("TAG", "DataSnapShot: " + dataSnapshot.child(dataSnapshot.getKey()).child(dataSnapshot.getValue().toString()));
+                for (DataSnapshot u: dataSnapshot.getChildren()) {
+                    User user = u.getValue(User.class);
+                    userEventscomplitionlistener.onComplete(user);
+                }
             }
             @Override
             public void onCancelled(FirebaseError firebaseError) {
@@ -148,7 +171,7 @@ public class FireBaseModel {
 
     public void getAllPostsAsync(final eventsCompletionListener eventscomplitionlistener)
     {
-        Query qr = myFirebaseRef.child("Post");
+        Query qr = myFirebaseRef.child("Post").orderByChild("date");
         qr.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
@@ -159,6 +182,7 @@ public class FireBaseModel {
                     posts.add(post);
                     System.out.println(post.getShowName() + " - " + post.getUserEmail());
                 }
+                Collections.reverse(posts);
                 eventscomplitionlistener.onComplete(posts);
             }
             @Override
@@ -241,6 +265,52 @@ public class FireBaseModel {
             e.printStackTrace();
             postCompletionListener.onError(e.toString());
         }
+
+    }
+
+    public void getAllNoneIncludesShowsForUser(final String user,final AllTVShowsCompletionListener allTVShowsCompletionListener)
+    {
+        Query qr = myFirebaseRef.child("Post").orderByChild("showName");
+        qr.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                ArrayList<TVShow> shows= new ArrayList<TVShow>();
+                System.out.println("Getting all shows for user");
+                for (DataSnapshot postSnapshot: snapshot.getChildren()) {
+                    Post post = postSnapshot.getValue(Post.class);
+                    if(!post.getUserEmail().equals(user)&&!shows.contains(post.getShow()))
+                        shows.add(post.getShow());
+                    System.out.println(post.getShowName() + " -> " + post.getUserEmail());
+                }
+                allTVShowsCompletionListener.onComplete(shows);
+            }
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+                allTVShowsCompletionListener.onError(firebaseError.toString());
+            }
+        });
+    }
+
+    public void getLastUpdateDate(String tableName,final UpdateDateCompletionListener updateDateCompletionListener)
+    {
+        myFirebaseRef.child(Model.Constant.lastUpdateTable).child(tableName).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String date = dataSnapshot.getValue(String.class);
+                if(date==null|| date.equals("")) date="1";
+                updateDateCompletionListener.onComplete(date);
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {updateDateCompletionListener.onError("");}
+        });
+
+    }
+
+    public void setLastUpdateDate(String tableName,String update)
+    {
+        myFirebaseRef.child(Model.Constant.lastUpdateTable).child(tableName).setValue(update);
 
     }
 

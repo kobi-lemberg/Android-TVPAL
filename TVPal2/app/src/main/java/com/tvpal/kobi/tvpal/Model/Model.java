@@ -2,6 +2,7 @@ package com.tvpal.kobi.tvpal.Model;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.AvoidXfermode;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -12,7 +13,9 @@ import android.util.Log;
 import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.tvpal.kobi.tvpal.Model.SQL.LastUpdateSql;
 import com.tvpal.kobi.tvpal.Model.SQL.ModelSql;
+import com.tvpal.kobi.tvpal.Model.SQL.TVShowSql;
 import com.tvpal.kobi.tvpal.MyApplication;
 
 import java.io.File;
@@ -24,6 +27,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
@@ -49,6 +53,11 @@ public class Model {
 
     public interface showCreatorListener{
         public void onDone();
+        public void onError(String error);
+    }
+
+    public interface ShowListener{
+        public void onDone(ArrayList<TVShow> shows);
         public void onError(String error);
     }
 
@@ -110,8 +119,7 @@ public class Model {
         modelFireBase.createUser(user, new UserCreator() {
             @Override
             public void onResult(User u) {
-                if(!Constant.isDefaultProfilePic(u.getProfilePic()))
-                {
+                if(!Constant.isDefaultProfilePic(u.getProfilePic())) {
                     Thread t = new Thread(new Runnable() {
                         @Override
                         public void run() {modelCloudinary.saveImage(profilePic,user.getProfilePic());}
@@ -119,7 +127,7 @@ public class Model {
                     t.start();
                     saveImageToFile(profilePic,user.getProfilePic()); //Save profile Pic to cache
                 }
-
+                setLastUpdateDateOnFB(Constant.showsTable,u.getLastUpdateDate());
                 modelSql.addUser(user); //Add to SQL
                 creatorListener.onResult(user);
             }
@@ -131,20 +139,25 @@ public class Model {
         });
     }
 
-    public Boolean authenticate(final String userName, final String password, final AuthenticateListener authenticateListener)
-    {
+    public Boolean authenticate(final String userName, final String password, final AuthenticateListener authenticateListener) {
         if(MyApplication.isConnectedToNetwork()){
             Log.d("TAG:", "You have Internet, lets test your credentials via FireBase");
             modelFireBase.authenticate(userName, password, new Firebase.AuthResultHandler() {
                 @Override
                 public void onAuthenticated(AuthData authData) {
                     Log.d("TAG:","Authenticated via fireBase\n"+modelFireBase.myFirebaseRef.getAuth().toString()+"\nfetching current user");
-                    User current = modelSql.authenticate(userName,password);
-                    if(current!=null) {
-                        Log.d("TAG:","Current USER: "+current.toString());
-                        setCurrentUser(current,modelFireBase.myFirebaseRef.getAuth().getUid());
-                        authenticateListener.onAuthenticateResult(current);
-                    }
+                    getUserByEmailFromNet(userName, new UserEventPostsListener() {
+                        @Override
+                        public void onResult(User u) {
+                            Log.d("TAG","ON resault");
+                            modelSql.updateUserByID(u.getEmail(),u);
+                            setCurrentUser(u,modelFireBase.myFirebaseRef.getAuth().getUid());
+                            authenticateListener.onAuthenticateResult(u);
+                        }
+
+                        @Override
+                        public void onError(String error) {Log.d("TAG","WHEN TRYING TO GET USERNAME IN AUTHENTICATION "+error);}
+                    });
                 }
                 @Override
                 public void onAuthenticationError(FirebaseError firebaseError) {
@@ -156,8 +169,7 @@ public class Model {
         else {
             Log.d("TAG:","You dont have Intenet, Trying to fetch from SQL: "+userName+", "+ password);
             User current = modelSql.authenticate(userName,password);
-            if(current!=null)
-            {
+            if(current!=null) {
                 Log.d("TAG:"," User current: "+current.toString());
                 setCurrentUser(current, modelFireBase.myFirebaseRef.getAuth().getUid());
                 return true;
@@ -171,8 +183,10 @@ public class Model {
         AsyncTask<String,String,Bitmap> task = new AsyncTask<String, String, Bitmap >() {
             @Override
             protected Bitmap doInBackground(String... params) {
-                Bitmap bmp = loadImageFromFile(imageName);              //first try to fin the image on the device
-                if (bmp == null) {                                      //if image not found - try downloading it from parse
+                Bitmap bmp;
+                try {
+                    bmp = loadImageFromFile(imageName);
+                }catch (NullPointerException e){
                     bmp = modelCloudinary.loadImage(imageName);
                     if (bmp != null) saveImageToFile(bmp,imageName);    //save the image locally for next time
                 }
@@ -189,32 +203,55 @@ public class Model {
 
     public void uploadImageAsync(final Bitmap bitmap ,final String imageName, final UploadImageListener listener) {
         modelCloudinary.saveImage(bitmap,imageName);
+        saveImageToFile(bitmap,imageName);
         listener.onResult();
-/*
-
-        AsyncTask<String,String,String> task = new AsyncTask<String, String, String >() {
-            @Override
-            protected String doInBackground(String... params) {
-
-                return "saved";
-            }
-
-            @Override
-            protected void onPostExecute(String result) {
-                listener.onResult();
-            }
-        };
-        task.execute();*/
     }
 
-    public void getUserByEmail(String email, final UserEventPostsListener userEventPostsListener){
-       User u = modelSql.getUserByEmail(email);
-        if(u!=null)
-            userEventPostsListener.onResult(u);
-       else{
+    public void setLastUpdateDateOnFB(final String table, final String date){
+        modelFireBase.getLastUpdateDate(table, new FireBaseModel.UpdateDateCompletionListener() {
+            @Override
+            public void onComplete(String updateDate) {if(Constant.isBiggerDate(date,updateDate)) modelFireBase.setLastUpdateDate(table, date);}
+
+            @Override
+            public void onError(String error) {Log.d("TAG",error);}
+        });
+    }
+
+
+    public void getUserByEmail(final String email, final UserEventPostsListener userEventPostsListener){
+        if(email.equals(Model.instance().getCurrentUser().getEmail()))
+            userEventPostsListener.onResult(Model.instance().getCurrentUser());
+        else {
+            if(MyApplication.isConnectedToNetwork()) {
+                getUserByEmailFromNet(email, new UserEventPostsListener() {
+                    @Override
+                    public void onResult(User u) {
+                        if(Constant.isBiggerDate(u.getLastUpdateDate(),modelSql.getLastUpdate(Constant.usersTable))) modelSql.updateUserByID(u.email,u);
+                        userEventPostsListener.onResult(u);
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        User u =  modelSql.getUserByEmail(email);
+                        if (u!=null) userEventPostsListener.onResult(u);
+                        else userEventPostsListener.onError(error);
+                    }
+                });
+            }
+            else {
+                User u =  modelSql.getUserByEmail(email);
+                if (u!=null) userEventPostsListener.onResult(u);
+                else userEventPostsListener.onError("no internet and no user");
+            }
+
+        }
+    }
+
+    public void getUserByEmailFromNet(String email, final UserEventPostsListener userEventPostsListener){
             modelFireBase.getUserByEmailAsync(email, new FireBaseModel.userEventsCompletionListener() {
                 @Override
                 public void onComplete(User u) {
+                    Log.d("TAG","TEST on complete getUserByEmailFromNet");
                     userEventPostsListener.onResult(u);
                 }
 
@@ -223,14 +260,11 @@ public class Model {
                     userEventPostsListener.onError(error);
                 }
             });
-
-        }
-
-
-
     }
-    public List<User> getAllUsers(){return modelSql.getAllUsers();}
-    public void deleteUser(User u){modelSql.delete(u);}
+
+
+
+
     public void updateUserByEmailWithPic(final String email, final User updated, final Bitmap profilePic, final UserUpdater listener)
     {
         modelFireBase.updateUser(getCurrentUid(), updated, new Firebase.CompletionListener() {
@@ -244,23 +278,25 @@ public class Model {
                             listener.onDone();
                         }
                     });
+                    modelFireBase.setLastUpdateDate(Constant.usersTable, updated.getLastUpdateDate());
                     modelSql.updateUserByID(email, updated);
                     setCurrentUser(updated, getCurrentUid());
-
                 }
             }
         });
+
+
     }
 
 
-    public void updateUserByEmail(final String email, final User updated,final UserUpdater listener)
-    {
+    public void updateUserByEmail(final String email, final User updated,final UserUpdater listener) {
         modelFireBase.updateUser(getCurrentUid(), updated, new Firebase.CompletionListener() {
             @Override
             public void onComplete(FirebaseError firebaseError, Firebase firebase) {
                 if(firebaseError==null) {
                     modelSql.updateUserByID(email, updated);
                     setCurrentUser(updated, getCurrentUid());
+                    modelFireBase.setLastUpdateDate(Constant.usersTable, updated.getLastUpdateDate());
                     listener.onDone();
                 }
                 else Log.d("TAG","UPDATE ERROR");
@@ -269,18 +305,22 @@ public class Model {
 
     }
 
-    public void createShow(final Bitmap imageBitMap,final TVShow show,Post post ,final showCreatorListener showCreatorListener){
+    public void createShow(final Bitmap imageBitMap, final TVShow show, final Post post , final showCreatorListener showCreatorListener){
         modelFireBase.createShow(show, post, new ShowCreator() {
             @Override
             public void Create() {
                 try {
-                    if (!Constant.isDefaultShowPic(show.getImagePath())) {
-                        modelCloudinary.saveImage(imageBitMap, show.getImagePath());
+                    if (!Constant.isDefaultShowPic(show.getImagePath())){
+                        uploadImageAsync(imageBitMap, show.getImagePath(), new UploadImageListener() {
+                            @Override
+                            public void onResult() {}
+                        });
                     }
+
+                    modelFireBase.setLastUpdateDate(Constant.showsTable, show.getLastUpdated());
+                    modelSql.addNewPost(show,post);
                     showCreatorListener.onDone();
-                } catch (Exception e) {
-                    showCreatorListener.onError(e.toString());
-                }
+                } catch (Exception e) {showCreatorListener.onError(e.toString());}
             }
         });
     }
@@ -289,6 +329,9 @@ public class Model {
         modelFireBase.createPost(post, new FireBaseModel.PostCompletionListener() {
             @Override
             public void onComplete(Post post) {
+                modelFireBase.setLastUpdateDate(Constant.postsTable, post.getDate());
+
+                modelSql.addPost(post);
                 PostListener.onResult(post);
             }
 
@@ -299,25 +342,103 @@ public class Model {
         });
     }
 
-    public void getAllPostsPerUser(String email, final EventPostsListener eventpostslistener)
+    public void getAllPostsPerUser(final String email, final EventPostsListener eventpostslistener)
     {
-        modelFireBase.getAllPostsPerUser(email, new FireBaseModel.eventsCompletionListener() {
-            @Override
-            public void onComplete(LinkedList<Post> o) {
-                eventpostslistener.onResult(o);
-            }
+        if(email.equals(Model.instance().getCurrentUser().getEmail())) modelSql.getAllPostsPerUser(email);
+        else
+        {
+            final String lastDate = modelSql.getLastUpdate(Constant.postsTable);
+            modelFireBase.getLastUpdateDate(Constant.postsTable, new FireBaseModel.UpdateDateCompletionListener() {
+                @Override
+                public void onComplete(String updateDate) {
+                    if(!Constant.isBiggerDate(updateDate,lastDate)) eventpostslistener.onResult(modelSql.getAllPostsPerUser(email));
+                    else{
+                        modelFireBase.getAllPostsPerUser(email, new FireBaseModel.eventsCompletionListener() {
+                            @Override
+                            public void onComplete(LinkedList<Post> o) {
+                                for(Post p: o){if(Constant.isBiggerDate(p.getDate(),lastDate)) modelSql.addPost(p);}
+                                eventpostslistener.onResult(o);
 
-            @Override
-            public void onError(String error) {
-                eventpostslistener.onError(error);
-                Log.d("Error","could not read from firebase.");
-            }
-        });
+                            }
+
+                            @Override
+                            public void onError(String error) {
+                                Log.d("Error","could not read from firebase." + error);
+                                eventpostslistener.onError(error);
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void onError(String error) {
+                    Log.d("TAG","ERROR FETCHING DATE-TRYING AGAIN");
+                    modelFireBase.getAllPostsPerUser(email, new FireBaseModel.eventsCompletionListener() {
+                        @Override
+                        public void onComplete(LinkedList<Post> o) {
+                            for(Post p: o){if(Constant.isBiggerDate(p.getDate(),lastDate)) modelSql.addPost(p);}
+                            eventpostslistener.onResult(o);
+
+                        }
+
+                        @Override
+                        public void onError(String error) {
+                            Log.d("Error","could not read from firebase.");
+                            eventpostslistener.onError(error);
+
+                        }
+                    });
+                }
+            });
+        }
     }
 
-    public void getAllPostsPerUserUniq(String email, final EventPostsListener eventpostslistener)
+    public void getAllPostsPerUserUniq(final String email, final EventPostsListener eventpostslistener)
     {
-        modelFireBase.getAllPostsPerUserUniq(email, new FireBaseModel.eventsCompletionListener() {
+        final String lastDate = modelSql.getLastUpdate(Constant.postsTable);
+        if(email.equals(Model.instance().getCurrentUser().getEmail())) eventpostslistener.onResult( modelSql.getAllPostsPerUserUniq(email));
+        else {
+            modelFireBase.getLastUpdateDate(Constant.postsTable, new FireBaseModel.UpdateDateCompletionListener() {
+                @Override
+                public void onComplete(String updateDate) {
+                    if(!Constant.isBiggerDate(updateDate,lastDate)) eventpostslistener.onResult(modelSql.getAllPostsPerUserUniq(email));
+                    else{
+                        modelFireBase.getAllPostsPerUserUniq(email, new FireBaseModel.eventsCompletionListener() {
+                            @Override
+                            public void onComplete(LinkedList<Post> o) {
+                                eventpostslistener.onResult(o);
+                                for(Post p: o){if(Constant.isBiggerDate(p.getDate(),lastDate)) modelSql.addPost(p);}
+                            }
+
+                            @Override
+                            public void onError(String error) {
+                                Log.d("Error","could not read from firebase." + error);
+                                eventpostslistener.onError(error);
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void onError(String error) {
+                    Log.d("TAG","ERROR FETCHING DATE-TRYING AGAIN");
+                    modelFireBase.getAllPostsPerUserUniq(email, new FireBaseModel.eventsCompletionListener() {
+                        @Override
+                        public void onComplete(LinkedList<Post> o) {
+                            eventpostslistener.onResult(o);
+                            for(Post p: o){if(Constant.isBiggerDate(p.getDate(),lastDate)) modelSql.addPost(p);}
+                        }
+
+                        @Override
+                        public void onError(String error) {
+                            eventpostslistener.onError(error);
+                            Log.d("Error","could not read from firebase.");
+                        }
+                    });
+                }
+            });
+        }
+        /*modelFireBase.getAllPostsPerUserUniq(email, new FireBaseModel.eventsCompletionListener() {
             @Override
             public void onComplete(LinkedList<Post> o) {
                 eventpostslistener.onResult(o);
@@ -328,47 +449,141 @@ public class Model {
                 eventpostslistener.onError(error);
                 Log.d("Error","could not read from firebase.");
             }
-        });
+        });*/
     }
 
     public void getAllPosts(final EventPostsListener eventpostslistener)
     {
-        modelFireBase.getAllPostsAsync(new FireBaseModel.eventsCompletionListener() {
+        final String updated = modelSql.getLastUpdate(Constant.postsTable);
+        modelFireBase.getLastUpdateDate(Constant.postsTable, new FireBaseModel.UpdateDateCompletionListener() {
             @Override
-            public void onComplete(LinkedList<Post> o) {
-                eventpostslistener.onResult(o);
+            public void onComplete(final String updateDate) {
+                if(Constant.isBiggerDate(updateDate,updateDate)){
+                    modelFireBase.getAllPostsAsync(new FireBaseModel.eventsCompletionListener() {
+                        @Override
+                        public void onComplete(LinkedList<Post> o) {
+                            eventpostslistener.onResult(o);
+                            for (Post p:o){if(Constant.isBiggerDate(p.getDate(),updated))
+                                modelSql.addPost(p);
+                            }
+                            modelSql.setLastUpdate(Constant.postsTable,updateDate);
+
+                        }
+                        @Override
+                        public void onError(String error) {eventpostslistener.onError(error);}
+                    });
+                }
+                else eventpostslistener.onResult(modelSql.getAllPosts());
             }
 
             @Override
             public void onError(String error) {
-                eventpostslistener.onError(error);
-                Log.d("Error","could not read from firebase.");
+                Log.d("TAG","DATE ERROR "+error);
+                modelFireBase.getAllPostsAsync(new FireBaseModel.eventsCompletionListener() {
+                    @Override
+                    public void onComplete(LinkedList<Post> o) {
+                        eventpostslistener.onResult(o);
+                        for (Post p:o){if(Constant.isBiggerDate(p.getDate(),updated))
+                            modelSql.setLastUpdate(Constant.postsTable,p.getDate());
+                            modelSql.addPost(p);}
+                    }
+                    @Override
+                    public void onError(String error) {eventpostslistener.onError(error);}
+                });
             }
         });
     }
 
-    public void getPostsByShowNameAsync(String showName,final EventPostsListener eventpostslistener)
-    {
-        modelFireBase.getPostsByShowNameAsync(showName,new FireBaseModel.eventsCompletionListener() {
+    public void getAutoCompletePosts(final String email, final ShowListener showListener){
+        final String updated = modelSql.getLastUpdate(Constant.postsTable);
+        modelFireBase.getLastUpdateDate(Constant.postsTable, new FireBaseModel.UpdateDateCompletionListener() {
             @Override
-            public void onComplete(LinkedList<Post> o) {
-                eventpostslistener.onResult(o);
+            public void onComplete(String updateDate) {
+                if(Constant.isBiggerDate(updateDate,updated)){
+                    modelFireBase.getAllNoneIncludesShowsForUser(email, new FireBaseModel.AllTVShowsCompletionListener() {
+                        @Override
+                        public void onComplete(ArrayList<TVShow> show) {
+                            showListener.onDone(show);
+                        }
+
+                        @Override
+                        public void onError(String error) {
+                            showListener.onDone(modelSql.getAllNoneIncludesShowsForUser(email));
+                        }
+                    });
+                }
             }
 
             @Override
             public void onError(String error) {
-                eventpostslistener.onError(error);
-                Log.d("Error","could not read from firebase.");
+                showListener.onDone(modelSql.getAllNoneIncludesShowsForUser(email));
+            }
+        });
+    }
+
+    public void logOut(){
+        this.currentUser=null;
+        this.currentUid=null;
+        modelFireBase.logOut();
+
+    }
+
+
+
+    public void getPostsByShowNameAsync(final String showName, final EventPostsListener eventpostslistener)
+    {
+        final String updated = modelSql.getLastUpdate(Constant.postsTable);
+        modelFireBase.getLastUpdateDate(Constant.postsTable, new FireBaseModel.UpdateDateCompletionListener() {
+            @Override
+            public void onComplete(final String updateDate) {
+                if(!Constant.isBiggerDate(updateDate,updated)) eventpostslistener.onResult(modelSql.getPostsByShowNamw(showName));
+                else{
+                    modelFireBase.getPostsByShowNameAsync(showName,new FireBaseModel.eventsCompletionListener() {
+                        @Override
+                        public void onComplete(LinkedList<Post> o) {
+                            eventpostslistener.onResult(o);
+/*                            for(Post p:o) {if(Constant.isBiggerDate(p.getDate(),updated)) modelSql.addPost(p);}
+                            modelSql.setLastUpdate(Constant.postsTable,updateDate);
+                            modelSql.setLastUpdate(Constant.showsTable,updateDate);*/
+                        }
+
+                        @Override
+                        public void onError(String error) {
+                            eventpostslistener.onError(error);
+                            Log.d("Error","could not read from firebase.");
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onError(String error) {
+                modelFireBase.getPostsByShowNameAsync(showName,new FireBaseModel.eventsCompletionListener() {
+                    @Override
+                    public void onComplete(LinkedList<Post> o) {
+                        eventpostslistener.onResult(o);
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        eventpostslistener.onError(error);
+                        Log.d("Error","could not read from firebase.");
+                    }
+                });
             }
         });
     }
 
     public void getShowByNameAsync(String showName,final TVShowListener tvShowListener)
     {
-        modelFireBase.getShowByNameAsync(showName, new FireBaseModel.TVShowCompletionListener() {
+        final TVShow s = modelSql.getShow(showName);
+        if(s!=null) tvShowListener.onResult(s);
+        else{
+            modelFireBase.getShowByNameAsync(showName, new FireBaseModel.TVShowCompletionListener() {
             @Override
             public void onComplete(TVShow show) {
                 tvShowListener.onResult(show);
+                modelSql.addShow(show);
             }
 
             @Override
@@ -376,21 +591,27 @@ public class Model {
                 tvShowListener.onError(error);
             }
         });
+        }
+
     }
 
-    public void getPostByParamsAsync(String showName,String date,String text,final PostListener postListener)
-    {
-        modelFireBase.getPostByParamsAsync(showName, date, text, new FireBaseModel.PostCompletionListener() {
-            @Override
-            public void onComplete(Post post) {
-                postListener.onResult(post);
-            }
+    public void getPostByParamsAsync(final String showName, final String date, final String text, final PostListener postListener) {
+        try{
+            Post p = modelSql.getPostByParams(showName,date,text);
+            postListener.onResult(p);
+        }catch(NullPointerException e){
+            modelFireBase.getPostByParamsAsync(showName, date, text, new FireBaseModel.PostCompletionListener() {
+                @Override
+                public void onComplete(Post post) {
+                    postListener.onResult(post);
+                }
 
-            @Override
-            public void onError(String error) {
-                postListener.onError(error);
-            }
-        });
+                @Override
+                public void onError(String error) {
+                    postListener.onError(error);
+                }
+            });
+        }
     }
 
     public User getCurrentUser(){
@@ -404,14 +625,10 @@ public class Model {
         this.currentUid = id;
         Log.d("TAG","Setted user at model:" +usr.toString());
     }
+
     public String getCurrentUid(){
         return currentUid;
     }
-
-    /*public String getUpdateDate()
-    {
-        return modelFireBase.getUpdateDate();
-    }*/
 
     private void saveImageToFile(Bitmap imageBitmap, String imageFileName){
         FileOutputStream fos;
@@ -464,9 +681,15 @@ public class Model {
     }
 
     public static class Constant{
-        private static final DateFormat df = new SimpleDateFormat("MM_dd_yyyy_HH_mm_ss");
-        private static final String defaultShowPic  = "default_show_pic";
-        private static final String defaultProfilePic  = "defaultProfilePic";
+        public static final int logOut = 500;
+        public static final int backBtn = 501;
+        public static final String postsTable = "Post";
+        public static final String showsTable = "TVShows";
+        public static final String usersTable = "users";
+        public static final String lastUpdateTable = "last_update";
+        public static final String defaultShowPic  = "default_show_pic";
+        public static final String defaultProfilePic  = "defaultProfilePic";
+        private static final DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
         public static String getCurrentDate() {
             // Get the date today using Calendar object.
             Date today = Calendar.getInstance().getTime();
@@ -475,7 +698,7 @@ public class Model {
             return df.format(today);
         }
 
-        public static Boolean isDefaultShowPic(String profilePicPath) {return profilePicPath.equals(defaultProfilePic);}
+        public static Boolean isDefaultShowPic(String profilePicPath) {return profilePicPath.equals(defaultShowPic);}
 
         public static boolean isDefaultProfilePic(String picName){return picName.equals(defaultProfilePic);}
 
@@ -484,12 +707,13 @@ public class Model {
         public static String getDefaultProfilePic() {return defaultProfilePic;}
 
         public static boolean isBiggerDate(String date1, String date2){
-            String[] fd = date1.split("_");
-            String[] sd = date2.split("_");
-            long firstDate = new Long((fd[2]+fd[0]+fd[1]+fd[3]+fd[4]+fd[5]));
+            if(date1==null&&date2==null) return true;
+            if(date1==null ) return false;
+            if(date2==null) return true;
+            long firstDate = new Long(date1);
             Log.d("TAG","after: "+firstDate);
-            long lastDate = new Long((sd[2]+sd[0]+sd[1]+sd[3]+sd[4]+sd[5]));
-            return (firstDate>=lastDate);
+            long lastDate = new Long(date2);
+            return (firstDate>lastDate);
         }
     }
 

@@ -43,11 +43,13 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Show Name: "/>
-                        <EditText
+                        <AutoCompleteTextView
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:text="Game of :) "
-                            android:id="@+id/activity_addShow_movieName"/>
+                            android:id="@+id/autoComplete"
+                            android:ems="10">
+                            <requestFocus/>
+                        </AutoCompleteTextView>
                     </LinearLayout>
                 <LinearLayout
                     android:layout_width="fill_parent"
@@ -74,7 +76,8 @@
                 <EditText
                     android:layout_width="101dp"
                     android:layout_height="wrap_content"
-                    android:text=" "
+                    android:digits="0123456789"
+                    android:inputType="numberDecimal"
                     android:id="@+id/activity_addShow_NumberOfSeasons"/>
                 </LinearLayout>
                 <LinearLayout
@@ -89,7 +92,8 @@
                     <EditText
                         android:layout_width="101dp"
                         android:layout_height="wrap_content"
-                        android:text=" "
+                        android:digits="0123456789"
+                        android:inputType="numberDecimal"
                         android:id="@+id/activity_addShow_NumberOfEpisodes"/>
                 </LinearLayout>
                 <LinearLayout

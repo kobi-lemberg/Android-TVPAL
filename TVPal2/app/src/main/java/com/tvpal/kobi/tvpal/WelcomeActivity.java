@@ -58,7 +58,7 @@ public class WelcomeActivity extends Activity implements WelcomeFragment.Welcome
         {
             Log.d("TAG","CURRENT USER is not null SHOULD move to news feed");
             Intent intent = new Intent(getApplicationContext(),NewsFeedActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent,0);
         }
     }
 
@@ -94,8 +94,15 @@ public class WelcomeActivity extends Activity implements WelcomeFragment.Welcome
                 public void onAuthenticateResult(User u) {
                     Log.d("welcomeActivity", "DialogFragment    StringDialogFragment");
                     DialogFragment df = new StringDialogFragment();
-                    ((StringDialogFragment)df).setStrToShow("Welcome "+userName+", Move to News Feed");
-                    df.show(getFragmentManager(), "Success login");
+                    ((StringDialogFragment)df).setStrToShowAndListener("Welcome " + userName + ", Move to News Feed", new StringDialogFragment.MyDialogInterface() {
+                        @Override
+                        public void onConfirmed() {
+                            Intent newsFeedActivityIntent = new Intent(MyApplication.getAppContext(), NewsFeedActivity.class);
+                            startActivityForResult(newsFeedActivityIntent,0);
+                        }
+                    });
+                    try{df.show(getFragmentManager(), "Success login");}catch(Exception e){}
+
 
 
                 }
@@ -123,7 +130,6 @@ public class WelcomeActivity extends Activity implements WelcomeFragment.Welcome
 
     @Override
     public void onBackPressed() {
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
         if(loginFragment.isVisible()) {
             handleFragments(welcomeFragment,new Fragment[]{loginFragment});
         }
@@ -267,6 +273,16 @@ public class WelcomeActivity extends Activity implements WelcomeFragment.Welcome
                 String fileName="Profile_Pic_"+ Model.Constant.getCurrentDate()+ ".jpg";
                 this.registerFragment.setProfilePic(bm,fileName);
             }
+        }
+
+        else if(resultCode== Model.Constant.logOut)
+        {
+            Model.instance().logOut();
+            finish();
+        }
+        else if(resultCode== Model.Constant.backBtn)
+        {
+            super.onBackPressed();
         }
     }
 

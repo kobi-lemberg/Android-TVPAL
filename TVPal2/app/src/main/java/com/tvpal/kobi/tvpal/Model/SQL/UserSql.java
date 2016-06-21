@@ -5,6 +5,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.Nullable;
 import android.util.Log;
+
+import com.tvpal.kobi.tvpal.Model.Model;
 import com.tvpal.kobi.tvpal.Model.User;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,7 +16,7 @@ import java.util.List;
  */
 public class UserSql {
 
-    private static final String USERS_TABLE = "users";
+    private static final String USERS_TABLE = Model.Constant.usersTable;
     private static final String USERS_EMAIL = "email";
     private static final String USERS_FNAME = "firstName";
     private static final String USERS_LNAME = "lastName";

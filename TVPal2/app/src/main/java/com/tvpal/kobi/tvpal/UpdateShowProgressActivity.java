@@ -1,5 +1,6 @@
 package com.tvpal.kobi.tvpal;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.app.Activity;
@@ -36,6 +37,7 @@ public class UpdateShowProgressActivity extends Activity {
         final String showName = getIntent().getExtras().getString("showName");
         String date = getIntent().getExtras().getString("date");
         String text = getIntent().getExtras().getString("text");
+        setTitle("Update "+showName);
         Model.instance().getPostByParamsAsync(showName, date, text, new Model.PostListener() {
             @Override
             public void onResult(Post post) {
@@ -68,16 +70,23 @@ public class UpdateShowProgressActivity extends Activity {
                 fromText = (TextView) findViewById(R.id.activity_updatePost_from_Number_Of_Episodes);
                 fromText.setText("from " + current.getShow().getEpisode());
                 rate = (RatingBar) findViewById(R.id.activity_updatePost_ratingBar);
-                rate.setNumStars(post.getGrade());
+                rate.setNumStars(4);
+
                 opinion = (EditText) findViewById(R.id.activity_updatePost_activity_summary);
                 save = (Button) findViewById(R.id.activity_updatePost_Save);
                 cancel = (Button) findViewById(R.id.activity_updatePost_cancel);
+                cancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        finish();
+                    }
+                });
                 save.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         //Post(String showName, String userEmail, String text, String date ,int currentPart, boolean finished, int grade,TVShow show)
                         int seen  = Integer.parseInt(episodeSpinner.getSelectedItem().toString().trim());
-                        Post updated = new Post(current.getShowName(),current.getUserEmail(),opinion.getText().toString(), Model.Constant.getCurrentDate(),seen,rate.getNumStars(),current.getShow());
+                        Post updated = new Post(current.getShowName(),current.getUserEmail(),opinion.getText().toString(), Model.Constant.getCurrentDate(),seen,(int)rate.getRating(),current.getShow());
                         Model.instance().addPost(updated, new Model.PostListener() {
                             @Override
                             public void onResult(Post post) {
@@ -107,5 +116,15 @@ public class UpdateShowProgressActivity extends Activity {
                 Log.d("TAG",error);
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode== Model.Constant.logOut)
+        {
+            setResult(Model.Constant.logOut);
+            finish();
+        }
     }
 }

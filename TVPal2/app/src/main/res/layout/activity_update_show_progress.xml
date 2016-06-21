@@ -79,7 +79,7 @@
                     android:layout_height="wrap_content"
                     android:numStars="4"
                     android:stepSize="1.0"
-                    android:rating="2.0" />
+                    android:rating="0.0" />
             </LinearLayout>
 
         </LinearLayout>
