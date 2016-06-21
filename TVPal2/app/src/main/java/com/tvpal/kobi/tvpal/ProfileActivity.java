@@ -2,7 +2,6 @@ package com.tvpal.kobi.tvpal;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.AvoidXfermode;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;

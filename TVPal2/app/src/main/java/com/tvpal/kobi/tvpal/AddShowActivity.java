@@ -6,6 +6,7 @@ import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -21,13 +22,10 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RatingBar;
-
 import com.tvpal.kobi.tvpal.Model.Model;
 import com.tvpal.kobi.tvpal.Model.Post;
 import com.tvpal.kobi.tvpal.Model.TVShow;
 import com.tvpal.kobi.tvpal.Model.User;
-
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
@@ -52,7 +50,10 @@ public class AddShowActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_show);
         showImage = (ImageView)findViewById(R.id.activity_addShow_imageView);
-        famousActors = (EditText) findViewById(R.id.activity_addShow_famousActors);
+        Resources res = getResources();
+        final int color = res.getColor(android.R.color.black);
+        //showImage.set
+                famousActors = (EditText) findViewById(R.id.activity_addShow_famousActors);
         numberOfEpisodes = (EditText) findViewById(R.id.activity_addShow_NumberOfEpisodes);
         categories = (EditText) findViewById(R.id.activity_addShow_Categories);
         save = (Button) findViewById(R.id.activity_add_Show_Save);
@@ -108,8 +109,9 @@ public class AddShowActivity extends Activity {
                 for (int i = 0; i < shows.size(); i++) {
                     showListArr[i] = shows.get(i).getName();
                 }
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(MyApplication.getAppContext(), android.R.layout.simple_list_item_1, showListArr);
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(MyApplication.getAppContext(), android.R.layout.simple_dropdown_item_1line, showListArr);
                 showName.setAdapter(adapter);
+                showName.setTextColor(color);
                 showName.setThreshold(1);
                 showName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     public void onItemClick(AdapterView<?> parent, View view, int position, long rowId) {

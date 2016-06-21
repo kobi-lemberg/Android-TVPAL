@@ -10,18 +10,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import com.tvpal.kobi.tvpal.Model.Model;
 import com.tvpal.kobi.tvpal.Model.Post;
 import com.tvpal.kobi.tvpal.Model.User;
-
 import java.util.LinkedList;
 import java.util.List;
 

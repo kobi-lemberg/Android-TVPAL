@@ -62,7 +62,6 @@ public class ModelSql {
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-            //create the DB schema
             UserSql.create(db);
             LastUpdateSql.create(db);
             PostSql.create(db);
@@ -71,10 +70,14 @@ public class ModelSql {
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            UserSql.drop(db);
-           LastUpdateSql.drop(db);
-        PostSql.drop(db);
-         TVShowSql.drop(db);
+            try{UserSql.drop(db);
+            }catch (Exception e){e.printStackTrace();}
+            try{LastUpdateSql.drop(db);
+            }catch (Exception e){e.printStackTrace();}
+            try{PostSql.drop(db);
+            }catch (Exception e){e.printStackTrace();}
+            try{TVShowSql.drop(db);
+            }catch (Exception e){e.printStackTrace();}
             onCreate(db);
         }
     }

@@ -183,14 +183,25 @@ public class Model {
         AsyncTask<String,String,Bitmap> task = new AsyncTask<String, String, Bitmap >() {
             @Override
             protected Bitmap doInBackground(String... params) {
-                Bitmap bmp;
-                try {
-                    bmp = loadImageFromFile(imageName);
-                }catch (NullPointerException e){
+                Bitmap bmp = null;
+                try {bmp = loadImageFromFile(imageName);}catch (Exception e){}
+                if(bmp==null) {
+                    Log.d("TAG","no file, run loadImageFromCloudinary");
                     bmp = modelCloudinary.loadImage(imageName);
-                    if (bmp != null) saveImageToFile(bmp,imageName);    //save the image locally for next time
+                    if(bmp==null){
+                        Log.d("TAG","In catch, cloudinary didnt do job so return null");
+                        return bmp;
+                    }
+                    else {
+                        saveImageToFile(bmp,imageName);
+                        return bmp;
+                    }
                 }
-                return bmp;
+                else{
+                    Log.d("TAG","Bitmap is from cache ");
+                    return bmp;
+                }
+
             }
 
             @Override
@@ -661,22 +672,19 @@ public class Model {
     }
 
     public Bitmap loadImageFromFile(String imageFileName){
-        String str = null;
         Bitmap bitmap = null;
         try {
             File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
             File imageFile = new File(dir,imageFileName);
 
             //File dir = context.getExternalFilesDir(null);
+            if(!imageFile.exists())
+                return null;
             InputStream inputStream = new FileInputStream(imageFile);
             bitmap = BitmapFactory.decodeStream(inputStream);
             Log.d("tag","got image from cache: " + imageFileName);
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (FileNotFoundException e) {e.printStackTrace();}
         return bitmap;
     }
 

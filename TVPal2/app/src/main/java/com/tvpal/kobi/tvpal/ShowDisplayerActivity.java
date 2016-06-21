@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
@@ -21,7 +20,6 @@ import com.tvpal.kobi.tvpal.Model.Model;
 import com.tvpal.kobi.tvpal.Model.Post;
 import com.tvpal.kobi.tvpal.Model.TVShow;
 import com.tvpal.kobi.tvpal.Model.User;
-
 import java.util.Collections;
 import java.util.LinkedList;
 

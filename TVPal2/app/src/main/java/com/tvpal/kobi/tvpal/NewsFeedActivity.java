@@ -16,8 +16,6 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
-
-import com.tvpal.kobi.tvpal.Fragments.WelcomeFragment;
 import com.tvpal.kobi.tvpal.Model.Model;
 import com.tvpal.kobi.tvpal.Model.Post;
 import com.tvpal.kobi.tvpal.Model.User;
@@ -168,8 +166,8 @@ public class NewsFeedActivity extends Activity
                                 }
                             }
                         });
-
                     }
+                    else imageProgressbar.setVisibility(View.GONE);
                 }
 
                 @Override

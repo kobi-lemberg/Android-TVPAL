@@ -19,7 +19,6 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.widget.Toast;
-
 import com.tvpal.kobi.tvpal.Dialogs.StringDialogFragment;
 import com.tvpal.kobi.tvpal.Fragments.LoginFragment;
 import com.tvpal.kobi.tvpal.Fragments.RegisterFragment;

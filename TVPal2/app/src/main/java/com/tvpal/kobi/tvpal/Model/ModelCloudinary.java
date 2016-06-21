@@ -3,10 +3,8 @@ package com.tvpal.kobi.tvpal.Model;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
-
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -48,6 +46,7 @@ public class ModelCloudinary {
     public Bitmap loadImage(String imageName) {
         URL url = null;
         try {
+            Log.d("TAG","Bring from cloudinary");
             url = new URL(cloudinary.url().generate(imageName));
             Log.d("TAG", "load image from url" + url);
             Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
