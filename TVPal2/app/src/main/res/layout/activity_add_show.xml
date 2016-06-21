@@ -23,7 +23,7 @@
                 android:layout_width="96dp"
                 android:layout_height="124dp"
                 android:id="@+id/activity_addShow_imageView"
-                android:src="@drawable/default_show_pic"
+                android:src="@drawable/add_show_image"
                 android:layout_gravity="center_horizontal" />
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -39,6 +39,7 @@
                             android:layout_height="wrap_content"
                             android:text="Show Name: "/>
                         <AutoCompleteTextView
+                            android:textColor="#FFFFFF"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:id="@+id/autoComplete"

@@ -61,6 +61,7 @@
 
                     <TextView
                         android:textColor="#FFFFFF"
+
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Seen"/>
@@ -69,7 +70,7 @@
                         android:id="@+id/activity_updatePost_dropdown"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@android:drawable/btn_dropdown"
+                        android:background="#000000"
                         android:spinnerMode="dropdown" />
 
                     <TextView
@@ -98,31 +99,40 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
                 android:text="Your opinion about last shows"/>
             <EditText
+                android:textColor="#FFFFFF"
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_height="192dp"
                 android:id="@+id/activity_updatePost_activity_summary"
                 />
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_alignParentBottom="true">
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Save"
+                    android:id="@+id/activity_updatePost_Save"
+                    android:layout_alignParentRight="true"/>
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cancel"
+                    android:id="@+id/activity_updatePost_cancel"
+                    android:layout_alignParentLeft="true"/>
+            </RelativeLayout>
 
         </LinearLayout>
+
+
     </LinearLayout>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Save"
-        android:id="@+id/activity_updatePost_Save"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="280dp" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Cancel"
-        android:id="@+id/activity_updatePost_cancel"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="259dp" />
+
 
 </RelativeLayout>

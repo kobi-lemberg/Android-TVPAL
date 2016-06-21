@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 public class ModelSql {
 
-    private final static int VERSION =33;
+    private final static int VERSION =34;
     MyDBHelper dbHelper;
 
     public ModelSql() {dbHelper = new MyDBHelper(MyApplication.getAppContext());}

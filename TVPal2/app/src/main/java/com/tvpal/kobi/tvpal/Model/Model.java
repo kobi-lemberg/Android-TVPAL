@@ -161,7 +161,7 @@ public class Model {
                 }
                 @Override
                 public void onAuthenticationError(FirebaseError firebaseError) {
-                    Log.d("TAG:","Authentication error via FireBase");
+                    Log.d("TAG:","Authentication error via FireBase" +firebaseError.toString() );
                     authenticateListener.onAuthenticateError(firebaseError.toString());
                 }
             });
@@ -328,8 +328,9 @@ public class Model {
                         });
                     }
 
-                    modelFireBase.setLastUpdateDate(Constant.showsTable, show.getLastUpdated());
-                    modelSql.addNewPost(show,post);
+                    modelFireBase.setLastUpdateDate(Constant.showsTable, post.getDate());
+                    modelFireBase.setLastUpdateDate(Constant.postsTable, post.getDate());
+                    //modelSql.addNewPost(show,post);
                     showCreatorListener.onDone();
                 } catch (Exception e) {showCreatorListener.onError(e.toString());}
             }
@@ -342,7 +343,7 @@ public class Model {
             public void onComplete(Post post) {
                 modelFireBase.setLastUpdateDate(Constant.postsTable, post.getDate());
 
-                modelSql.addPost(post);
+                //modelSql.addPost(post);
                 PostListener.onResult(post);
             }
 
@@ -355,15 +356,19 @@ public class Model {
 
     public void getAllPostsPerUser(final String email, final EventPostsListener eventpostslistener)
     {
-        if(email.equals(Model.instance().getCurrentUser().getEmail())) modelSql.getAllPostsPerUser(email);
-        else
-        {
+        //if(email.equals(Model.instance().getCurrentUser().getEmail())) modelSql.getAllPostsPerUser(email);
+        //else
+        //{
             final String lastDate = modelSql.getLastUpdate(Constant.postsTable);
             modelFireBase.getLastUpdateDate(Constant.postsTable, new FireBaseModel.UpdateDateCompletionListener() {
                 @Override
                 public void onComplete(String updateDate) {
-                    if(!Constant.isBiggerDate(updateDate,lastDate)) eventpostslistener.onResult(modelSql.getAllPostsPerUser(email));
+                    if(!Constant.isBiggerDate(updateDate,lastDate)){
+                        Log.d("TAG","getAllPostsPerUser from SQL");
+                        eventpostslistener.onResult(modelSql.getAllPostsPerUser(email));
+                    }
                     else{
+                        Log.d("TAG","getAllPostsPerUser from fireBase");
                         modelFireBase.getAllPostsPerUser(email, new FireBaseModel.eventsCompletionListener() {
                             @Override
                             public void onComplete(LinkedList<Post> o) {
@@ -401,14 +406,14 @@ public class Model {
                     });
                 }
             });
-        }
+        //}
     }
 
     public void getAllPostsPerUserUniq(final String email, final EventPostsListener eventpostslistener)
     {
         final String lastDate = modelSql.getLastUpdate(Constant.postsTable);
-        if(email.equals(Model.instance().getCurrentUser().getEmail())) eventpostslistener.onResult( modelSql.getAllPostsPerUserUniq(email));
-        else {
+       // if(email.equals(Model.instance().getCurrentUser().getEmail())) eventpostslistener.onResult( modelSql.getAllPostsPerUserUniq(email));
+        //else {
             modelFireBase.getLastUpdateDate(Constant.postsTable, new FireBaseModel.UpdateDateCompletionListener() {
                 @Override
                 public void onComplete(String updateDate) {
@@ -448,7 +453,7 @@ public class Model {
                     });
                 }
             });
-        }
+       // }
         /*modelFireBase.getAllPostsPerUserUniq(email, new FireBaseModel.eventsCompletionListener() {
             @Override
             public void onComplete(LinkedList<Post> o) {
@@ -475,6 +480,7 @@ public class Model {
                         public void onComplete(LinkedList<Post> o) {
                             eventpostslistener.onResult(o);
                             for (Post p:o){if(Constant.isBiggerDate(p.getDate(),updated))
+                                Log.d("TAG",p.getDate()+"is greater then "+updated+" adding to sql");
                                 modelSql.addPost(p);
                             }
                             modelSql.setLastUpdate(Constant.postsTable,updateDate);
@@ -549,6 +555,7 @@ public class Model {
             public void onComplete(final String updateDate) {
                 if(!Constant.isBiggerDate(updateDate,updated)) eventpostslistener.onResult(modelSql.getPostsByShowNamw(showName));
                 else{
+                    Log.d("TAG","NEED FROM FB");
                     modelFireBase.getPostsByShowNameAsync(showName,new FireBaseModel.eventsCompletionListener() {
                         @Override
                         public void onComplete(LinkedList<Post> o) {

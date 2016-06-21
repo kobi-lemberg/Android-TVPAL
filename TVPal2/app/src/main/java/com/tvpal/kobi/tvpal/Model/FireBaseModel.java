@@ -160,6 +160,7 @@ public class FireBaseModel {
                 for (DataSnapshot u: dataSnapshot.getChildren()) {
                     User user = u.getValue(User.class);
                     userEventscomplitionlistener.onComplete(user);
+                    break;
                 }
             }
             @Override

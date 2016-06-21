@@ -214,12 +214,12 @@ public class NewsFeedActivity extends Activity
 
     @Override
     protected void onResume() {
-        super.onResume();
+
         Model.instance().getAllPosts(new Model.EventPostsListener() {
             @Override
             public void onResult(LinkedList<Post> o) {
                 if(o!=null) {
-                  //  Collections.sort(o);
+                    // Collections.sort(o);
                     data = o;
                     adapter.notifyDataSetChanged();
                 }
@@ -227,6 +227,7 @@ public class NewsFeedActivity extends Activity
             @Override
             public void onError(String error) {Log.d("Error", "Error: " + error);}
         });
+        super.onResume();
     }
 
     @Override
@@ -238,18 +239,7 @@ public class NewsFeedActivity extends Activity
         }
 
 
-        Model.instance().getAllPosts(new Model.EventPostsListener() {
-            @Override
-            public void onResult(LinkedList<Post> o) {
-                if(o!=null) {
-                   // Collections.sort(o);
-                    data = o;
-                    adapter.notifyDataSetChanged();
-                }
-            }
-            @Override
-            public void onError(String error) {Log.d("Error", "Error: " + error);}
-        });
+
     }
 }
 

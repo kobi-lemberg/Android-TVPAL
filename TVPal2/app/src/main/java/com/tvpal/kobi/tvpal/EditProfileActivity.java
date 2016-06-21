@@ -22,6 +22,8 @@ import com.tvpal.kobi.tvpal.Model.User;
 
 import java.io.ByteArrayOutputStream;
 
+import static com.tvpal.kobi.tvpal.R.id.activity_Edit_profile_small_cam_pic;
+
 public class EditProfileActivity extends Activity
 {
     private static final int REQUEST_CAMERA=1;
@@ -41,6 +43,7 @@ public class EditProfileActivity extends Activity
         firstName= (TextView) findViewById(R.id.activity_EditProfile_First_name);
         lastName = (TextView) findViewById(R.id.activity_EditProfile_Last_name);
         profilePic = (ImageView) findViewById(R.id.activity_Edit_profile_imageView);
+        ImageView smallCamera = (ImageView) findViewById(activity_Edit_profile_small_cam_pic);
         if(!Model.Constant.isDefaultProfilePic(user.getProfilePic()))
         {
             Model.instance().loadImage(user.getProfilePic(), new Model.LoadImageListener() {
@@ -58,7 +61,12 @@ public class EditProfileActivity extends Activity
                 selectImage();
             }
         });
-
+        smallCamera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectImage();
+            }
+        });
 
         saveButton = (Button) findViewById(R.id.button_Save_edit_profile);
         saveButton.setOnClickListener(new View.OnClickListener() {

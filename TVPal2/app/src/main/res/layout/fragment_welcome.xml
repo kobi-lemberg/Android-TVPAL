@@ -6,7 +6,12 @@
     tools:context="com.tvpal.kobi.tvpal.Fragments.WelcomeFragment">
 
     <!-- TODO: Update blank fragment layout -->
-
+    <ImageView
+        android:paddingTop="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/logo_tvpal"/>
 
     <LinearLayout
         android:layout_marginTop="240dp"

@@ -43,15 +43,24 @@ public class PostSql {
     }
 
     public static void addPost(SQLiteDatabase db, Post p) {
-        ContentValues values = new ContentValues();
-        values.put(SHOW_NAME, p.getShowName());
-        values.put(USER_MAIL, p.getUserEmail());
-        values.put(POST_TEXT, p.getText());
-        values.put(POST_DATE, p.getDate());
-        values.put(POST_PART, p.getCurrentPart());
-        values.put(POST_GRADE, p.getGrade());
-        db.insert(POST_TABLE, null, values);
-        TVShowSql.addShow(db,p.getShow());
+        boolean flag=true;
+        for(Post candidate: getAllPostsByTimeStamp(db,p.getDate())){
+            if(candidate.equals(p));
+            flag=false;
+        }
+        if(flag)
+        {
+            ContentValues values = new ContentValues();
+            values.put(SHOW_NAME, p.getShowName());
+            values.put(USER_MAIL, p.getUserEmail());
+            values.put(POST_TEXT, p.getText());
+            values.put(POST_DATE, p.getDate());
+            values.put(POST_PART, p.getCurrentPart());
+            values.put(POST_GRADE, p.getGrade());
+            db.insert(POST_TABLE, null, values);
+            TVShowSql.addShow(db,p.getShow());
+        }
+
     }
 
     public static void drop(SQLiteDatabase db)  {db.execSQL("drop table " + POST_TABLE);}
@@ -98,6 +107,30 @@ public class PostSql {
                 int grade = cursor.getInt(gradeIDX);
                 TVShow show = TVShowSql.getShow(db,name);
                 list.add(new Post(name,email,txt,date,part,grade,show));
+            } while (cursor.moveToNext());
+        }
+        return list;
+    }
+
+    @Nullable
+    public static LinkedList<Post> getAllPostsByTimeStamp(SQLiteDatabase db,String date) {
+        Cursor cursor = db.query(POST_TABLE,  null, POST_DATE+" = ?",new String[]{date}, null, null,null );
+        LinkedList<Post> list = new LinkedList<Post>();
+        if (cursor.moveToFirst()) {
+            int nameIDX = cursor.getColumnIndex(SHOW_NAME);
+            int emailIDX = cursor.getColumnIndex(USER_MAIL);
+            int textIDX = cursor.getColumnIndex(POST_TEXT);
+            int dateIDX = cursor.getColumnIndex(POST_DATE);
+            int partIDX = cursor.getColumnIndex(POST_PART);
+            int gradeIDX = cursor.getColumnIndex(POST_GRADE);
+            do {
+                String name = cursor.getString(nameIDX);
+                String txt = cursor.getString(textIDX);
+                String mail = cursor.getString(emailIDX);
+                int part = cursor.getInt(partIDX);
+                int grade = cursor.getInt(gradeIDX);
+                TVShow show = TVShowSql.getShow(db,name);
+                list.add(new Post(name,mail,txt,date,part,grade,show));
             } while (cursor.moveToNext());
         }
         return list;
