@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/transparent"
     tools:context="com.tvpal.kobi.tvpal.Fragments.LoginFragment">
     <LinearLayout
         android:layout_marginLeft="8dp"
@@ -14,7 +15,7 @@
             android:layout_width="fill_parent"
             android:layout_weight="3"
             android:layout_height="wrap_content"
-            android:src="@drawable/iconwithlogo"
+            android:src="@drawable/logo_tvpal"
             android:id="@+id/icon_with_logo_imageView"/>
         <ProgressBar
             style="?android:attr/progressBarStyleLarge"
@@ -37,12 +38,15 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:textColor="#FFFFFF"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text="Email: "/>
 
                 <EditText
+                    android:backgroundTint="@android:color/white"
+                    android:textColor="#FFFFFF"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/fragment_login_editText_userEmail"
@@ -57,6 +61,7 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:textColor="#FFFFFF"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
@@ -66,9 +71,9 @@
                     />
 
                 <EditText
-
+                    android:backgroundTint="@android:color/white"
+                    android:textColor="#FFFFFF"
                     android:layout_width="fill_parent"
-
                     android:layout_height="wrap_content"
                     android:password="true"
                     android:id="@+id/fragment_login_editText_password"
@@ -78,8 +83,6 @@
             </LinearLayout>
 
         </LinearLayout>
-
-
         <Button
             android:layout_marginTop="50dp"
             android:layout_width="wrap_content"

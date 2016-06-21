@@ -7,14 +7,8 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@drawable/movie"
     tools:context="com.tvpal.kobi.tvpal.ProfileActivity">
-<!--    <ProgressBar
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/upperProgressBar"
-        style="@android:style/Widget.Holo.ProgressBar.Horizontal"
-        android:indeterminate="true" />-->
-
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="fill_parent"
@@ -52,49 +46,40 @@
                     android:text=" A"
                     android:id="@+id/activity_profile_name"/>
                     <TextView
+                        android:textColor="#FFFFFF"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:textAppearance="?android:attr/textAppearanceLarge"
                         android:text=" A"
                         android:id="@+id/activity_profile_Email"/>
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <Button
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/edit_profile_button"
-                        android:text="Edit Profile"/>
-
-                    <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Add Show"
-                        android:id="@+id/button_profile_activity_add_Show"
-                        android:layout_gravity="right" />
+                        android:orientation="horizontal">
+                        <Button
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/edit_profile_button"
+                            android:text="Edit Profile"/>
+                        <Button
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Add Show"
+                            android:id="@+id/button_profile_activity_add_Show"
+                            android:layout_gravity="right" />
+                    </LinearLayout>
                 </LinearLayout>
-
-        </LinearLayout>
-
-
-
-
-
-
-        </LinearLayout>
-
-        <LinearLayout
+            </LinearLayout>
+            <LinearLayout
             android:orientation="horizontal"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
-
             <ListView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/listView_activity_profile"
                 android:layout_weight="1" />
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
-</RelativeLayout>
+    </RelativeLayout>

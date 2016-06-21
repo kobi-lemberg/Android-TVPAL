@@ -53,11 +53,12 @@
                     android:layout_toEndOf="@+id/rowImageFrame"
                     android:layout_margin="10px"
                     android:clickable="true"
-                    android:textColor="@color/colorPrimaryDark"
+                    android:textColor="#9f5aea58"
                     android:focusable="false"/>
                 <!--android:onClick="onClickUsername"-->
 
                 <TextView
+                    android:textColor="#FFFFFF"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
@@ -74,6 +75,7 @@
                     android:id="@+id/ratingAndStatusSection"
                     android:weightSum="1">
                     <TextView
+                        android:textColor="#FFFFFF"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/news_feed_raw_rated"
@@ -91,6 +93,7 @@
                         android:stepSize="1.0"
                         android:rating="2.0" />
                     <TextView
+                        android:textColor="#FFFFFF"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/news_feed_raw_episode"
@@ -100,6 +103,7 @@
             </LinearLayout>
     </LinearLayout>
     <TextView
+        android:textColor="#FFFFFF"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/news_feed_raw_post"

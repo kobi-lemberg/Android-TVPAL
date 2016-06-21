@@ -1,22 +1,10 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@android:color/transparent"
     android:layout_height="match_parent"
     tools:context="com.tvpal.kobi.tvpal.Fragments.RegisterFragment">
-<!--    <ProgressBar
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/progressBar"
-        android:layout_gravity="center_horizontal"
-        android:visibility="invisible"
-        android:indeterminate="false" />-->
-<!--    <ProgressBar
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/fragment_register_progressBar"
-        android:indeterminate="true"
-        android:visibility="invisible" />-->
+
     <ProgressBar
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -29,9 +17,6 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="vertical">
-
-
-
 
         <ImageView
             android:layout_marginTop="16dp"
@@ -48,12 +33,15 @@
             android:orientation="horizontal">
 
             <TextView
+                android:textColor="#FFFFFF"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="Email: "/>
 
             <EditText
+                android:backgroundTint="@android:color/white"
+                android:textColor="#FFFFFF"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/fragment_register_editText_email"
@@ -66,12 +54,15 @@
             android:orientation="horizontal">
 
             <TextView
+                android:textColor="#FFFFFF"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="First name: "/>
 
             <EditText
+                android:backgroundTint="@android:color/white"
+                android:textColor="#FFFFFF"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/fragment_register_editText_firstName"
@@ -84,12 +75,15 @@
             android:orientation="horizontal">
 
             <TextView
+                android:textColor="#FFFFFF"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="Last name: "/>
 
             <EditText
+                android:backgroundTint="@android:color/white"
+                android:textColor="#FFFFFF"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/fragment_register_editText_lastName"
@@ -102,11 +96,14 @@
             android:orientation="horizontal">
 
             <TextView
+                android:textColor="#FFFFFF"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="Birth date: "/>
             <com.tvpal.kobi.tvpal.Pickers.DateEditText
+                android:backgroundTint="@android:color/white"
+                android:textColor="#FFFFFF"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
@@ -118,11 +115,14 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
             <TextView
+                android:textColor="#FFFFFF"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="Password: " />
             <EditText
+                android:backgroundTint="@android:color/white"
+                android:textColor="#FFFFFF"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:password="true"
@@ -135,11 +135,14 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
             <TextView
+                android:textColor="#FFFFFF"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="Password Confirm: " />
             <EditText
+                android:backgroundTint="@android:color/white"
+                android:textColor="#FFFFFF"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:password="true"

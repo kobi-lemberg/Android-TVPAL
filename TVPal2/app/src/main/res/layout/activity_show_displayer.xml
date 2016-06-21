@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:paddingLeft="10dp"
     android:paddingRight="10dp"
+    android:background="@drawable/movie"
     tools:context="com.tvpal.kobi.tvpal.ShowDisplayerActivity">
     <ProgressBar
         android:layout_width="fill_parent"
@@ -12,15 +13,12 @@
         android:id="@+id/show_display_upper_progressBar"
         style="@android:style/Widget.Holo.ProgressBar.Horizontal"
         android:paddingBottom="10dp"
-
         android:indeterminate="true" />
-
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/linearLayout">
-
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="fill_parent"
@@ -42,13 +40,13 @@
                     android:indeterminate="true"
                     android:visibility="gone" />
             </FrameLayout>
-
             <LinearLayout
                 android:paddingTop="15dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
                 <TextView
+                    android:textColor="#FFFFFF"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textStyle="bold"
                     android:layout_width="fill_parent"
@@ -56,18 +54,19 @@
                     android:text="Game of :) "
                     android:id="@+id/show_display_movieName"/>
                 <TextView
+                    android:textColor="#FFFFFF"
                     android:layout_marginTop="10dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/show_display_episode_season"
                     android:text="Season 5, 52 Episodes"/>
                 <TextView
+                    android:textColor="#FFFFFF"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Categories "
                     android:id="@+id/show_display_Categories"/>
             </LinearLayout>
-
         </LinearLayout>
         <ListView
             android:layout_width="fill_parent"
@@ -75,8 +74,5 @@
             android:id="@+id/display_show_feed_list"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true" />
-    </LinearLayout>
-
-
-
-</RelativeLayout>
+        </LinearLayout>
+    </RelativeLayout>
