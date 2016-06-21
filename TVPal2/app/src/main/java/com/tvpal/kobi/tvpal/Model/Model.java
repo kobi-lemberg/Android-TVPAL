@@ -458,7 +458,7 @@ public class Model {
         modelFireBase.getLastUpdateDate(Constant.postsTable, new FireBaseModel.UpdateDateCompletionListener() {
             @Override
             public void onComplete(final String updateDate) {
-                if(Constant.isBiggerDate(updateDate,updateDate)){
+                if(Constant.isBiggerDate(updateDate,updated)){
                     modelFireBase.getAllPostsAsync(new FireBaseModel.eventsCompletionListener() {
                         @Override
                         public void onComplete(LinkedList<Post> o) {
