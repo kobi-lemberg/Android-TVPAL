@@ -3,6 +3,9 @@ package com.tvpal.kobi.tvpal;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -41,7 +44,6 @@ public class NewsFeedActivity extends Activity
             @Override
             public void onResult(LinkedList<Post> o) {
                 if(o!=null) {
-                    //Collections.sort(o);
                     data = o;
                     adapter.notifyDataSetChanged();
                 }
@@ -53,7 +55,6 @@ public class NewsFeedActivity extends Activity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.news_feed_menu, menu);
         return true;
     }
@@ -67,20 +68,8 @@ public class NewsFeedActivity extends Activity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        /*int id = item.getItemId();
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);*/
         Intent intent;
         switch (item.getItemId()) {
-/*            case R.id.action_settings:
-                // User chose the "Settings" item, show the app settings UI...
-                return true;*/
 
             case R.id.go_to_profile_from_menu:
                 intent = new Intent(getApplicationContext(), ProfileActivity.class);
@@ -98,8 +87,6 @@ public class NewsFeedActivity extends Activity
                 return true;
 
             default:
-                // If we got here, the user's action was not recognized.
-                // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
         }
     }
@@ -162,12 +149,16 @@ public class NewsFeedActivity extends Activity
                             public void onResult(Bitmap imageBmp) {
                                 if (imageBmp != null) {
                                     imageView.setImageBitmap(imageBmp);
-                                    imageProgressbar.setVisibility(View.GONE);
+
                                 }
+                                imageProgressbar.setVisibility(View.GONE);
                             }
                         });
                     }
-                    else imageProgressbar.setVisibility(View.GONE);
+                    else {
+                        imageProgressbar.setVisibility(View.GONE);
+                    }
+
                 }
 
                 @Override

@@ -3,6 +3,7 @@ package com.tvpal.kobi.tvpal;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,6 +38,7 @@ public class ProfileActivity  extends Activity{
     Button addShowButton;
     ListView listView;
     CustomAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,7 +79,6 @@ public class ProfileActivity  extends Activity{
         Log.d("TAG", "In Profile activity.");
         Log.d("TAG","USER: "+user.toString());
         imageProgressBar = (ProgressBar) findViewById(R.id.UserImageProgressBar);
-
         displayName = (TextView) findViewById(R.id.activity_profile_name);
         email = (TextView) findViewById(R.id.activity_profile_Email);
         profilePic = (ImageView) findViewById(R.id.activity_profile_imageView);
@@ -110,7 +111,6 @@ public class ProfileActivity  extends Activity{
                 startActivityForResult(intent,0);
             }
         });
-
     }
 
     @Override
@@ -163,7 +163,6 @@ public class ProfileActivity  extends Activity{
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent dataIntent) {
-        //super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == Model.Constant.logOut){
             setResult(Model.Constant.logOut);
             finish();
@@ -186,7 +185,6 @@ public class ProfileActivity  extends Activity{
             });
 
             if(resultCode==1) {
-
                 Log.d("TAG","User Edited: "+user.toString());
                 displayName.setText(user.displayName());
                 email.setText(user.getEmail());
@@ -196,13 +194,8 @@ public class ProfileActivity  extends Activity{
                     profilePic.setImageBitmap(Model.instance().loadImageFromFile(user.getProfilePic()));
                     imageProgressBar.setVisibility(View.GONE);
                 }
-                //updateUser();
-
-
-
             }
         }
-
         super.onActivityResult(requestCode, resultCode, dataIntent);
     }
 
@@ -223,8 +216,6 @@ public class ProfileActivity  extends Activity{
                 }
             });
         }
-
-
     }
 
 
@@ -254,15 +245,7 @@ public class ProfileActivity  extends Activity{
             Post post = data.get(position);
             name.setText(post.getShowName()+" ("+post.getProgress()+"%)");
             pb.setProgress(post.getProgress());
-            /*TextView id = (TextView) convertView.findViewById(R.id.idTextView);
-            final CheckBox cb = (CheckBox) convertView.findViewById(R.id.checkBox);
-            cb.setTag(new Integer(position));*/
-
-
-            //id.setText(st.getId());
-            //cb.setChecked(st.isChecked());
             final ProgressBar progress = (ProgressBar) convertView.findViewById(R.id.row_layout_ImageProgressBar);
-
             if (!Model.Constant.isDefaultShowPic(post.getImagePath())) {
                 Log.d("TAG","list gets image " + post.getImagePath());
                 progress.setVisibility(View.VISIBLE);
@@ -273,14 +256,16 @@ public class ProfileActivity  extends Activity{
                             image.setImageBitmap(imageBmp);
                             progress.setVisibility(View.GONE);
                         }
+
                     }
                 });
             }
-            else progress.setVisibility(View.GONE);
+            else {
+                progress.setVisibility(View.GONE);
+            }
             return convertView;
         }
     }
-
 }
 
 

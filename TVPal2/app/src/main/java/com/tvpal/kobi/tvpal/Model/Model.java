@@ -529,6 +529,9 @@ public class Model {
                         }
                     });
                 }
+                else{
+                    showListener.onDone(modelSql.getAllNoneIncludesShowsForUser(email));
+                }
             }
 
             @Override

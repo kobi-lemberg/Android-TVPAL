@@ -2,6 +2,7 @@ package com.tvpal.kobi.tvpal;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.app.Activity;
 import android.util.Log;
@@ -30,17 +31,16 @@ public class UserDisplayerActivity extends Activity {
     ListView listView;
     CustomAdapter adapter;
     String userEmail;
+   // Bitmap defaultBitmap= BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.default_show_pic);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_displayer);
-
         userEmail = getIntent().getExtras().getString("email");
         listView = (ListView) findViewById(R.id.user_displayer_listView);
         adapter = new CustomAdapter();
         listView.setAdapter(adapter);
         listView.setClickable(false);
-
         Model.instance().getAllPostsPerUser(userEmail, new Model.EventPostsListener() {
             @Override
             public void onResult(LinkedList<Post> o) {
@@ -55,15 +55,11 @@ public class UserDisplayerActivity extends Activity {
                 Log.d("Error", "Error: " + error);
             }
         });
-
-
         displayName = (TextView) findViewById(R.id.user_displayer_profile_name);
-
         email = (TextView) findViewById(R.id.user_displayer_Email);
         email.setText(userEmail);
         imageProgressBar = (ProgressBar) findViewById(R.id.user_displayer_UserImageProgressBar);
         imageProgressBar.setVisibility(View.VISIBLE);
-
         Model.instance().getUserByEmail(userEmail, new Model.UserEventPostsListener() {
             @Override
             public void onResult(User u) {
@@ -81,7 +77,6 @@ public class UserDisplayerActivity extends Activity {
                     });
                 }
                 imageProgressBar.setVisibility(View.GONE);
-
             }
 
             @Override
@@ -101,20 +96,9 @@ public class UserDisplayerActivity extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        /*int id = item.getItemId();
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);*/
+
         Intent intent;
         switch (item.getItemId()) {
-/*            case R.id.action_settings:
-                // User chose the "Settings" item, show the app settings UI...
-                return true;*/
 
             case R.id.go_to_profile_from_menu:
                 intent = new Intent(getApplicationContext(), ProfileActivity.class);
@@ -137,8 +121,6 @@ public class UserDisplayerActivity extends Activity {
                 return true;
 
             default:
-                // If we got here, the user's action was not recognized.
-                // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
         }
     }
@@ -163,15 +145,6 @@ public class UserDisplayerActivity extends Activity {
             if(convertView == null){
                 LayoutInflater inflater = getLayoutInflater();
                 convertView = inflater.inflate(R.layout.row_layout,null);
-                /*CheckBox cb1 = (CheckBox) convertView.findViewById(R.id.checkBox);
-                cb1.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Log.d("LISTAPP", "my tag is: " + v.getTag());
-                        Student st = data.get((Integer) v.getTag());
-                        st.setChecked(!st.isChecked());
-                    }
-                });*/
             }
             Post post = data.get(position);
             final ProgressBar progress = (ProgressBar) convertView.findViewById(R.id.TVShow_Progress_Bar);
@@ -192,7 +165,9 @@ public class UserDisplayerActivity extends Activity {
                     }
                 });
             }
-            else imageProgress.setVisibility(View.GONE);
+            else{
+                imageProgress.setVisibility(View.GONE);
+            }
 
             TextView name = (TextView) convertView.findViewById(R.id.nameTextView);
             name.setText(post.getShowName()+" ("+post.getProgress()+"%)");

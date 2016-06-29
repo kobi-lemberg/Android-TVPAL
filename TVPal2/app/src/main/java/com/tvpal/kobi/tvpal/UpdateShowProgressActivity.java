@@ -71,7 +71,6 @@ public class UpdateShowProgressActivity extends Activity {
                 fromText.setText("from " + current.getShow().getEpisode());
                 rate = (RatingBar) findViewById(R.id.activity_updatePost_ratingBar);
                 rate.setNumStars(4);
-
                 opinion = (EditText) findViewById(R.id.activity_updatePost_activity_summary);
                 save = (Button) findViewById(R.id.activity_updatePost_Save);
                 cancel = (Button) findViewById(R.id.activity_updatePost_cancel);
@@ -84,7 +83,6 @@ public class UpdateShowProgressActivity extends Activity {
                 save.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        //Post(String showName, String userEmail, String text, String date ,int currentPart, boolean finished, int grade,TVShow show)
                         int seen  = Integer.parseInt(episodeSpinner.getSelectedItem().toString().trim());
                         Post updated = new Post(current.getShowName(),current.getUserEmail(),opinion.getText().toString(), Model.Constant.getCurrentDate(),seen,(int)rate.getRating(),current.getShow());
                         Model.instance().addPost(updated, new Model.PostListener() {
@@ -95,9 +93,7 @@ public class UpdateShowProgressActivity extends Activity {
                             }
 
                             @Override
-                            public void onError(String error) {
-
-                            }
+                            public void onError(String error) {}
                         });
                     }
                 });
@@ -108,7 +104,6 @@ public class UpdateShowProgressActivity extends Activity {
                         finish();
                     }
                 });
-
             }
 
             @Override
@@ -121,8 +116,7 @@ public class UpdateShowProgressActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode== Model.Constant.logOut)
-        {
+        if(requestCode== Model.Constant.logOut) {
             setResult(Model.Constant.logOut);
             finish();
         }

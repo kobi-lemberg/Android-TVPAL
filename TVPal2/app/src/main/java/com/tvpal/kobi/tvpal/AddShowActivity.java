@@ -52,8 +52,7 @@ public class AddShowActivity extends Activity {
         showImage = (ImageView)findViewById(R.id.activity_addShow_imageView);
         Resources res = getResources();
         final int color = res.getColor(android.R.color.black);
-        //showImage.set
-                famousActors = (EditText) findViewById(R.id.activity_addShow_famousActors);
+        famousActors = (EditText) findViewById(R.id.activity_addShow_famousActors);
         numberOfEpisodes = (EditText) findViewById(R.id.activity_addShow_NumberOfEpisodes);
         categories = (EditText) findViewById(R.id.activity_addShow_Categories);
         save = (Button) findViewById(R.id.activity_add_Show_Save);
@@ -75,7 +74,6 @@ public class AddShowActivity extends Activity {
                 User user = Model.instance().getCurrentUser();
                 int currentPart = 0;
                 int currentGrade=0;
-                //Post(String showName, String userEmail, String text, String date ,int currentPart, int grade,TVShow show)
                 post = new Post(show.getName(), user.getEmail(),user.displayName()+" Started "+show.getName(), Model.Constant.getCurrentDate(),currentPart,currentGrade,show);
                 Model.instance().createShow(((BitmapDrawable) showImage.getDrawable()).getBitmap(), show,post ,new Model.showCreatorListener() {
                     @Override
@@ -99,7 +97,6 @@ public class AddShowActivity extends Activity {
             }
         });
 
-
         showName = (AutoCompleteTextView)findViewById(R.id.autoComplete);
         Model.instance().getAutoCompletePosts(Model.instance().getCurrentUser().getEmail(), new Model.ShowListener() {
             @Override
@@ -109,9 +106,9 @@ public class AddShowActivity extends Activity {
                 for (int i = 0; i < shows.size(); i++) {
                     showListArr[i] = shows.get(i).getName();
                 }
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(MyApplication.getAppContext(), android.R.layout.simple_dropdown_item_1line, showListArr);
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(MyApplication.getAppContext(), android.R.layout.simple_list_item_1, showListArr);
                 showName.setAdapter(adapter);
-                showName.setTextColor(color);
+                //showName.setTextColor(color);
                 showName.setThreshold(1);
                 showName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     public void onItemClick(AdapterView<?> parent, View view, int position, long rowId) {
@@ -134,7 +131,6 @@ public class AddShowActivity extends Activity {
                                         }
                                     });
                                 }
-                                //break;
                             }
                         }
                     }
@@ -142,9 +138,7 @@ public class AddShowActivity extends Activity {
             }
 
             @Override
-            public void onError(String error) {
-
-            }
+            public void onError(String error) {}
         });
 
 
