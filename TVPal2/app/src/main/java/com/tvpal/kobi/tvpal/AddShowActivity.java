@@ -106,10 +106,12 @@ public class AddShowActivity extends Activity {
                 for (int i = 0; i < shows.size(); i++) {
                     showListArr[i] = shows.get(i).getName();
                 }
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(MyApplication.getAppContext(), android.R.layout.simple_list_item_1, showListArr);
+
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(MyApplication.getAppContext(), R.layout.style, showListArr);
                 showName.setAdapter(adapter);
                 //showName.setTextColor(color);
                 showName.setThreshold(1);
+
                 showName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     public void onItemClick(AdapterView<?> parent, View view, int position, long rowId) {
                         String showNameSelected = (String) parent.getItemAtPosition(position);

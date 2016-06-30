@@ -9,6 +9,7 @@ import com.tvpal.kobi.tvpal.Model.User;
 import com.tvpal.kobi.tvpal.MyApplication;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 public class ModelSql {
 
@@ -43,7 +44,12 @@ public class ModelSql {
 
     public LinkedList<Post> getAllPostsPerUserUniq(String email) {return PostSql.getAllPostsPerUserUniq(dbHelper.getWritableDatabase(),email);}
 
-    public LinkedList<Post> getAllPosts() {return PostSql.getAllPosts(dbHelper.getWritableDatabase());}
+    public LinkedList<Post> getAllPosts() {
+        LinkedList<Post> posts = PostSql.getAllPosts(dbHelper.getWritableDatabase());
+        Collections.sort(posts);
+
+        return posts;
+    }
 
     public TVShow getShow(String showName) {return TVShowSql.getShow(dbHelper.getWritableDatabase(),showName);}
 
