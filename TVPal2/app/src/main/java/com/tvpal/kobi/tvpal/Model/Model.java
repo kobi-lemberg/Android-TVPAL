@@ -718,7 +718,11 @@ public class Model {
 
         public static Boolean isDefaultShowPic(String profilePicPath) {return profilePicPath.equals(defaultShowPic);}
 
-        public static boolean isDefaultProfilePic(String picName){return picName.equals(defaultProfilePic);}
+        public static boolean isDefaultProfilePic(String picName){
+            Log.d("TAG","Profile pic: "+picName);
+            Log.d("TAG","is default Profile pic?: "+picName.equals(defaultProfilePic));
+            return picName.equals(defaultProfilePic);
+        }
 
         public static String getDefaultShowPic() {return defaultShowPic;}
 

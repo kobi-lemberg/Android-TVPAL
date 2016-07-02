@@ -31,6 +31,7 @@ public class NewsFeedActivity extends Activity
     ListView listView;
     CustomAdapter adapter;
     LinkedList<Post> data = new LinkedList<Post>();
+    Bitmap defaultBitmap= BitmapFactory.decodeResource(MyApplication.getAppContext().getResources(), R.drawable.default_profile_pic);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -143,19 +144,23 @@ public class NewsFeedActivity extends Activity
                         }
                     });
                     if(!Model.Constant.isDefaultProfilePic(u.getProfilePic())){
+                        Log.d("TAG",u.displayName()+" profilePic "+u.getProfilePic());
                         imageProgressbar.setVisibility(View.VISIBLE);
                         Model.instance().loadImage(u.getProfilePic(), new Model.LoadImageListener() {
                             @Override
                             public void onResult(Bitmap imageBmp) {
                                 if (imageBmp != null) {
                                     imageView.setImageBitmap(imageBmp);
-
+                                }
+                                else{
+                                    imageView.setImageBitmap(defaultBitmap);
                                 }
                                 imageProgressbar.setVisibility(View.GONE);
                             }
                         });
                     }
                     else {
+                        imageView.setImageBitmap(defaultBitmap);
                         imageProgressbar.setVisibility(View.GONE);
                     }
 
