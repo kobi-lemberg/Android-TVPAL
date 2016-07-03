@@ -234,20 +234,61 @@ public class Model {
             userEventPostsListener.onResult(Model.instance().getCurrentUser());
         else {
             if(MyApplication.isConnectedToNetwork()) {
-                getUserByEmailFromNet(email, new UserEventPostsListener() {
-                    @Override
-                    public void onResult(User u) {
-                        if(Constant.isBiggerDate(u.getLastUpdateDate(),modelSql.getLastUpdate(Constant.usersTable))) modelSql.updateUserByID(u.email,u);
-                        userEventPostsListener.onResult(u);
-                    }
+                final String updated = modelSql.getLastUpdate(Constant.usersTable);
+                if(updated!=null&&updated!=""){
+                    modelFireBase.getLastUpdateDate(Constant.usersTable, new FireBaseModel.UpdateDateCompletionListener() {
+                        @Override
+                        public void onComplete(String updateDate) {
+                            if(Constant.isBiggerDate(updateDate,updated)){
+                                getUserByEmailFromNet(email, new UserEventPostsListener() {
+                                    @Override
+                                    public void onResult(User u) {
+                                        if(Constant.isBiggerDate(u.getLastUpdateDate(),updated)) modelSql.updateUserByID(u.email,u);
+                                        userEventPostsListener.onResult(u);
+                                    }
 
-                    @Override
-                    public void onError(String error) {
-                        User u =  modelSql.getUserByEmail(email);
-                        if (u!=null) userEventPostsListener.onResult(u);
-                        else userEventPostsListener.onError(error);
-                    }
-                });
+                                    @Override
+                                    public void onError(String error) {
+                                        User u =  modelSql.getUserByEmail(email);
+                                        if (u!=null) userEventPostsListener.onResult(u);
+                                        else userEventPostsListener.onError(error);
+                                    }
+                                });
+                            }
+                            else{
+                                User u =  modelSql.getUserByEmail(email);
+                                if (u!=null) userEventPostsListener.onResult(u);
+                                else userEventPostsListener.onError("ERORR");
+                            }
+
+                        }
+
+                        @Override
+                        public void onError(String error) {
+                            User u =  modelSql.getUserByEmail(email);
+                            if (u!=null) userEventPostsListener.onResult(u);
+                            else userEventPostsListener.onError(error);
+                        }
+                    });
+                }
+                else{
+                    getUserByEmailFromNet(email, new UserEventPostsListener() {
+                        @Override
+                        public void onResult(User u) {
+                            if(Constant.isBiggerDate(u.getLastUpdateDate(),modelSql.getLastUpdate(Constant.usersTable))) modelSql.updateUserByID(u.email,u);
+                            userEventPostsListener.onResult(u);
+                        }
+
+                        @Override
+                        public void onError(String error) {
+                            User u =  modelSql.getUserByEmail(email);
+                            if (u!=null) userEventPostsListener.onResult(u);
+                            else userEventPostsListener.onError(error);
+                        }
+                    });
+                }
+
+
             }
             else {
                 User u =  modelSql.getUserByEmail(email);

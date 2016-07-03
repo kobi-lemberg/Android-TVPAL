@@ -183,7 +183,7 @@ public class FireBaseModel {
                     posts.add(post);
                     System.out.println(post.getShowName() + " - " + post.getUserEmail());
                 }
-                Collections.reverse(posts);
+                Collections.sort(posts);
                 eventscomplitionlistener.onComplete(posts);
             }
             @Override
