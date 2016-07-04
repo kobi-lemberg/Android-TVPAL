@@ -51,7 +51,7 @@ public class AddShowActivity extends Activity {
         setContentView(R.layout.activity_add_show);
         showImage = (ImageView)findViewById(R.id.activity_addShow_imageView);
         Resources res = getResources();
-        final int color = res.getColor(android.R.color.black);
+        final int color = res.getColor(android.R.color.white);
         famousActors = (EditText) findViewById(R.id.activity_addShow_famousActors);
         numberOfEpisodes = (EditText) findViewById(R.id.activity_addShow_NumberOfEpisodes);
         categories = (EditText) findViewById(R.id.activity_addShow_Categories);
@@ -109,7 +109,7 @@ public class AddShowActivity extends Activity {
 
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(MyApplication.getAppContext(), R.layout.style, showListArr);
                 showName.setAdapter(adapter);
-                //showName.setTextColor(color);
+                showName.setTextColor(color);
                 showName.setThreshold(1);
 
                 showName.setOnItemClickListener(new AdapterView.OnItemClickListener() {

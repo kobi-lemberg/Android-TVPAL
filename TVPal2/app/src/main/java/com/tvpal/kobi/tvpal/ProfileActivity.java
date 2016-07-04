@@ -43,8 +43,6 @@ public class ProfileActivity  extends Activity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-
-
         user = Model.instance().getCurrentUser();
         setTitle(user.displayName());
         listView = (ListView) findViewById(R.id.listView_activity_profile);

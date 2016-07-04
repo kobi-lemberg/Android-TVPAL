@@ -1,11 +1,13 @@
 package com.tvpal.kobi.tvpal;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.app.Activity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -35,6 +37,8 @@ public class UpdateShowProgressActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_show_progress);
         final String showName = getIntent().getExtras().getString("showName");
+        Resources res = getResources();
+        final int color = res.getColor(android.R.color.white);
         String date = getIntent().getExtras().getString("date");
         String text = getIntent().getExtras().getString("text");
         setTitle("Update "+showName);
@@ -65,10 +69,26 @@ public class UpdateShowProgressActivity extends Activity {
                 for (int i = 0; i < episodeArr.length; i++) {
                     episodeArr[i] = i + 1;
                 }
-                ArrayAdapter<Integer> episodeSpinnerAdapter = new ArrayAdapter<Integer>(getApplicationContext(), android.R.layout.simple_spinner_item, episodeArr);
+                ArrayAdapter<Integer> episodeSpinnerAdapter = new ArrayAdapter<Integer>(getApplicationContext(),  R.layout.style, episodeArr);
                 episodeSpinner.setAdapter(episodeSpinnerAdapter);
-                fromText = (TextView) findViewById(R.id.activity_updatePost_from_Number_Of_Episodes);
+                episodeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        TextView selectedText = (TextView) parent.getChildAt(0);
+                        if (selectedText != null) {
+                            selectedText.setTextColor(color);
+                        }
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+                        TextView selectedText = (TextView) parent.getChildAt(0);
+                        selectedText.setTextColor(color);
+                    }
+                });
+                        fromText = (TextView) findViewById(R.id.activity_updatePost_from_Number_Of_Episodes);
                 fromText.setText("from " + current.getShow().getEpisode());
+
                 rate = (RatingBar) findViewById(R.id.activity_updatePost_ratingBar);
                 rate.setNumStars(4);
                 opinion = (EditText) findViewById(R.id.activity_updatePost_activity_summary);

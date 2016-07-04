@@ -74,7 +74,6 @@
                     android:layout_height="wrap_content"
                     android:text="Season "/>
                 <EditText
-                    android:backgroundTint="@android:color/white"
                     android:textColor="#FFFFFF"
                     android:layout_width="101dp"
                     android:layout_height="wrap_content"
