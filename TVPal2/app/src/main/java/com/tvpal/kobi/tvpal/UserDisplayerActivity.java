@@ -2,7 +2,6 @@ package com.tvpal.kobi.tvpal;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.app.Activity;
 import android.util.Log;
@@ -179,7 +178,7 @@ public class UserDisplayerActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        Model.instance().getAllPostsPerUser(userEmail, new Model.EventPostsListener() {
+        Model.instance().getAllPostsPerUserUniq(userEmail, new Model.EventPostsListener() {
             @Override
             public void onResult(LinkedList<Post> o) {
                 if(o!=null) {

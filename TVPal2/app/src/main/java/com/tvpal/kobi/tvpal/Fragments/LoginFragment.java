@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-
 import com.tvpal.kobi.tvpal.R;
 
 
@@ -51,9 +50,6 @@ public class LoginFragment extends Fragment {
                 ((LoginDelegate)getActivity()).signIn(userEmailTxt.getText().toString(),passwordTxt.getText().toString());
             }
         });
-
-
-
         return view;
     }
 
@@ -61,9 +57,6 @@ public class LoginFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         getActivity().setTitle("Sign in");
-/*
-        inflater.inflate(R.menu.menu_main, menu);
-*/
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -82,9 +75,4 @@ public class LoginFragment extends Fragment {
 
     }
 
-    /*    @Override
-    public void onStart() {
-        getActivity().setTitle("Sign in");
-        super.onStart();
-    }*/
 }

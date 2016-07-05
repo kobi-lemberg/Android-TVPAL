@@ -5,19 +5,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.Nullable;
 import android.util.Log;
-
 import com.tvpal.kobi.tvpal.Model.Model;
 import com.tvpal.kobi.tvpal.Model.TVShow;
-import com.tvpal.kobi.tvpal.Model.User;
-
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * Created by Kobi on 11/05/2016.
- */
 public class TVShowSql {
-    // public TVShow(String name, String mainActor,int season,int episode ,String category, String lastUpdated,String imagePath)
     private static final String SHOW_TABLE = Model.Constant.showsTable;
     private static final String SHOW_NAME = "name";
     private static final String SHOW_ACTOR = "mainActor";

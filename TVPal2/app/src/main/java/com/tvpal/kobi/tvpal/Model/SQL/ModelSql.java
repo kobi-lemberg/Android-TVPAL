@@ -47,7 +47,6 @@ public class ModelSql {
     public LinkedList<Post> getAllPosts() {
         LinkedList<Post> posts = PostSql.getAllPosts(dbHelper.getWritableDatabase());
         Collections.sort(posts);
-
         return posts;
     }
 

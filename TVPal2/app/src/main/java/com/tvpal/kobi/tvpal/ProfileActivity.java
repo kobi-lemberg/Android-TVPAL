@@ -3,7 +3,6 @@ package com.tvpal.kobi.tvpal;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,9 +23,7 @@ import com.tvpal.kobi.tvpal.Model.User;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * Created by nir on 05/06/2016.
- */
+
 public class ProfileActivity  extends Activity{
     Button editProfile;
     List<Post> data = new LinkedList<Post>();

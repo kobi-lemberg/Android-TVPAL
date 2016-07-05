@@ -7,18 +7,13 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
-import com.tvpal.kobi.tvpal.Model.SQL.ModelSql;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-/**
- * Created by Kobi on 03/06/2016.
- */
+
 public class FireBaseModel {
 
 
@@ -75,7 +70,6 @@ public class FireBaseModel {
             @Override
             public void onSuccess(Map<String, Object> result) {
                 myFirebaseRef.child("users").child(result.get("uid").toString()).setValue(u);
-                //child(result.get("uid").toString())
                 next.onResult(u);
             }
             @Override
@@ -156,7 +150,6 @@ public class FireBaseModel {
         qr.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-              //  Log.d("TAG", "DataSnapShot: " + dataSnapshot.child(dataSnapshot.getKey()).child(dataSnapshot.getValue().toString()));
                 for (DataSnapshot u: dataSnapshot.getChildren()) {
                     User user = u.getValue(User.class);
                     userEventscomplitionlistener.onComplete(user);

@@ -6,9 +6,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 
-/**
- * Created by Kobi on 10/05/2016.
- */
+
 public class MyApplication extends Application{
     private static Context context;
     public void onCreate(){

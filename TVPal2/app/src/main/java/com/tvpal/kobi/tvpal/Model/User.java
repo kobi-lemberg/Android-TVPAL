@@ -2,12 +2,7 @@ package com.tvpal.kobi.tvpal.Model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tvpal.kobi.tvpal.MyApplication;
-/**
- * Created by Kobi on 11/05/2016.
- */
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import java.util.HashMap;
 import java.util.Map;
 

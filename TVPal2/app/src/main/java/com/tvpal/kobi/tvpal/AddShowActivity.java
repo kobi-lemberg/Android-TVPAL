@@ -142,13 +142,7 @@ public class AddShowActivity extends Activity {
             @Override
             public void onError(String error) {}
         });
-
-
-
-
     }
-
-
 
 
     private void selectImage() {

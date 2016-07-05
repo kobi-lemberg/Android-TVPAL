@@ -4,11 +4,9 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import com.tvpal.kobi.tvpal.MyApplication;
-import com.tvpal.kobi.tvpal.NewsFeedActivity;
+
 
 
 public class StringDialogFragment extends DialogFragment {
@@ -24,7 +22,6 @@ public class StringDialogFragment extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-// Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(strToShow)
                .setPositiveButton("OK", new DialogInterface.OnClickListener() {

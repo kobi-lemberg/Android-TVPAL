@@ -39,7 +39,6 @@ public class RegisterFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_register, container, false);
         setHasOptionsMenu(true);
-
         profilePic = (ImageView) view.findViewById(R.id.profilePic);
         profilePic.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,16 +46,14 @@ public class RegisterFragment extends Fragment {
                 ((RegisterDelegate)getActivity()).handleCamera();
             }
         });
-
-         email = (EditText) view.findViewById(R.id.fragment_register_editText_email);
-         firstName = (EditText) view.findViewById(R.id.fragment_register_editText_firstName);
-         lastName = (EditText) view.findViewById(R.id.fragment_register_editText_lastName);
-         birthDate = (DateEditText) view.findViewById(R.id.fragment_register_DateEditText);
-         password = (EditText) view.findViewById(R.id.fragment_register_editText_password);
-         passwordConfirm = (EditText) view.findViewById(R.id.fragment_register_editText_password_confirm);
-         progressBar=(ProgressBar) view.findViewById(R.id.fragment_register_progressBar);
+        email = (EditText) view.findViewById(R.id.fragment_register_editText_email);
+        firstName = (EditText) view.findViewById(R.id.fragment_register_editText_firstName);
+        lastName = (EditText) view.findViewById(R.id.fragment_register_editText_lastName);
+        birthDate = (DateEditText) view.findViewById(R.id.fragment_register_DateEditText);
+        password = (EditText) view.findViewById(R.id.fragment_register_editText_password);
+        passwordConfirm = (EditText) view.findViewById(R.id.fragment_register_editText_password_confirm);
+        progressBar=(ProgressBar) view.findViewById(R.id.fragment_register_progressBar);
         progressBar.setVisibility(View.INVISIBLE);
-
         Button done = (Button) view.findViewById(R.id.fragment_register_done_btn);
         if(profilePicFileName==null)
             profilePicFileName="";

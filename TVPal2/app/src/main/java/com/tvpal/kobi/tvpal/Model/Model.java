@@ -31,11 +31,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
-import java.util.List;
 
-/**
- * Created by Kobi on 11/05/2016.
- */
+
 public class Model {
     String currentUid;
     interface UserCreator{
@@ -371,7 +368,6 @@ public class Model {
 
                     modelFireBase.setLastUpdateDate(Constant.showsTable, post.getDate());
                     modelFireBase.setLastUpdateDate(Constant.postsTable, post.getDate());
-                    //modelSql.addNewPost(show,post);
                     showCreatorListener.onDone();
                 } catch (Exception e) {showCreatorListener.onError(e.toString());}
             }
@@ -384,7 +380,6 @@ public class Model {
             public void onComplete(Post post) {
                 modelFireBase.setLastUpdateDate(Constant.postsTable, post.getDate());
 
-                //modelSql.addPost(post);
                 PostListener.onResult(post);
             }
 
@@ -397,9 +392,6 @@ public class Model {
 
     public void getAllPostsPerUser(final String email, final EventPostsListener eventpostslistener)
     {
-        //if(email.equals(Model.instance().getCurrentUser().getEmail())) modelSql.getAllPostsPerUser(email);
-        //else
-        //{
             final String lastDate = modelSql.getLastUpdate(Constant.postsTable);
             modelFireBase.getLastUpdateDate(Constant.postsTable, new FireBaseModel.UpdateDateCompletionListener() {
                 @Override
@@ -453,8 +445,6 @@ public class Model {
     public void getAllPostsPerUserUniq(final String email, final EventPostsListener eventpostslistener)
     {
         final String lastDate = modelSql.getLastUpdate(Constant.postsTable);
-       // if(email.equals(Model.instance().getCurrentUser().getEmail())) eventpostslistener.onResult( modelSql.getAllPostsPerUserUniq(email));
-        //else {
             modelFireBase.getLastUpdateDate(Constant.postsTable, new FireBaseModel.UpdateDateCompletionListener() {
                 @Override
                 public void onComplete(String updateDate) {
@@ -494,19 +484,6 @@ public class Model {
                     });
                 }
             });
-       // }
-        /*modelFireBase.getAllPostsPerUserUniq(email, new FireBaseModel.eventsCompletionListener() {
-            @Override
-            public void onComplete(LinkedList<Post> o) {
-                eventpostslistener.onResult(o);
-            }
-
-            @Override
-            public void onError(String error) {
-                eventpostslistener.onError(error);
-                Log.d("Error","could not read from firebase.");
-            }
-        });*/
     }
 
     public void getAllPosts(final EventPostsListener eventpostslistener)
@@ -604,9 +581,6 @@ public class Model {
                         @Override
                         public void onComplete(LinkedList<Post> o) {
                             eventpostslistener.onResult(o);
-/*                            for(Post p:o) {if(Constant.isBiggerDate(p.getDate(),updated)) modelSql.addPost(p);}
-                            modelSql.setLastUpdate(Constant.postsTable,updateDate);
-                            modelSql.setLastUpdate(Constant.showsTable,updateDate);*/
                         }
 
                         @Override
@@ -696,7 +670,6 @@ public class Model {
         FileOutputStream fos;
         OutputStream out = null;
         try {
-            //File dir = context.getExternalFilesDir(null);
             File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
             if (!dir.exists()) {
                 dir.mkdir();
@@ -728,7 +701,6 @@ public class Model {
             File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
             File imageFile = new File(dir,imageFileName);
 
-            //File dir = context.getExternalFilesDir(null);
             if(!imageFile.exists())
                 return null;
             InputStream inputStream = new FileInputStream(imageFile);
@@ -750,10 +722,7 @@ public class Model {
         public static final String defaultProfilePic  = "defaultProfilePic";
         private static final DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
         public static String getCurrentDate() {
-            // Get the date today using Calendar object.
             Date today = Calendar.getInstance().getTime();
-            // Using DateFormat format method we can create a string
-            // representation of a date with the defined format.
             return df.format(today);
         }
 

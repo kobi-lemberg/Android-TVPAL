@@ -4,9 +4,6 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-/**
- * Created by eliav.menachi on 08/06/2016.
- */
 public class LastUpdateSql {
     final static String LAST_UPDATE_TABLE = "last_update";
     final static String LAST_UPDATE_TABLE_TNAME = "table_name";

@@ -3,9 +3,7 @@ package com.tvpal.kobi.tvpal.Model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-/**
- * Created by Kobi on 04/06/2016.
- */
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Post implements Comparable<Post>{
     String showName;

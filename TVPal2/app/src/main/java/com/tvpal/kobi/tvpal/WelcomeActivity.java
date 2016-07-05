@@ -285,34 +285,4 @@ public class WelcomeActivity extends Activity implements WelcomeFragment.Welcome
         }
     }
 
-/*    private void saveImageToFile(Bitmap imageBitmap, String imageFileName){
-        Log.d("Writing the pic",imageFileName);
-        FileOutputStream fos;
-        FileOutputStream out = null;
-        try {
-            File dir = MyApplication.getAppContext().getExternalFilesDir(null);
-            Log.d("DIR:",dir.toString());
-            out = new FileOutputStream(new File(dir,imageFileName));
-            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-            out.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private Bitmap loadImageFromFile(String fileName){
-        String str = null;
-        Bitmap bitmap = null;
-        try {
-            File dir = getExternalFilesDir(null);
-            InputStream inputStream = new FileInputStream(new File(dir,fileName));
-            bitmap = BitmapFactory.decodeStream(inputStream);
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        return bitmap;
-    }*/
 }

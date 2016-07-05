@@ -22,10 +22,6 @@ import android.widget.TextView;
 import com.tvpal.kobi.tvpal.Model.Model;
 import com.tvpal.kobi.tvpal.Model.Post;
 import com.tvpal.kobi.tvpal.Model.User;
-
-import org.w3c.dom.Text;
-
-import java.util.Collections;
 import java.util.LinkedList;
 
 public class NewsFeedActivity extends Activity
@@ -118,7 +114,6 @@ public class NewsFeedActivity extends Activity
         TextView comment;
         ImageView image;
         ProgressBar imageProgressBar;
-
     }
 
 
@@ -155,115 +150,10 @@ public class NewsFeedActivity extends Activity
                 viewHolder.comment = (TextView)convertView.findViewById(R.id.news_feed_raw_post);
                 viewHolder.ratedText = (TextView) convertView.findViewById(R.id.news_feed_raw_rated);
                 convertView.setTag(viewHolder);
-                //convertView = inflater.inflate(R.layout.news_feed_row_layout, null);
-                //holder = new ViewHolder();
-                /*holder.userNameText = (TextView) convertView.findViewById(R.id.news_feed_raw_profile_displayName);
-                holder.userEvent = (TextView) convertView.findViewById(R.id.news_feed_raw_show_event);
-                holder.image = (ImageView) convertView.findViewById(R.id.news_feed_raw_profile_image);
-                holder.episode = (TextView)convertView.findViewById(R.id.news_feed_raw_episode);
-                holder.imageProgressBar = (ProgressBar) convertView.findViewById(R.id.news_feed_raw_user_image_progressBar);
-                holder.rated = (RatingBar)convertView.findViewById(R.id.news_feed_raw_ratingBar);
-                holder.comment = (TextView)convertView.findViewById(R.id.news_feed_raw_post);
-                holder.ratedText = (TextView) convertView.findViewById(R.id.news_feed_raw_rated);
-
-                convertView.setTag(holder);
-                */
             } else {
                 viewHolder = (ViewHolderItem) convertView.getTag();
-                //holder = (ViewHolder) convertView.getTag();
             }
             currentPost = (Post) getItem(position);
-            /*final ProgressBar imageProgressbar = (ProgressBar) convertView.findViewById(R.id.news_feed_raw_user_image_progressBar);
-            final TextView userNameText =(TextView) convertView.findViewById(R.id.news_feed_raw_profile_displayName);
-            final TextView userEvent = (TextView) convertView.findViewById(R.id.news_feed_raw_show_event);
-            final ImageView imageView = (ImageView) convertView.findViewById(R.id.news_feed_raw_profile_image);
-            TextView rated = (TextView) convertView.findViewById(R.id.news_feed_raw_rated);
-            RatingBar ratingBar = (RatingBar)convertView.findViewById(R.id.news_feed_raw_ratingBar);
-            TextView episode = (TextView)convertView.findViewById(R.id.news_feed_raw_episode);
-            TextView post = (TextView)convertView.findViewById(R.id.news_feed_raw_post);
-            */
-            /*
-            Model.instance().getUserByEmail(currentPost.getUserEmail(), new Model.UserEventPostsListener() {
-                @Override
-                public void onResult(final User u) {
-                    Log.d("TAG",u.displayName());
-                    holder.userNameText.setText(u.displayName());
-                    holder.userNameText.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if(u.equals(Model.instance().getCurrentUser())) {
-                                Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
-                                startActivityForResult(intent, 0);
-                            }
-                            else {
-                                Intent intent = new Intent(getApplicationContext(), UserDisplayerActivity.class);
-                                intent.putExtra("user", u.displayName());
-                                intent.putExtra("email", u.getEmail());
-                                startActivityForResult(intent,0);
-                            }
-                        }
-                    });
-                    if(!Model.Constant.isDefaultProfilePic(u.getProfilePic())){
-                        Log.d("TAG",u.displayName()+" profilePic "+u.getProfilePic());
-                        holder.imageProgressBar.setVisibility(View.VISIBLE);
-                        Model.instance().loadImage(u.getProfilePic(), new Model.LoadImageListener() {
-                            @Override
-                            public void onResult(Bitmap imageBmp) {
-                                if (imageBmp != null) {
-                                    holder.image.setImageBitmap(imageBmp);
-                                }
-                                else{
-                                    holder.image.setImageBitmap(defaultBitmap);
-                                }
-                                holder.imageProgressBar.setVisibility(View.GONE);
-                            }
-                        });
-                    }
-                    else {
-                        holder.image.setImageBitmap(defaultBitmap);
-                        holder.imageProgressBar.setVisibility(View.GONE);
-                    }
-
-                }
-
-                @Override
-                public void onError(String error) {
-                    holder.userNameText.setText(error);
-                }
-            });
-            String event = currentPost.getEvent();
-            holder.userEvent.setText(event+" "+currentPost.getShowName());
-            holder.userEvent.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(getApplicationContext(), ShowDisplayerActivity.class);
-                    intent.putExtra("showName", currentPost.getShowName());
-                    startActivityForResult(intent,0);
-                }
-            });
-
-            if(!event.equals("Is On")){
-                holder.ratedText.setVisibility(View.GONE);
-                holder.rated.setVisibility(View.GONE);
-                holder.episode.setVisibility(View.GONE);
-                holder.comment.setVisibility(View.GONE);
-            }
-            else {
-                holder.ratedText.setVisibility(View.VISIBLE);
-                holder.rated.setVisibility(View.VISIBLE);
-                holder.episode.setVisibility(View.VISIBLE);
-                Log.d("TAG","set starts for "+currentPost.getShow()+": "+currentPost.getGrade());
-                holder.rated.setRating(currentPost.getGrade());
-                holder.episode.setText(" episode: "+currentPost.getCurrentPart());
-                String comment = currentPost.getText();
-                if(comment!=null&&!comment.equals("")) {
-                    holder.comment.setVisibility(View.VISIBLE);
-                    holder.comment.setText("\""+comment+"\"");
-                }
-                else {
-                    holder.comment.setVisibility(View.GONE);
-                }
-            }*/
             Model.instance().getUserByEmail(currentPost.getUserEmail(), new Model.UserEventPostsListener() {
                 @Override
                 public void onResult(final User u) {

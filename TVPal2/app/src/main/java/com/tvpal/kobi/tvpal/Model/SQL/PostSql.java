@@ -5,21 +5,13 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.Nullable;
 import android.util.Log;
-
-import com.tvpal.kobi.tvpal.Dialogs.StringDialogFragment;
 import com.tvpal.kobi.tvpal.Model.Model;
 import com.tvpal.kobi.tvpal.Model.Post;
 import com.tvpal.kobi.tvpal.Model.TVShow;
-import com.tvpal.kobi.tvpal.Model.User;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 
-/**
- * Created by Kobi on 11/05/2016.
- */
 public class PostSql {
     private static final String POST_TABLE = Model.Constant.postsTable;
     private static final String SHOW_NAME = "showName";

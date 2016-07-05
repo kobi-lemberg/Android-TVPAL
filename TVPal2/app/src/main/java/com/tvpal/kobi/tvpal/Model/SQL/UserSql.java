@@ -5,15 +5,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.Nullable;
 import android.util.Log;
-
 import com.tvpal.kobi.tvpal.Model.Model;
 import com.tvpal.kobi.tvpal.Model.User;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * Created by Kobi on 11/05/2016.
- */
 public class UserSql {
 
     private static final String USERS_TABLE = Model.Constant.usersTable;
